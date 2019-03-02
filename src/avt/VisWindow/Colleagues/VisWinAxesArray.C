@@ -1215,12 +1215,10 @@ VisWinAxesArray::SetTitles(void)
         }
         else
         {
-            if (axes[i].units[0] == '\0')
-                SNPRINTF(buffer, 1024, "%s (x10^%d)",
-                         axes[i].title, axes[i].pow);
-            else
-                SNPRINTF(buffer, 1024, "%s (x10^%d %s)",
-                         axes[i].title, axes[i].pow, axes[i].units);
+            const char* units = "units";
+            if (axes[i].units[0] != '\0') units = axes[i].units;
+            SNPRINTF(buffer, 1024, "%s (10^%d %s)", axes[i].title,
+                axes[i].pow, units);
         }
         axes[i].axis->SetTitle(buffer);
     }
