@@ -172,7 +172,7 @@ QvisAxisAttributesWidget::QvisAxisAttributesWidget(QWidget *parent,
     labelScaling->setMaximum(300);
     connect(labelScaling, SIGNAL(valueChanged(int)),
             this, SLOT(labelScalingChanged(int)));
-    labelScalingLabel = new QLabel(tr("Scaling (x10^?)"), labelGroup);
+    labelScalingLabel = new QLabel(tr("Scaling (10^?)"), labelGroup);
     labelScalingLabel->setBuddy(labelScaling);
     lLayout->addWidget(labelScalingLabel, row, 0);
     lLayout->addWidget(labelScaling, row, 1);

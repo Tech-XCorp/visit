@@ -1494,10 +1494,9 @@ VisWinAxes::SetTitle(void)
     }
     else
     {
-        if (unitsX[0] == '\0')
-            SNPRINTF(buffer, 1024, "%s (x10^%d)", xTitle, powX);
-        else
-            SNPRINTF(buffer, 1024, "%s (x10^%d %s)", xTitle, powX, unitsX);
+        const char* units = "units";
+        if (unitsX[0] != '\0') units = unitsX;
+        SNPRINTF(buffer, 1024, "%s (10^%d %s)", xTitle, powX, units);
     }
     axes->SetXTitle(buffer);
 
@@ -1510,10 +1509,9 @@ VisWinAxes::SetTitle(void)
     }
     else
     {
-        if (unitsY[0] == '\0')
-            SNPRINTF(buffer, 1024, "%s (x10^%d)", yTitle, powY);
-        else
-            SNPRINTF(buffer, 1024, " %s (x10^%d %s)", yTitle, powY, unitsY);
+        const char* units = "units";
+        if (unitsY[0] != '\0') units = unitsY;
+        SNPRINTF(buffer, 1024, " %s (10^%d %s)", yTitle, powY, units);
     }
     axes->SetYTitle(buffer);
 }
