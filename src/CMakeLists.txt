@@ -2490,9 +2490,10 @@ ENDIF (NOT WIN32)
 #ADD_DEPENDENCIES(osxfixup install)
 
 #todo: replace add_subdirectory with the lines above
-#IF(APPLE)
-#    ADD_SUBDIRECTORY(osxfixup)
-#ENDIF(APPLE)
+SET(FIXUP_OSX TRUE CACHE BOOL "Whether to fix up osx.")
+IF(APPLE AND FIXUP_OSX)
+    ADD_SUBDIRECTORY(osxfixup)
+ENDIF(APPLE)
 
 IF (NOT WIN32)
     MESSAGE(STATUS "\n\nUse recmake_visit.sh or search for `CMAKE_INVOKE' in CMakeCache.txt to re-run CMake with the same arguments\n\n")
