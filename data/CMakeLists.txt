@@ -483,25 +483,34 @@ ADD_DEPENDENCIES(testdata data)
 # Add install command for contents of "data"
 #-----------------------------------------------------------------------------
 
+set(VISIT_INSTALL_DATA TRUE CACHE BOOL "Whether to install VisIt's data.")
+if(VISIT_INSTALL_DATA)
+  MESSAGE(STATUS "Installation of data files requested.")
 IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/visit_dist_data.tar.gz)
+  IF(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/visit_dist_data)
     IF(NOT WIN32)
         SET(DIST_UNTAR_CMD "${UNTAR_CMD} ${UNTAR_ARGS} ${CMAKE_CURRENT_SOURCE_DIR}/visit_dist_data.tar.gz")
 
-        INSTALL(CODE "execute_process(COMMAND ${DIST_UNTAR_CMD} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )")
+        execute_process(COMMAND ${DIST_UNTAR_CMD} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} RESULT_VARIABLE UNTAR_RESULT)
     ELSE(NOT WIN32)
         IF(VISIT_USE_7ZIP AND NOT "${SEVEN_ZIP_EXE}" STREQUAL "SEVEN_ZIP_EXE-NOTFOUND")
             SET (DIST_UNTAR_CMD1 "\"${SEVEN_ZIP_EXE}\" x -y \"${CMAKE_CURRENT_SOURCE_DIR}/visit_dist_data.tar.gz\"")
             SET (DIST_UNTAR_CMD2 "\"${SEVEN_ZIP_EXE}\" x -y visit_dist_data.tar")
             SET (DIST_UNTAR_CMD3 "del /F visit_dist_data.tar")
-            INSTALL(CODE "execute_process(COMMAND ${DIST_UNTAR_CMD1} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )")
-            INSTALL(CODE "execute_process(COMMAND ${DIST_UNTAR_CMD2} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )")
-            INSTALL(CODE "execute_process(COMMAND ${DIST_UNTAR_CMD3} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )")
+            execute_process(COMMAND ${DIST_UNTAR_CMD1} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )
+            execute_process(COMMAND ${DIST_UNTAR_CMD2} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )
+            execute_process(COMMAND ${DIST_UNTAR_CMD3} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} RESULT_VARIABLE UNTAR_RESULT)
         else()
             SET(DIST_UNTAR_CMD "${CMAKE_COMMAND} -E tar -xzvf ${CMAKE_CURRENT_SOURCE_DIR}/visit_dist_data.tar.gz")
-            INSTALL(CODE "execute_process(COMMAND ${DIST_UNTAR_CMD} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} )")
+            execute_process(COMMAND ${DIST_UNTAR_CMD} WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR} RESULT_VARIABLE UNTAR_RESULT)
         endif()
     ENDIF(NOT WIN32)
+  ENDIF()
+  if(NOT UNTAR_RESULT STREQUAL 0)
+    message(WARNING "Extraction of visit_dist_data failed.")
+  endif ()
 
+  IF(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/visit_dist_data)
     INSTALL(DIRECTORY
                 ${CMAKE_CURRENT_BINARY_DIR}/visit_dist_data/
             DESTINATION
@@ -510,6 +519,7 @@ IF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/visit_dist_data.tar.gz)
                 OWNER_READ OWNER_WRITE OWNER_EXECUTE
                 GROUP_READ GROUP_WRITE GROUP_EXECUTE
                 WORLD_READ WORLD_EXECUTE)
+  ENDIF()
 ELSE(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/visit_dist_data.tar.gz)
     IF(SILO_FOUND)
         SET(EXE_EXT "")
@@ -640,5 +650,8 @@ ELSE(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/visit_dist_data.tar.gz)
         MESSAGE(STATUS "support.")
     ENDIF(SILO_FOUND)
 ENDIF(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/visit_dist_data.tar.gz)
+else()
+  MESSAGE(STATUS "Data files not installed by request.")
+endif()
 
 
