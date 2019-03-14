@@ -132,7 +132,7 @@ using std::string;
 // Storage for static data elements.
 //
 ViewerWindowManager *ViewerWindowManager::instance=0;
-const int ViewerWindowManager::maxWindows=16;
+const int ViewerWindowManager::maxWindows=25;
 const int ViewerWindowManager::maxLayouts=6;
 const int ViewerWindowManager::validLayouts[]={1, 4, 9, 2, 6, 8};
 
