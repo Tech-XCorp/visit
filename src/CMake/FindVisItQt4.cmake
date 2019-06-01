@@ -208,7 +208,8 @@ IF(NOT "${QT_BIN}" MATCHES "OFF")
     IF(APPLE)
       file(GLOB QT_INCLUDES "${QT_HEADERS_DIR}/Qt*")
       FOREACH(H ${QT_INCLUDES})
-          INSTALL(DIRECTORY ${H}
+        get_filename_component(HINST "${H}" REALPATH)
+        INSTALL(DIRECTORY ${HINST}
                   DESTINATION ${VISIT_INSTALLED_VERSION_INCLUDE}/qt/include
                   FILE_PERMISSIONS OWNER_WRITE OWNER_READ
                                      GROUP_WRITE GROUP_READ
