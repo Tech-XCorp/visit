@@ -1893,7 +1893,7 @@ avtVsFileFormat::getUnstructuredMesh(VsUnstructuredMesh* unstructuredMesh,
         return NULL;
     }
 
-    // Tweak for Nautilus
+    // Tweak for USim 
 
     // Prepare to fix up the connectivity list if node correction data
     // is available
@@ -2037,11 +2037,42 @@ avtVsFileFormat::getUnstructuredMesh(VsUnstructuredMesh* unstructuredMesh,
             }
         }
 
+        bool newStyle = true;
+
+        /* Old style used by USim has the dimensions of the cells datasets  = (number of cells, number of points in the cell).  
+        For example, the hex mesh:
+        DATASET "cells" {
+            DATATYPE  H5T_STD_I32LE
+            DATASPACE  SIMPLE { ( 2008, 8 ) / ( 2008, 8 ) }
+            DATA {
+            (0,0): 291, 605, 460, 288, 728, 776, 668, 575,
+            
+        The new style used by VSim has the dimensions of the cells dataset = (number of cells, number of points in the cell + 1) with the first index showing how many indices should be taken 
+        into account.  For example, the tet mesh is
+        DATASET "cells" {
+         DATATYPE  H5T_STD_I32LE
+         DATASPACE  SIMPLE { ( 3634, 5 ) / ( 3634, 5 ) }
+         DATA {
+         (0,0): 4, 797, 701, 674, 703,
+         (1,0): 4, 722, 244, 609, 750,
+
+        If we use the new style, we need to skip the first index when creating vertices.  
+        */
+        if (haveConnectivityCount == connectivityDims[1]) newStyle = false;
+
         // Create cell and insert into mesh
         if (cellType != VTK_EMPTY_CELL) {
             std::vector<vtkIdType> verts(cellVerts);
             for (size_t j = 0; j < cellVerts; ++j) {
-                verts[j] = (vtkIdType) vertices[k++];
+                size_t kk = k++;
+                if (newStyle) {
+                  // Skip the first index in the row
+                  if (kk%(haveConnectivityCount+1) == 0) { 
+                    j = j-1;
+                    continue;
+                  }  
+                }  
+                verts[j] = (vtkIdType) vertices[kk];
                 if ((verts[j] < 0) || ((size_t)verts[j] >= numNodes)) {
                     VsLog::debugLog() << CLASSFUNCLINE
                                       << "ERROR in connectivity dataset - requested vertex number "
@@ -2051,7 +2082,7 @@ avtVsFileFormat::getUnstructuredMesh(VsUnstructuredMesh* unstructuredMesh,
                 }
             }
 
-            // Tweak for Nautilus
+            // Tweak for USim
             // Apply node corrections
             if (correctionList) {
                 for (size_t j = 0; j < cellVerts; j++) {
