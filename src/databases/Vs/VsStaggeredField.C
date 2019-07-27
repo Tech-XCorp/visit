@@ -153,7 +153,8 @@ VsStaggeredField<TYPE>::getOriCellIndexSet(size_t bigIndex) const {
 template <class TYPE>
 std::valarray<int>
 VsStaggeredField<TYPE>::getOriDisplacements(size_t subBigIndex) const {
-  return (subBigIndex / this->twoPowSubRes) % 2;
+  std::valarray<int> res = {static_cast<int>((subBigIndex / this->twoPowSubRes) % 2)};
+  return res;
 }
 
 template <class TYPE>
