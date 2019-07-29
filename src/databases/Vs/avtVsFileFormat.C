@@ -2065,7 +2065,8 @@ avtVsFileFormat::getUnstructuredMesh(VsUnstructuredMesh* unstructuredMesh,
             std::vector<vtkIdType> verts(cellVerts);
             for (size_t j = 0; j < cellVerts; ++j) {
                 size_t kk = k++;
-                if (newStyle) {
+                // This correction is only for volume meshes
+                if ((newStyle) && (numTopologicalDims == 3)) {
                   // Skip the first index in the row
                   if (kk%(haveConnectivityCount+1) == 0) { 
                     j = j-1;
