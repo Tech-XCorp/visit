@@ -76,22 +76,22 @@ IF (WIN32)
         SET(VTKZLIB_LIB vtkzlib)
     ENDIF(TARGET vtkzlib)
 ELSE(WIN32)
+
     IF(VISIT_ZLIB_DIR)
-        # We've told VisIt where to look for zlib. Let's also assume that by doing 
-        # this, we also told VTK where to find system zlib so we will not be using
-        # VTK's zlib
-        SET_UP_THIRD_PARTY(ZLIB lib include z)
-        IF (ZLIB_FOUND)
-            # use full path here, instead of just lib file.
-            SET(ZLIB_LIB "${ZLIB_LIBRARY_DIR}/${ZLIB_LIB}" CACHE STRING "zlib library" FORCE)
-            SET(HAVE_ZLIB_H true CACHE BOOL "have zlib header" FORCE)
-        ENDIF (ZLIB_FOUND)
-    ELSE(VISIT_ZLIB_DIR)
-        SET(ZLIB_LIB z)
-        SET(ZLIB_FOUND 1)
-        SET(VTKZLIB_LIB vtkzlib)
-    ENDIF(VISIT_ZLIB_DIR)
-ENDIF (WIN32)
+    # Have we told VisIt where to look for zlib?
+        if (LINUX AND CMAKE_SIZEOF_VOID_P EQUAL 8 AND EXISTS ${ZLIB_DIR}/lib64)
+            SET_UP_THIRD_PARTY(ZLIB lib64 include z)
+        else ()
+            SET_UP_THIRD_PARTY(ZLIB lib include z)
+        endif ()
+        if (ZLIB_FOUND)
+        # use full path here, instead of just lib file.
+            set(ZLIB_LIBRARY "${ZLIB_LIBRARY_DIR}/${ZLIB_LIB}" CACHE STRING "zlib library" FORCE)
+        endif ()
+    else ()
+      message(WARNING "VISIT_ZLIB_DIR not set.")
+    endif ()
+endif (WIN32)
 
 if(ZLIB_FOUND)
     set(HAVE_LIBZ true CACHE BOOL "Have lib z")
