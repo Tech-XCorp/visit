@@ -1893,7 +1893,7 @@ avtVsFileFormat::getUnstructuredMesh(VsUnstructuredMesh* unstructuredMesh,
         return NULL;
     }
 
-    // Tweak for USim 
+    // Tweak for USim
 
     // Prepare to fix up the connectivity list if node correction data
     // is available

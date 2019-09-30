@@ -665,12 +665,10 @@ VisWinParallelAxes::SetTitles(void)
         }
         else
         {
-            if (axes[0].units[0] == '\0')
-                SNPRINTF(buffer, 1024, "%s (x10^%d)",
-                         axes[0].title, axisPow);
-            else
-                SNPRINTF(buffer, 1024, "%s (x10^%d %s)",
-                         axes[0].title, axisPow, axes[0].units);
+            const char* units = "units";
+            if (axes[0].units[0] != '\0') units = axes[0].units;
+            SNPRINTF(buffer, 1024, "%s (10^%d %s)",
+                         axes[0].title, axisPow, units);
         }
         axes[0].axis->SetTitle(buffer);
     }
