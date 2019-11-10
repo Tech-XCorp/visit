@@ -190,7 +190,13 @@ function qt_license_prompt
                 Public License (LGPL) version 2.1 or \
                 the GNU General Public License (GPL) version 3? [yes/no]"
     info $QT_LIC_MSG
+<<<<<<< HEAD
     info $QT_CONFIRM_MSG
+=======
+    if [[ "$QT_RESPONSE" = "yes" ]] ; then
+      return 0
+    fi
+>>>>>>> Allow user to answer yes to qt license by setting QT_RESPONSE to yes.
     read RESPONSE
     if [[ "$RESPONSE" != "yes" ]] ; then
         info $QT_CONFIRM_MSG
