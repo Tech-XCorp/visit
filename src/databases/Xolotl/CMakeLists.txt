@@ -54,7 +54,14 @@ ${VISIT_INCLUDE_DIR}/visit_vtk/lightweight
 ${VTK_INCLUDE_DIRS}
 )
 
+<<<<<<< HEAD
 LINK_DIRECTORIES(${VISIT_LIBRARY_DIR} ${HDF5_LIBRARY_DIR} )
+=======
+
+LINK_DIRECTORIES(${VISIT_LIBRARY_DIR} ${VTK_LIBRARY_DIRS} ${HDF5_LIBRARY_DIR}
+  ${ZLIB_LIBRARY_DIR}
+  )
+>>>>>>> More diagnostics on zlib find.  Add zlib library dir to linking of Xolotl.
 
 ADD_LIBRARY(IXolotlDatabase ${LIBI_SOURCES})
 TARGET_LINK_LIBRARIES(IXolotlDatabase visitcommon)
