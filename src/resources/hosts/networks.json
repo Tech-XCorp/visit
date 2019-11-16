@@ -85,6 +85,17 @@
       ]
     },
     {
+      "network": "colorado",
+      "files": [
+        {
+          "name": "customlauncher"
+        },
+        {
+          "name": "host_colorado_verus.xml"
+        }
+      ]
+    },
+    {
       "network": "cscs",
       "files": [
         {
