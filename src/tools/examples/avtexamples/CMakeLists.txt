@@ -99,11 +99,13 @@ ${ALL_THIRDPARTY_IO_LIB}
 ${OPENGL_LIBRARIES}
 Threads::Threads
 ${ZLIB_LIBRARY}
+${DL_LIB}
 )
 
 if(HAVE_OSMESA)
     target_link_libraries(avtFilterExample ${OSMESA_LIBRARIES})
 endif()
+target_link_libraries(avtFilterExample ${DL_LIB})
 
 ADD_EXECUTABLE(avtRenderExample avtRenderExample.C)
 VISIT_INSTALL_TARGETS(avtRenderExample)
@@ -127,11 +129,13 @@ ${ALL_THIRDPARTY_IO_LIB}
 ${OPENGL_LIBRARIES}
 Threads::Threads
 ${ZLIB_LIBRARY}
+${DL_LIB}
 )
 
 if(HAVE_OSMESA)
     target_link_libraries(avtRenderExample ${OSMESA_LIBRARIES})
 endif()
+target_link_libraries(avtRenderExample ${DL_LIB})
 
 
 ADD_EXECUTABLE(avtPluginExample avtPluginExample.C)
@@ -152,11 +156,13 @@ ${ALL_THIRDPARTY_IO_LIB}
 ${OPENGL_LIBRARIES}
 Threads::Threads
 ${ZLIB_LIBRARY}
+${DL_LIB}
 )
 
 if(HAVE_OSMESA)
     target_link_libraries(avtPluginExample ${OSMESA_LIBRARIES})
 endif()
+target_link_libraries(avtPluginExample ${DL_LIB})
 
 ADD_EXECUTABLE(avtPlotPluginExample avtPlotPluginExample.C)
 VISIT_INSTALL_TARGETS(avtPlotPluginExample)
@@ -180,11 +186,13 @@ ${ALL_THIRDPARTY_IO_LIB}
 ${OPENGL_LIBRARIES}
 Threads::Threads
 ${ZLIB_LIBRARY}
+${DL_LIB}
 )
 
 if(HAVE_OSMESA)
     target_link_libraries(avtPlotPluginExample ${OSMESA_LIBRARIES})
 endif()
+target_link_libraries(avtPlotPluginExample ${DL_LIB})
 
 ADD_EXECUTABLE(networkManagerExample networkManagerExample.C)
 VISIT_INSTALL_TARGETS(networkManagerExample)
@@ -209,6 +217,7 @@ ${ALL_THIRDPARTY_IO_LIB}
 ${OPENGL_LIBRARIES}
 Threads::Threads
 ${ZLIB_LIBRARY}
+${DL_LIB}
 )
 
 SET(QVTKOPENGLEXAMPLE_SOURCES
@@ -300,4 +309,3 @@ ${vtkqtlib}
 if(QT_VERSION VERSION_GREATER_EQUAL "6.2.0")
     qt6_disable_unicode_defines(qtviswinExample)
 endif()
-

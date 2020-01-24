@@ -995,7 +995,7 @@ endif()
 
 # dl and large file support.
 if(CMAKE_HOST_UNIX)
-    set(DL_LIB dl)
+    set(DL_LIB dl m)
     add_definitions(-D_LARGEFILE64_SOURCE)
 endif()
 

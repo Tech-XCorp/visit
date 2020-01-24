@@ -267,6 +267,8 @@ TARGET_LINK_LIBRARIES(viewer_exe
     ${vtkpng_LIBRARIES}
     ${vtkjpeg_LIBRARIES}
 )
+# For linuxppc64le
+TARGET_LINK_LIBRARIES(viewer_exe ${DL_LIB})
 
 # If we're building statically then the viewer can't be linked until the plugin
 # sources are built

@@ -130,6 +130,8 @@ TARGET_LINK_LIBRARIES(mdserver
     Threads::Threads
     ${DL_LIB}
 )
+# For linuxppc64le.  Has to be done twice?
+TARGET_LINK_LIBRARIES(mdserver ${DL_LIB})
 
 if(CONDUIT_FOUND AND MFEM_FOUND)
     LINK_DIRECTORIES(

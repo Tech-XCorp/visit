@@ -125,7 +125,9 @@ avtdbatts
 ${VIEWER_QT_LIBS}
 ${VTK_EXTRA_LIBS}
 ${ZLIB_LIBRARY}
+${DL_LIB}
 )
+TARGET_LINK_LIBRARIES(mcurvit ${DL_LIB})
 
 
 

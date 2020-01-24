@@ -227,7 +227,7 @@ if(HDF5_FOUND)
         BUILD_DATA_TARGET(${HDF5_TARGET}
             INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} ${HDF5_INCLUDE_DIR}
             LIB_DIRS ${HDF5_LIBRARY_DIR}
-            LIBS ${HDF5_LIB})
+            LIBS ${HDF5_LIB} ${DL_LIB})
     endforeach()
 endif()
 

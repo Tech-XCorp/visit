@@ -175,6 +175,7 @@ if (VISIT_OSMESA_DIR)
         endif()
     endif()
 
+    list(APPEND OSMESA_LIBRARIES ${LLVM_LIBRARY} ${DL_LIB})
     message(STATUS "OSMESA_LIBRARIES: ${OSMESA_LIBRARIES}")
 
     install(DIRECTORY ${VISIT_BINARY_DIR}/lib/osmesa
