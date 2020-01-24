@@ -175,6 +175,8 @@ target_link_libraries(engine_ser_exe
     ${CMAKE_THREAD_LIBS}
     ${ZLIB_LIBRARY}
 )
+# For linuxppc64le
+TARGET_LINK_LIBRARIES(engine_ser_exe ${DL_LIB})
 
 # If we're building statically then the engine can't be linked until the plugin
 # sources are built

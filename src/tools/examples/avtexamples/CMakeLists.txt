@@ -71,6 +71,7 @@ ${VTK_EXTRA_LIBS}
 ${OPENGL_LIBRARIES}
 ${CMAKE_THREAD_LIBS}
 ${ZLIB_LIBRARY}
+${DL_LIB}
 )
 
 if(HAVE_OSMESA)
@@ -78,6 +79,7 @@ if(HAVE_OSMESA)
 elseif(HAVE_EGL)
     target_link_libraries(avtFilterExample ${EGL_LIBRARIES})
 endif()
+target_link_libraries(avtFilterExample ${DL_LIB})
 
 ADD_EXECUTABLE(avtRenderExample avtRenderExample.C)
 VISIT_INSTALL_TARGETS(avtRenderExample)
@@ -102,6 +104,7 @@ ${VTK_EXTRA_LIBS}
 ${OPENGL_LIBRARIES}
 ${CMAKE_THREAD_LIBS}
 ${ZLIB_LIBRARY}
+${DL_LIB}
 )
 
 if(HAVE_OSMESA)
@@ -109,6 +112,7 @@ if(HAVE_OSMESA)
 elseif(HAVE_EGL)
     target_link_libraries(avtRenderExample ${EGL_LIBRARIES})
 endif()
+target_link_libraries(avtRenderExample ${DL_LIB})
 
 
 ADD_EXECUTABLE(avtPluginExample avtPluginExample.C)
@@ -130,6 +134,7 @@ ${VTK_EXTRA_LIBS}
 ${OPENGL_LIBRARIES}
 ${CMAKE_THREAD_LIBS}
 ${ZLIB_LIBRARY}
+${DL_LIB}
 )
 
 if(HAVE_OSMESA)
@@ -137,6 +142,7 @@ if(HAVE_OSMESA)
 elseif(HAVE_EGL)
     target_link_libraries(avtPluginExample ${EGL_LIBRARIES})
 endif()
+target_link_libraries(avtPluginExample ${DL_LIB})
 
 ADD_EXECUTABLE(avtPlotPluginExample avtPlotPluginExample.C)
 VISIT_INSTALL_TARGETS(avtPlotPluginExample)
@@ -161,6 +167,7 @@ ${VTK_EXTRA_LIBS}
 ${OPENGL_LIBRARIES}
 ${CMAKE_THREAD_LIBS}
 ${ZLIB_LIBRARY}
+${DL_LIB}
 )
 
 if(HAVE_OSMESA)
@@ -168,6 +175,7 @@ if(HAVE_OSMESA)
 elseif(HAVE_EGL)
     target_link_libraries(avtPlotPluginExample ${EGL_LIBRARIES})
 endif()
+target_link_libraries(avtPlotPluginExample ${DL_LIB})
 
 ADD_EXECUTABLE(networkManagerExample networkManagerExample.C)
 VISIT_INSTALL_TARGETS(networkManagerExample)
@@ -193,4 +201,7 @@ ${VTK_EXTRA_LIBS}
 ${OPENGL_LIBRARIES}
 ${CMAKE_THREAD_LIBS}
 ${ZLIB_LIBRARY}
+${DL_LIB}
 )
+target_link_libraries(networkManagerExample ${DL_LIB})
+
