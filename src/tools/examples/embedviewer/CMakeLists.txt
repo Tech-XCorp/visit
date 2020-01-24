@@ -144,10 +144,11 @@ visit_verdict
 visit_vtk
 vtkqt
 ${VIEWER_QT_LIBS}
+${DL_LIB}
 )
 
-TARGET_LINK_LIBRARIES(embedded ${EMBEDDED_VIEWER_LIBS})
-TARGET_LINK_LIBRARIES(multiwindow ${EMBEDDED_VIEWER_LIBS})
+TARGET_LINK_LIBRARIES(embedded ${EMBEDDED_VIEWER_LIBS} ${DL_LIB})
+TARGET_LINK_LIBRARIES(multiwindow ${EMBEDDED_VIEWER_LIBS} ${DL_LIB})
 
 IF(APPLE)
     # Hey, do we need this on 10.6?
