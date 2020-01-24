@@ -71,12 +71,13 @@ ${ALL_THIRDPARTY_IO_LIB}
 ${MESA_LIB}
 ${OPENGL_LIBRARIES}
 ${CMAKE_THREAD_LIBS}
+${DL_LIB}
 )
 IF(NOT WIN32)
-    TARGET_LINK_LIBRARIES(visitprotocol dl)
     IF(NOT APPLE)
         TARGET_LINK_LIBRARIES(visitprotocol ${X11_LIBRARIES})
     ENDIF(NOT APPLE)
+    TARGET_LINK_LIBRARIES(visitprotocol ${DL_LIB})
 ENDIF(NOT WIN32)
 
 # If we're building statically then we can't be link until the plugin
