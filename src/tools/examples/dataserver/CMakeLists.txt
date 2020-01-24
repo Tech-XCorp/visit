@@ -63,13 +63,15 @@ ${PYTHON_LIBRARY}
 ${VTK_EXTRA_LIBS}
 ${CMAKE_THREAD_LIBS}
 ${ZLIB_LIBRARY}
+${DL_LIB}
 )
 IF(NOT WIN32)
-    TARGET_LINK_LIBRARIES(usedataserver dl)
     IF(NOT APPLE)
         TARGET_LINK_LIBRARIES(usedataserver ${X11_LIBRARIES})
     ENDIF(NOT APPLE)
+    # TARGET_LINK_LIBRARIES(usedataserver ${DL_LIB})
 ENDIF(NOT WIN32)
+TARGET_LINK_LIBRARIES(usedataserver ${DL_LIB})
 
 # If we're building statically then we can't be link until the plugin
 # sources are built

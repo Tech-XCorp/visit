@@ -32,9 +32,11 @@ ${VISIT_SOURCE_DIR}/visit_vtk/full
 
 ADD_EXECUTABLE(visit_composite  ${VISIT_COMPOSITE_SOURCES})
 target_link_libraries(visit_composite vtkIOImage visit_vtk)
+target_link_libraries(visit_composite ${DL_LIB})
 
 ADD_EXECUTABLE(visit_transition ${VISIT_TRANSITION_SOURCES})
 target_link_libraries(visit_transition vtkIOImage visit_vtk)
+target_link_libraries(visit_transition ${DL_LIB})
 
 # Installation targets
 VISIT_INSTALL_TARGETS(visit_composite visit_transition)

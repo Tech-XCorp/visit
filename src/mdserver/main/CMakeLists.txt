@@ -114,6 +114,8 @@ TARGET_LINK_LIBRARIES(mdserver
     ${CMAKE_THREAD_LIBS}
     ${DL_LIB}
 )
+# For linuxppc64le.  Has to be done twice?
+TARGET_LINK_LIBRARIES(mdserver ${DL_LIB})
 
 if(WIN32 AND MSVC)
     set_target_properties(mdserver PROPERTIES LINK_FLAGS "/STACK:4000000")

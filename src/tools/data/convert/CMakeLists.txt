@@ -132,6 +132,8 @@ ELSE()
         target_link_libraries(visitconvert_ser ${EGL_LIBRARIES})
     endif()
 ENDIF()
+# For linuxppc64le
+TARGET_LINK_LIBRARIES(visitconvert_ser ${DL_LIB})
 
 # If we're building statically then convert can't be linked until the plugin
 # sources are built
