@@ -77,6 +77,8 @@ done
 # Find the most recent VisIt python
 visitpython=""
 dir="$(dirname $0)"
+# Make path absolute
+dir=`(cd $dir; pwd -P)`
 for ver in $versions; do
     thispython="$dir/../$ver/$platform/bin/python"
     if test -x "$thispython"; then
@@ -84,6 +86,10 @@ for ver in $versions; do
         break
     fi
 done
+# Alternative place to find python
+if test -z "$visitpython" -a -x $dir/../../python/bin/python; then
+    visitpython=`(cd $dir/../../; pwd -P)`/python/bin/python
+fi
 
 # If the user specified a specific version then use the python that
 # goes with it. This logic is overly complex, but it leaves the command
@@ -128,7 +134,7 @@ if [[ $version =~ ^[0-9]+.[0-9]+$ ]]; then
 fi
 
 # Find the python associated with the version.
-if test "$version" != ""; then
+if test "$version" != "" -a -z "$visitpython"; then
     thispython="$dir/../$version/$platform/bin/python"
     if test -x "$thispython"; then
         visitpython="$thispython"
@@ -169,6 +175,15 @@ if test -n "$visitpython"; then
         export PYTHONHOME="$visitdir/lib/python"
         unset PYTHONPATH
         export PYTHONPATH="$PYTHONHOME/lib/python$pyver:$PYTHONHOME/lib/python$pyver/lib-dynload"
+    elif test -d `dirname $visitpython`/../lib; then
+        export PYTHONHOME=`dirname $visitpython`/..
+        PYTHONHOME=`(cd $PYTHONHOME; pwd -P)`
+        # echo PYTHONHOME = $PYTHONHOME
+        unset PYTHONPATH
+        export PYTHONPATH="$PYTHONHOME/lib/python$pyver:$PYTHONHOME/lib/python$pyver/lib-dynload:$PYTHONHOME/lib/site-packages"
+        # echo PYTHONPATH = $PYTHONPATH
+    else
+       echo $visitdir/../../../python does not exist.
     fi
 
     #echo "VisIt Python: $visitpython $frontendlauncherpy $0 ${1+"$@"}"
