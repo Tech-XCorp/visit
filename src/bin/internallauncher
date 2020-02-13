@@ -2563,7 +2563,7 @@ class MainLauncher(object):
                 elif mach == "arm64":
                     supportedarches.append("darwin-arm64")
             elif version[0] >= 11:
-                elif mach == "x86_64":
+                if mach == "x86_64":
                     supportedarches.append("darwin-x86_64")
                     supportedarches.append("darwin-i386")
                 else:
@@ -2638,7 +2638,8 @@ class MainLauncher(object):
             self.visitscriptdir = self.visitdir + "bin"
             self.visitlauncher  = self.visitdir + "bin/visit"
             if self.os == "darwin" and self.generalArgs.exe_name in ("gui", "viewer", "xmledit", "silex"):
-                self.visitbindir = os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")
+                if os.path.exists(os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")):
+                    self.visitbindir = os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")
             self.visitlibdir = self.visitdir + "lib"
             self.visitresourcedir = self.visitdir + "resources"
             self.visitultradir = self.visitdir + "ultrawrapper"
@@ -2678,7 +2679,8 @@ class MainLauncher(object):
             self.visitscriptdir = self.visitdir + archdir + "/bin"
             self.visitlauncher  = self.visitdir + "../bin/visit"
             if self.os == "darwin" and self.generalArgs.exe_name in ("gui", "viewer", "xmledit", "silex"):
-                self.visitbindir = os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")
+                if os.path.exists(os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")):
+                    self.visitbindir = os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")
             self.visitlibdir = self.visitdir + archdir + "/lib"
             self.visitresourcedir = self.visitdir + archdir + "/resources"
             self.visitultradir = self.visitdir + archdir + "/ultrawrapper"
@@ -3075,7 +3077,7 @@ class MainLauncher(object):
               (self.generalArgs.exe_name == "viewer" and
                self.generalArgs.nowin == 0))):
             SETENV("LD_LIBRARY_PATH", self.joinpaths([mesa_gl_dir, GETENV("LD_LIBRARY_PATH")]))
-
+            
         # Enable the native renderer when using mesagl. Enabling it with
         # opengl results in a black image. This resolves the toolbar
         # rendering issue when doing an initial zoom while doing X forwarding.

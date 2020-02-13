@@ -38,10 +38,13 @@ IF (CMAKE_CL_64)
 ENDIF ()
 
 # To find the resources
+message(STATUS "VISIT_SOURCE_DIR = ${VISIT_SOURCE_DIR}.")
 if (EXISTS ${VISIT_SOURCE_DIR}/../visitwindows)
   set(VISIT_WINDOWS_DIR ${VISIT_SOURCE_DIR}/../visitwindows)
 elseif (EXISTS ${VISIT_SOURCE_DIR}/../../visitwindows)
   set(VISIT_WINDOWS_DIR ${VISIT_SOURCE_DIR}/../../visitwindows)
+elseif (EXISTS ${VISIT_SOURCE_DIR}/../../visitdeps/windowsbuild)
+  set(VISIT_WINDOWS_DIR ${VISIT_SOURCE_DIR}/../../visitdeps/windowsbuild)
 else ()
   message(FATAL_ERROR "visitwindows not found.")
 endif ()
