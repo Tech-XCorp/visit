@@ -647,10 +647,10 @@ VisWinParallelAxes::SetTitles(void)
         else
         {
             if (axes[0].units[0] == '\0')
-                snprintf(buffer, 1024, "%s (x10^%d)",
+                snprintf(buffer, 1024, "%s (10^%d units)",
                          axes[0].title, axisPow);
             else
-                snprintf(buffer, 1024, "%s (x10^%d %s)",
+                snprintf(buffer, 1024, "%s (10^%d %s)",
                          axes[0].title, axisPow, axes[0].units);
         }
         axes[0].axis->SetTitle(buffer);
