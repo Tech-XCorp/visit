@@ -1181,10 +1181,10 @@ VisWinAxesArray::SetTitles(void)
         else
         {
             if (axes[i].units[0] == '\0')
-                snprintf(buffer, 1024, "%s (x10^%d)",
+                snprintf(buffer, 1024, "%s (10^%d units)",
                          axes[i].title, axes[i].pow);
             else
-                snprintf(buffer, 1024, "%s (x10^%d %s)",
+                snprintf(buffer, 1024, "%s (10^%d %s)",
                          axes[i].title, axes[i].pow, axes[i].units);
         }
         axes[i].axis->SetTitle(buffer);
