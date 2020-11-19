@@ -898,9 +898,9 @@ vtkVisItCubeAxesActor::ComputeLabelExponent(const double bnds[6])
       this->mustAdjustXValue = true;
 
       if (XUnits == NULL || XUnits[0] == '\0')
-        snprintf(xTitle,64, "%s (x10^%d)", this->XTitle, xPow);
+        snprintf(xTitle,64, "%s (10^%d units)", this->XTitle, xPow);
       else
-        snprintf(xTitle,64, "%s (x10^%d %s)", this->XTitle, xPow, XUnits);
+        snprintf(xTitle,64, "%s (10^%d %s)", this->XTitle, xPow, XUnits);
       }
     else 
       { 
@@ -936,9 +936,9 @@ vtkVisItCubeAxesActor::ComputeLabelExponent(const double bnds[6])
         }
       this->mustAdjustYValue = true;
       if (YUnits == NULL || YUnits[0] == '\0')
-        snprintf(yTitle,64, "%s (x10^%d)", this->YTitle, yPow);
+        snprintf(yTitle,64, "%s (10^%d units)", this->YTitle, yPow);
       else
-        snprintf(yTitle,64, "%s (x10^%d %s)", this->YTitle, yPow, YUnits);
+        snprintf(yTitle,64, "%s (10^%d %s)", this->YTitle, yPow, YUnits);
       }
     else 
       { 
@@ -971,11 +971,10 @@ vtkVisItCubeAxesActor::ComputeLabelExponent(const double bnds[6])
         this->ForceZLabelReset = false;
         }
       this->mustAdjustZValue = true;
-
       if (ZUnits == NULL || ZUnits[0] == '\0')
-        snprintf(zTitle,64, "%s (x10^%d)", this->ZTitle, zPow);
+        snprintf(zTitle,64, "%s (10^%d units)", this->ZTitle, zPow);
       else
-        snprintf(zTitle,64, "%s (x10^%d %s)", this->ZTitle, zPow, ZUnits);
+        snprintf(zTitle,64, "%s (10^%d %s)", this->ZTitle, zPow, ZUnits);
       }
     else 
       { 
