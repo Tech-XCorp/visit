@@ -82,6 +82,7 @@ public:
     // Property selection methods
     virtual void SelectAll();
     void SelectWeightVariable();
+    void SelectFrequencyVariable();
     void SelectColor();
 
     // Property setting methods
@@ -94,6 +95,8 @@ public:
     void SetMin(double min_);
     void SetMax(double max_);
     void SetNumBins(int numBins_);
+    void SetUseFrequencyVariable(bool useFrequencyVariable_);
+    void SetFrequencyVariable(const std::string &frequencyVariable_);
     void SetDomain(int domain_);
     void SetZone(int zone_);
     void SetUseBinWidths(bool useBinWidths_);
@@ -116,6 +119,9 @@ public:
     double               GetMin() const;
     double               GetMax() const;
     int                  GetNumBins() const;
+    bool                 GetUseFrequencyVariable() const;
+    const std::string    &GetFrequencyVariable() const;
+          std::string    &GetFrequencyVariable();
     int                  GetDomain() const;
     int                  GetZone() const;
     bool                 GetUseBinWidths() const;
@@ -181,6 +187,8 @@ public:
         ID_min,
         ID_max,
         ID_numBins,
+        ID_useFrequencyVariable,
+        ID_frequencyVariable,
         ID_domain,
         ID_zone,
         ID_useBinWidths,
@@ -204,6 +212,8 @@ private:
     double         min;
     double         max;
     int            numBins;
+    bool           useFrequencyVariable;
+    std::string    frequencyVariable;
     int            domain;
     int            zone;
     bool           useBinWidths;
@@ -219,6 +229,6 @@ private:
     static const char *TypeMapFormatString;
     static const private_tmfs_t TmfsStruct;
 };
-#define HISTOGRAMATTRIBUTES_TMFS "iisibbddiiibiiaiibb"
+#define HISTOGRAMATTRIBUTES_TMFS "iisibbddibsiibiiaiibb"
 
 #endif

@@ -243,11 +243,10 @@ avtHistogramFilter::PostExecute(void)
         workingRange[0] = 0.;
         workingRange[1] = (double)workingNumBins;
     }
-
     double *newBins = new double[workingNumBins];
     SumDoubleArrayAcrossAllProcessors(bins, newBins, workingNumBins);
     for (i = 0 ; i < workingNumBins ; i++)
-        bins[i] = newBins[i];
+      bins[i] = newBins[i];
 
     ScaleBins();
 
@@ -671,20 +670,34 @@ avtHistogramFilter::FreqzExecute(vtkDataSet *inDS)
 
     //
     // Now we will walk through each value and sort them into bins.
-    //
-    int nvals = bin_arr->GetNumberOfTuples();
-    for (int i = 0 ; i < nvals ; i++)
-    {
-        if (ghosts != NULL && ghosts[i] != '\0')
-            continue;
-        double val = bin_arr->GetTuple1(i);
-        int index = ComputeBinIndex( val );
-        if ( index < 0 )
-            continue;
+    // If number of occurence given
+    if (atts.GetUseFrequencyVariable() == true) {
+          const char *freqvar = atts.GetFrequencyVariable().c_str();
+          vtkDataArray *freq_arr = inDS->GetPointData()->GetArray(freqvar);
+          if (freq_arr == NULL) {
+              freq_arr = inDS->GetCellData()->GetArray(freqvar);
+          }
+          if (freq_arr == NULL)
+              EXCEPTION0(ImproperUseException);
+          for (int i = 0; i< workingNumBins; ++i) {
+              double val = freq_arr->GetTuple1(i);
+              bins[i] = val;
+          }
+    } else {
+        int nvals = bin_arr->GetNumberOfTuples();
+        for (int i = 0 ; i < nvals ; i++)
+        {
+            if (ghosts != NULL && ghosts[i] != '\0')
+                continue;
+            double val = bin_arr->GetTuple1(i);
+            int index = ComputeBinIndex( val );
+            if ( index < 0 )
+                continue;
 
-        if (index >= workingNumBins)
-            index = workingNumBins-1;
-        threadBins[index]++;
+            if (index >= workingNumBins)
+                index = workingNumBins-1;
+            threadBins[index]++;
+        }
     }
 
 #if defined(VISIT_THREADS)
@@ -1127,6 +1140,11 @@ avtHistogramFilter::ModifyContract(avtContract_p spec)
             if (atts.GetWeightVariable() != "default")
                 newspec->GetDataRequest()->AddSecondaryVariable(
                                              atts.GetWeightVariable().c_str());
+        }
+        if (atts.GetUseFrequencyVariable() == true &&
+            atts.GetFrequencyVariable() != "default") {
+            newspec->GetDataRequest()->AddSecondaryVariable(
+                atts.GetFrequencyVariable().c_str());
         }
     }
     else
