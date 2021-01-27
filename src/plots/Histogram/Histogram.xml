@@ -68,6 +68,12 @@
       <Field name="numBins" label="Number of Bins" type="int" enabler="basedOn:ManyZonesForSingleVar">
         32
       </Field>
+      <Field name="useFrequencyVariable" label="Use freq variable" type="bool">
+        false
+      </Field>
+      <Field name="frequencyVariable" label="Frequency Variable" type="variablename" enabler="useFrequencyVariable:true" vartypes="01000000000">
+        default
+      </Field>
       <Field name="domain" label="domain" type="int" enabler="basedOn:ManyVarsForSingleZone">
         0
       </Field>
