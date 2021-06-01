@@ -2475,8 +2475,13 @@ class MainLauncher(object):
             release = self.uname("-r")
             version = [int(x) for x in release.split(".")]
             self.osver = version[0]
-            if version[0] >= 11:
+            if version[0] >= 20:
                 if mach == "x86_64":
+                    supportedarches.append("darwin-x86_64")
+                elif mach == "arm64":
+                    supportedarches.append("darwin-arm64")
+            elif version[0] >= 11:
+                elif mach == "x86_64":
                     supportedarches.append("darwin-x86_64")
                     supportedarches.append("darwin-i386")
                 else:
