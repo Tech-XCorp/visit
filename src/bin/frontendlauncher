@@ -29,8 +29,8 @@
 
 # Determine VisIt architecture
 osname=$(uname)
+proc=$(uname -m)
 if test "$osname" = "Linux"; then
-    proc=$(uname -m)
     if test "$proc" = "x86_64"; then
         platform="linux-x86_64"
     elif test "$proc" = "ppc"; then
@@ -41,7 +41,11 @@ if test "$osname" = "Linux"; then
         platform="linux-intel"
     fi
 elif test "$osname" = "Darwin"; then
-    platform="darwin-x86_64"
+  case $proc in
+    x86_64) platform="darwin-x86_64";;
+    arm64) platform="darwin-arm64";;
+    *) echo "Machine, $proc, not known for darwin."; exit -1;;
+  esac
 elif test "$osname" = "AIX"; then
     if test "$OBJECT_MODE" = "32"; then
         platform="ibm-aix-pwr"
