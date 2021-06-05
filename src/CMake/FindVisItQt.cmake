@@ -277,22 +277,29 @@ if(NOT VISIT_QT_SKIP_INSTALL)
   if(WIN32)
       # Need the ssl dll's too.
       if (NOT OPENSSL_ROOT_DIR)
-        set(OPENSSL_ROOT_DIR "${VISIT_QT_DIR}")
+          set(OPENSSL_ROOT_DIR "${VISIT_QT_DIR}")
       endif ()
-      file(COPY ${OPENSSL_ROOT_DIR}/bin/libeay32.dll
-                ${OPENSSL_ROOT_DIR}/bin/ssleay32.dll
-           DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ThirdParty
-           FILE_PERMISSIONS OWNER_READ OWNER_WRITE
+      if (EXISTS ${OPENSSL_ROOT_DIR}/bin/libeay32.dll)
+          set(fns libeay32.dll ssleay32.dll)
+      elseif (EXISTS "${OPENSSL_ROOT_DIR}/bin/libcrypto-1_1-x64.dll")
+          set(fns libcrypto-1_1-x64.dll libssl-1_1-x64.dll)
+      else ()
+        message(FATAL_ERROR "Neither openssl-1.0 (${OPENSSL_ROOT_DIR}/bin/libeay32.dll) nor openssl-1.1 (${OPENSSL_ROOT_DIR}/bin/libcrypto-1_1-x64.dll) found")
+      endif ()
+      foreach (fn ${fns})
+          file(COPY ${OPENSSL_ROOT_DIR}/bin/${fn}
+              DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ThirdParty
+              FILE_PERMISSIONS OWNER_READ OWNER_WRITE
                             GROUP_READ GROUP_WRITE
                             WORLD_READ
-      )
-      install(FILES ${OPENSSL_ROOT_DIR}/bin/libeay32.dll
-                    ${OPENSSL_ROOT_DIR}/bin/ssleay32.dll
+          )
+          install(FILES ${OPENSSL_ROOT_DIR}/bin/${fn}
               DESTINATION ${VISIT_INSTALLED_VERSION_BIN}
               PERMISSIONS OWNER_READ OWNER_WRITE
                           GROUP_READ GROUP_WRITE
                           WORLD_READ
               CONFIGURATIONS "" None Debug Release RelWithDebInfo MinSizeRel
-      )
+          )
+    endforeach ()
   endif()
 endif()
