@@ -2481,7 +2481,7 @@ class MainLauncher(object):
                 elif mach == "arm64":
                     supportedarches.append("darwin-arm64")
             elif version[0] >= 11:
-                elif mach == "x86_64":
+                if mach == "x86_64":
                     supportedarches.append("darwin-x86_64")
                     supportedarches.append("darwin-i386")
                 else:
