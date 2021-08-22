@@ -54,7 +54,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 #set(QT5_INCLUDE_DIRS "")
 set(QT5_LIBRARIES "")
 
-set(visit_qt_modules Core Gui Widgets OpenGL Network PrintSupport Qml Svg Xml UiTools)
+set(visit_qt_modules Core Gui Widgets OpenGL Network PrintSupport Svg Xml UiTools)
+# list(APPEND visit_qt_modules Qml)
 
 if(LINUX)
     set (visit_qt_modules ${visit_qt_modules} Concurrent X11Extras)
@@ -141,11 +142,11 @@ if(NOT VISIT_QT_SKIP_INSTALL)
         Qt5::OpenGL
         Qt5::PrintSupport
         Qt5::Widgets
-        Qt5::Qml
         Qt5::Svg
         Qt5::Xml
         Qt5::UiTools
   )
+  # list(APPEND qt_libs_install Qt5::Qml)
   if(LINUX)
       set(qt_libs_install ${qt_libs_install} Qt5::Concurrent Qt5::X11Extras)
   endif()
