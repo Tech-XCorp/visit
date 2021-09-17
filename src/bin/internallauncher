@@ -2554,7 +2554,8 @@ class MainLauncher(object):
             self.visitscriptdir = self.visitdir + "bin"
             self.visitlauncher  = self.visitdir + "bin/visit"
             if self.os == "darwin" and self.generalArgs.exe_name in ("gui", "viewer", "xmledit", "silex"):
-                self.visitbindir = os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")
+                if os.path.exists(os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")):
+                    self.visitbindir = os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")
             self.visitlibdir = self.visitdir + "lib"
             self.visitresourcedir = self.visitdir + "resources"
             self.visitultradir = self.visitdir + "ultrawrapper"
@@ -2594,7 +2595,8 @@ class MainLauncher(object):
             self.visitscriptdir = self.visitdir + archdir + "/bin"
             self.visitlauncher  = self.visitdir + "../bin/visit"
             if self.os == "darwin" and self.generalArgs.exe_name in ("gui", "viewer", "xmledit", "silex"):
-                self.visitbindir = os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")
+                if os.path.exists(os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")):
+                    self.visitbindir = os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")
             self.visitlibdir = self.visitdir + archdir + "/lib"
             self.visitresourcedir = self.visitdir + archdir + "/resources"
             self.visitultradir = self.visitdir + archdir + "/ultrawrapper"
@@ -2860,9 +2862,6 @@ class MainLauncher(object):
     #   custom launcher since doing it here interfered with other sites that
     #   were setting LD_PRELOAD to get VisIt to work.
     #
-    #   Eric Brugger, Tue Jul 20 12:41:04 PDT 2021
-    #   Modified to only setenv QT_XCB_NATIVE_PAINTING if using mesagl.
-    #
     ############################################################################
 
     def SetupEnvironment(self):
@@ -2971,7 +2970,7 @@ class MainLauncher(object):
               (self.generalArgs.exe_name == "viewer" and
                self.generalArgs.nowin == 0))):
             SETENV("LD_LIBRARY_PATH", self.joinpaths([mesa_gl_dir, GETENV("LD_LIBRARY_PATH")]))
-
+            
         # Enable the native renderer when using mesagl. Enabling it with
         # opengl results in a black image. This resolves the toolbar
         # rendering issue when doing an initial zoom while doing X forwarding.
