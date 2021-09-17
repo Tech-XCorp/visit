@@ -2876,7 +2876,8 @@ class MainLauncher(object):
             self.visitscriptdir = self.visitdir + "bin"
             self.visitlauncher  = self.visitdir + "bin/visit"
             if self.os == "darwin" and self.generalArgs.exe_name in ("gui", "viewer", "xmledit", "silex"):
-                self.visitbindir = os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")
+                if os.path.exists(os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")):
+                    self.visitbindir = os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")
             self.visitlibdir = self.visitdir + "lib"
             self.visitresourcedir = self.visitdir + "resources"
             self.visitultradir = self.visitdir + "ultrawrapper"
@@ -2916,7 +2917,8 @@ class MainLauncher(object):
             self.visitscriptdir = self.visitdir + archdir + "/bin"
             self.visitlauncher  = self.visitdir + "../bin/visit"
             if self.os == "darwin" and self.generalArgs.exe_name in ("gui", "viewer", "xmledit", "silex"):
-                self.visitbindir = os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")
+                if os.path.exists(os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")):
+                    self.visitbindir = os.path.join(self.visitbindir, self.generalArgs.exe_name + ".app/Contents/MacOS")
             self.visitlibdir = self.visitdir + archdir + "/lib"
             self.visitresourcedir = self.visitdir + archdir + "/resources"
             self.visitultradir = self.visitdir + archdir + "/ultrawrapper"
