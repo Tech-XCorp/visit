@@ -64,7 +64,7 @@ class JobSubmitter(object):
         if sep != "":
             s = self.parallel.launch.split(sep)
             lname = s[0]
-            slname = s[1] 
+            slname = s[1]
         else:
             lname = self.parallel.launch
             slname = ""
@@ -110,7 +110,7 @@ class JobSubmitter(object):
 #   Removed useppnmpirun.
 #
 #   David Camp, Mon Oct 26 10:13:49 PDT 2015
-#   Call the new PPNArgument function to get the correct MPI argument for 
+#   Call the new PPNArgument function to get the correct MPI argument for
 #   the "process per node" flag.
 #
 #   Eric Brugger, Fri Oct  9 15:41:37 PDT 2020
@@ -161,7 +161,7 @@ class JobSubmitter_mpirun(JobSubmitter):
 #
 # Modifications:
 #   Brad Whitlock, Tue Jan 29 12:22:39 PST 2013
-#   If we're on a newer Mac and we're not running a dev version then get 
+#   If we're on a newer Mac and we're not running a dev version then get
 #   mpiexec from the VisIt architecture/bin directory, if it exists.
 #
 #   Cyrus Harrison, Fri Feb  1 17:02:02 PST 2013
@@ -180,7 +180,7 @@ class JobSubmitter_mpirun(JobSubmitter):
 #   Removed useppnmpiexec.
 #
 #   David Camp, Mon Oct 26 10:13:49 PDT 2015
-#   Call the new PPNArgument function to get the correct MPI argument for 
+#   Call the new PPNArgument function to get the correct MPI argument for
 #   the "process per node" flag.
 #
 #   Eric Brugger, Fri Oct  9 15:41:37 PDT 2020
@@ -242,7 +242,7 @@ class JobSubmitter_lrun(JobSubmitter):
     def CreateCommand(self, args, debugger):
         parcmd = self.Executable()
         if self.parallel.nn != None:
-            parcmd = parcmd + ["-N" +str(self.parallel.nn)] 
+            parcmd = parcmd + ["-N" +str(self.parallel.nn)]
         if self.parallel.np != None:
             parcmd = parcmd + ["-p" + str(self.parallel.np)]
         parcmd = parcmd + self.VisItExecutable()
@@ -467,7 +467,7 @@ class JobSubmitter_psub(JobSubmitter):
     def CreateCommand(self, args, debugger):
         psub, sublauncher = self.LauncherAndSubLauncher()
         sublaunchargs = []
-        if self.parallel.sublaunchargs != None: 
+        if self.parallel.sublaunchargs != None:
             sublaunchargs = sublaunchargs + self.parallel.sublaunchargs
         if sublauncher == "srun" and self.parallel.np != None:
             sublaunchargs = ["srun"] + sublaunchargs + ["-n", self.parallel.np]
@@ -580,7 +580,7 @@ class JobSubmitter_salloc(JobSubmitter):
 #
 # Modifications:
 #   Satheesh Maheswaran, Tue Jan 15 14:47:54 GMT 2013
-#   I added job name option to Slurm scheduler and mpirun launcher argument support 
+#   I added job name option to Slurm scheduler and mpirun launcher argument support
 #
 #   Paul Selby, Thu May 16 12:06:30 BST 2013
 #   Use launchargs if supplied
@@ -887,7 +887,7 @@ class JobSubmitter_yod(JobSubmitter):
 #   Removed useppnmpiexec and useppnmpirun.
 #
 #   David Camp, Mon Oct 26 10:13:49 PDT 2015
-#   Call the new PPNArgument function to get the correct MPI argument for 
+#   Call the new PPNArgument function to get the correct MPI argument for
 #   the "process per node" flag.
 #
 ###############################################################################
@@ -1084,7 +1084,7 @@ output streams.
 
         return parcmd
 
-    # Entry point for the job submitter. Create a tfile and a job submission 
+    # Entry point for the job submitter. Create a tfile and a job submission
     # command line.
     def CreateCommand(self, args, debugger):
         plauncher,sublauncher = self.LauncherAndSubLauncher()
@@ -1168,8 +1168,8 @@ class Debugger(object):
             return dirnames
 
         # The directories to search for sources
-        toplevels = ("common", "avt", "databases", "engine", "gui", "launcher", 
-                     "mdserver", "operators", "plots", "viewer", "visitpy", 
+        toplevels = ("common", "avt", "databases", "engine", "gui", "launcher",
+                     "mdserver", "operators", "plots", "viewer", "visitpy",
                      "tools/xml", "tools/xmledit", "visit_vtk", "vtkqt", "winutil")
         dirnames = []
         for d in toplevels:
@@ -1357,7 +1357,7 @@ class DDTDebugger(Debugger):
             # to capture ddt output
             ddt_log   = "ddt_%s_log.html" % os.path.split(args[0])[1]
             off_index = ddt_args.index("-offline")
-            if off_index == len(ddt_args) -1: 
+            if off_index == len(ddt_args) -1:
                 #last arg is -offline
                 ddt_args.append(ddt_log)
             elif not ddt_args[off_index+1].endswith(".html"):
@@ -1372,9 +1372,9 @@ class DDTDebugger(Debugger):
 # Class: CudaDebugger
 #
 # Purpose:  Launch a CUDA-enabled VisIt component under the NVIDIA command-line
-#           profiler  
+#           profiler
 #
-# Programmer: Kevin Griffin 
+# Programmer: Kevin Griffin
 # Date:       Wed May 20 18:33:04 PDT 2015
 #
 # Modifications:
@@ -1477,9 +1477,9 @@ class InstrumentsProfiler(Debugger):
 # Class: CudaMemcheck
 #
 # Purpose:  Launch a CUDA-enabled VisIt component under NVIDIA's cuda-memcheck
-# 
-# Programmer: Kevin Griffin 
-# Date:       Mon Mar 21 16:34:52 PDT 2016 
+#
+# Programmer: Kevin Griffin
+# Date:       Mon Mar 21 16:34:52 PDT 2016
 #
 # Modifications:
 #
@@ -1930,7 +1930,7 @@ class GeneralArguments(object):
                     pass
             if remotehost_set == 0:
                 exit("""
-Error: -guesshost was specified but it was unable to parse the 
+Error: -guesshost was specified but it was unable to parse the
 SSH_CLIENT/CONNECTION environment variables to get a valid host
 name.""", 1)
 
@@ -2044,7 +2044,7 @@ class ParallelArguments(object):
         return n
 
     #
-    # Produce arguments for when we're passing the parallel arguments on the 
+    # Produce arguments for when we're passing the parallel arguments on the
     # command line for a serially launched component such as the gui.
     #
     def ProduceArguments(self, gather):
@@ -2109,7 +2109,7 @@ class DebugArguments(object):
 
         n = 0
 
-        # Check to see if we have a debugger. 
+        # Check to see if we have a debugger.
         for d in self.launcher.Debuggers():
             n = 0
             flag = "-" + d
@@ -2285,7 +2285,7 @@ class MainLauncher(object):
 
     def iscomponent(self, name):
         return name in self.componentNames
-    
+
     ############################################################################
     # Method: Initialize
     #
@@ -2427,7 +2427,7 @@ class MainLauncher(object):
                     i = i + n
         except IndexError:
             exit("The %s argument requires additional arguments." % args[i], -1)
-            
+
 
     ############################################################################
     # Method: DetermineArchitecture
@@ -2454,16 +2454,16 @@ class MainLauncher(object):
         supportedarches = []
         if self.os == "linux":
             mach = self.uname("-m")
-            if mach == "x86_64": 
+            if mach == "x86_64":
                 arch = "linux-x86_64"
-            elif mach == "ia64": 
+            elif mach == "ia64":
                 arch = "linux-ia64"
-            elif mach == "ppc64": 
+            elif mach == "ppc64":
                 arch = "linux-ppc64"
                 # Tack on the BlueGene compiler for the engine.
                 if exe_name[:6] == "engine" and compiler != None:
                     arch = arch + "-" + compiler
-            elif mach == "alpha": 
+            elif mach == "alpha":
                 arch = "linux-alpha"
             else:
                 arch = "linux-intel"
@@ -2694,7 +2694,7 @@ class MainLauncher(object):
     ############################################################################
     def LoadEnvModule(self,module_name,all_pairs=False):
         self.LoadEnvModules([module_name],all_pairs)
-    
+
     ############################################################################
     # Method: LoadEnvModules
     #
@@ -2710,7 +2710,7 @@ class MainLauncher(object):
     #
     ############################################################################
     def LoadEnvModules(self,module_names,all_pairs=False):
-        script_src = "source /etc/profile.d/modules.sh "       
+        script_src = "source /etc/profile.d/modules.sh "
         for mod_name in module_names:
             script_src += " && module load " + mod_name
         script_src += " && env "
@@ -2828,8 +2828,8 @@ class MainLauncher(object):
     #   Don't use mesa if  hw-accel is requested for the engine.
     #
     #   David Camp, Tue Mar 11 10:17:48 PDT 2014
-    #   The osmesa option would fail to work because the osmesa path was at the 
-    #   end of the LD_LIBRARY_PATH and the code would load the system version. 
+    #   The osmesa option would fail to work because the osmesa path was at the
+    #   end of the LD_LIBRARY_PATH and the code would load the system version.
     #   So I moved the osmesa path to the first path and everything works.
     #
     #   Cyrus Harrison, Thu Nov 10 22:38:22 PST 2016
@@ -2866,7 +2866,7 @@ class MainLauncher(object):
 
     def SetupEnvironment(self):
         # Get some environment variables and store their original values.
-        keys = ("LD_LIBRARY_PATH", "LD_LIBRARY32_PATH", "LD_LIBRARYN32_PATH", 
+        keys = ("LD_LIBRARY_PATH", "LD_LIBRARY32_PATH", "LD_LIBRARYN32_PATH",
                 "LD_LIBRARY64_PATH", "LIBPATH")
         for k in keys:
             if GETENV("%s_VISITORIG" % k) == "":
@@ -2970,7 +2970,7 @@ class MainLauncher(object):
               (self.generalArgs.exe_name == "viewer" and
                self.generalArgs.nowin == 0))):
             SETENV("LD_LIBRARY_PATH", self.joinpaths([mesa_gl_dir, GETENV("LD_LIBRARY_PATH")]))
-            
+
         # Enable the native renderer when using mesagl. Enabling it with
         # opengl results in a black image. This resolves the toolbar
         # rendering issue when doing an initial zoom while doing X forwarding.
@@ -3025,11 +3025,11 @@ class MainLauncher(object):
             soext = "dylib"
 
         # The environment variables whose values we're printing.
-        vars = ["LIBPATH", "VISITHOME", "VISITARCHHOME", 
+        vars = ["LIBPATH", "VISITHOME", "VISITARCHHOME",
                 "VISITULTRAHOME", "VISITPLUGINDIR","TRAP_FPE",
                 "MESA_GLX_FX","VISIT_MESA_LIB"]
         # vars = vars + ["PYTHONHOME"] # don't set PYTHONHOME
-        # A dictionary of extra vars whose source is different 
+        # A dictionary of extra vars whose source is different
         diffvars = {}
         # Add a few more variables, depending on platform.
         if self.os == "darwin":
@@ -3054,7 +3054,7 @@ class MainLauncher(object):
     ############################################################################
     # Method: PrintEnvironmentShell
     #
-    # Purpose: Print shell commands to replicate the environment that VisIt 
+    # Purpose: Print shell commands to replicate the environment that VisIt
     #          has set up.
     #
     # Programmer: Brad Whitlock
@@ -3133,8 +3133,8 @@ class MainLauncher(object):
     #   allowLauncher : If we're running a VisIt command, sometimes we must
     #                   run it through the "visit" script again to make sure that
     #                   the new console's environment gets set up properly. If
-    #                   this flag is true then running through the "visit" 
-    #                   command is allowed. If not, we're probably running a 
+    #                   this flag is true then running through the "visit"
+    #                   command is allowed. If not, we're probably running a
     #                   non-visit command that we can't mess up.
     #
     # Programmer: Brad Whitlock
@@ -3213,7 +3213,7 @@ VisIt does not recognize your terminal application so it will ignore the -newcon
     #   Burlen Loring, Wed Aug 19 09:48:07 PDT 2015
     #   Added callgrind
     #
-    #   Kevin Griffin, Mon Mar 21 16:34:52 PDT 2016 
+    #   Kevin Griffin, Mon Mar 21 16:34:52 PDT 2016
     #   Added cuda-memcheck.
     #
     ############################################################################
@@ -3306,7 +3306,7 @@ VisIt does not recognize your terminal application so it will ignore the -newcon
     def Debug(self, args):
         if self.debugArgs.debugger != None:
             if self.debugArgs.debuggerArgs[-1] == self.generalArgs.exe_name:
-                # We're debugging this program, try to add debug arguments 
+                # We're debugging this program, try to add debug arguments
                 # to the command line.
                 debugger = self.DebuggerFactory(self.debugArgs.debugger)
                 if debugger != None:
@@ -3468,7 +3468,7 @@ VisIt does not recognize your terminal application so it will ignore the -newcon
                 if not self.generalArgs.quiet:
                     self.message(self.Banner(args[0], args))
                 try:
-                    # If the job submitter did not handle a hardware-related 
+                    # If the job submitter did not handle a hardware-related
                     # pre-command then execute it now.
                     if not submitter.HandledHardwareArguments():
                         if self.parallelArgs.hw_precmd != None:
@@ -3493,7 +3493,7 @@ VisIt does not recognize your terminal application so it will ignore the -newcon
                             del env["LD_LIBRARY_PATH"]
                     ret = self.call(args, stdinpipe=1, env=env)
 
-                    # If the job submitter did not handle a hardware-related 
+                    # If the job submitter did not handle a hardware-related
                     # post-command then execute it now.
                     if not submitter.HandledHardwareArguments():
                         if self.parallelArgs.hw_postcmd != None:
@@ -3515,7 +3515,7 @@ VisIt does not recognize your terminal application so it will ignore the -newcon
             args = self.NewConsole(args, 1)
 
             if self.generalArgs.newconsole and args == []:
-                # Running with a new console on Mac can cause this case since 
+                # Running with a new console on Mac can cause this case since
                 # we rely on OSAScript to run a new console.
                 ret = 0
             elif self.NoRun():
@@ -3626,7 +3626,7 @@ def internallauncher(launcher, visitdir, visitprogram, visitver, visitpluginver,
 
     launcher.Initialize(visitdir, visitprogram, visitver, visitpluginver)
 
-    # Note: visit-install will replace the value of logging if we want to 
+    # Note: visit-install will replace the value of logging if we want to
     # enable logging.
     logging_enabled=0
     launcher.SetLogging(logging_enabled)
