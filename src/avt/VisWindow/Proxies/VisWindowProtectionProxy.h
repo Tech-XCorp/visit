@@ -172,6 +172,7 @@ class VISWINDOW_API VisWindowProtectionProxy
 
     vtkPolyDataMapper2D *ProxiedCreateRubberbandMapper();
     vtkPolyDataMapper2D *ProxiedCreateXorGridMapper();
+    vtkPolyDataMapper2D *ProxiedCreatePositionLabelMapper();
 
     bool                ProxiedUpdatesEnabled();
     void                ProxiedDisableUpdates();

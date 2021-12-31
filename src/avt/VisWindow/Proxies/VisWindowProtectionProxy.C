@@ -1157,6 +1157,12 @@ VisWindowProtectionProxy::ProxiedCreateXorGridMapper()
      return viswin->CreateXorGridMapper();
 }
 
+vtkPolyDataMapper2D *
+VisWindowProtectionProxy::ProxiedCreatePositionLabelMapper()
+{
+     return viswin->CreatePositionLabelMapper();
+}
+
 void // TODO: Remove with VTK8
 VisWindowProtectionProxy::ProxiedGetExtents(double ext[2])
 {

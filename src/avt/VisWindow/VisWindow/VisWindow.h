@@ -861,6 +861,7 @@ protected:
 
     vtkPolyDataMapper2D *CreateRubberbandMapper();
     vtkPolyDataMapper2D *CreateXorGridMapper();
+    vtkPolyDataMapper2D *CreatePositionLabelMapper();
 
     void                 StartBoundingBox(void);
     void                 EndBoundingBox(void);

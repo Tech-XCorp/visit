@@ -100,6 +100,8 @@ class VISWINDOW_API VisWindowInteractorProxy : public VisWindowProtectionProxy
                                   { return ProxiedCreateRubberbandMapper(); }
     vtkPolyDataMapper2D *CreateXorGridMapper()
                                   { return ProxiedCreateXorGridMapper(); }
+    vtkPolyDataMapper2D *CreatePositionLabelMapper()
+                                  { return ProxiedCreatePositionLabelMapper(); }
 };
 
 

@@ -399,6 +399,7 @@ class VISWINDOW_API VisWinRendering : public VisWinColleague
 
     virtual vtkPolyDataMapper2D *CreateRubberbandMapper() { return 0; }
     virtual vtkPolyDataMapper2D *CreateXorGridMapper() { return 0; }
+    virtual vtkPolyDataMapper2D *CreatePositionLabelMapper() { return 0; }
 
 
     void                     InvokeRenderCallback();

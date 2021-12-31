@@ -7732,6 +7732,25 @@ VisWindow::CreateXorGridMapper()
 }
 
 // ****************************************************************************
+// Method: VisWindow::CreatePositionLabelMapper
+//
+// Purpose:
+//   Create a positional label mapper.
+//
+// Programmer:
+// Creation:
+//
+// Modifications:
+//
+// ****************************************************************************
+
+vtkPolyDataMapper2D *
+VisWindow::CreatePositionLabelMapper()
+{
+    return rendering->CreatePositionLabelMapper();
+}
+
+// ****************************************************************************
 // Method: FontAttributes_To_VisWinTextAttributes
 //
 // Purpose:
