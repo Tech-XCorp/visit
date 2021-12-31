@@ -98,6 +98,7 @@ class QTVISWINDOW_API VisWinRenderingWithWindow : public VisWinRendering
 
     virtual vtkPolyDataMapper2D *CreateRubberbandMapper();
     virtual vtkPolyDataMapper2D *CreateXorGridMapper();
+    virtual vtkPolyDataMapper2D *CreatePositionLabelMapper();
 
   protected:
     vtkQtRenderWindow                 *renWin;

@@ -13,6 +13,7 @@
 #include <vtkRenderWindow.h>
 #include <vtkRubberBandMapper2D.h>
 #include <vtkDashedXorGridMapper2D.h>
+#include <vtkPositionLabelMapper2D.h>
 #include <vtkOpenGLRenderWindow.h>
 #include <vtkOpenGL.h>
 
@@ -778,6 +779,25 @@ vtkPolyDataMapper2D *
 VisWinRenderingWithWindow::CreateXorGridMapper()
 {
     vtkDashedXorGridMapper2D *mapper = vtkDashedXorGridMapper2D::New();
+    mapper->SetWidget(renWin->GetGLWidget());
+    return mapper;
+}
+
+// ****************************************************************************
+//  Method:  VisWinRenderingWithWindow::CreatePositionLabelMapper
+//
+//  Purpose:
+//    Create a mapper to use for positional label rendering.
+//
+//  Programmer:
+//  Creation:
+//
+// ****************************************************************************
+
+vtkPolyDataMapper2D *
+VisWinRenderingWithWindow::CreatePositionLabelMapper()
+{
+    vtkPositionLabelMapper2D *mapper = vtkPositionLabelMapper2D::New();
     mapper->SetWidget(renWin->GetGLWidget());
     return mapper;
 }
