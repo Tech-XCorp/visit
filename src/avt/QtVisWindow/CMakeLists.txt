@@ -12,6 +12,7 @@ VisWinRenderingWithWindow.C
 QtVisWindow.C
 vtk/vtkDashedXorGridMapper2D.C
 vtk/vtkRubberBandMapper2D.C
+vtk/vtkPositionLabelMapper2D.C
 )
 
 IF(NOT APPLE AND X11_FOUND)
