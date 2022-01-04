@@ -70,6 +70,7 @@ Interactors/NavigateAxisArray.C
 Interactors/NavigateCurve.C
 Interactors/NullInteractor.C
 Interactors/Pick.C
+Interactors/PositionLabelCurve.C
 Interactors/VisitHotPointInteractor.C
 Interactors/VisitInteractor.C
 Interactors/Zoom2D.C

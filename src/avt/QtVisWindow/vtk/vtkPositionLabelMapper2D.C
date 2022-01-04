@@ -342,24 +342,24 @@ vtkPositionLabelMapper2D::RenderOverlay_Qt(vtkViewport* viewport, vtkActor2D* ac
 #define SET_FOREGROUND(rgba) \
     painter.setPen(QColor(int(255.*rgba[0]), int(255.*rgba[1]), int(255.*rgba[2])));
 
-//#define DRAW_POLYGON(points, npts) \
-//    cerr << "DRAW_POLYGON macro for Qt." << endl;
+#define DRAW_POLYGON(points, npts) \
+    cerr << "DRAW_POLYGON macro for Qt." << endl;
 
-//#define RESIZE_POINT_ARRAY(points, npts, currSize) \
-//    currSize = currSize; \
-//    cerr << "RESIZE_POINT_ARRAY macro for Qt." << endl;
+#define RESIZE_POINT_ARRAY(points, npts, currSize) \
+    currSize = currSize; \
+    cerr << "RESIZE_POINT_ARRAY macro for Qt." << endl;
 
-//#define DRAW_XOR_LINE(x1, y1, x2, y2) \
-//    painter.drawLine(QLine(x1, y1, x2, y2));
+#define DRAW_XOR_LINE(x1, y1, x2, y2) \
+    painter.drawLine(QLine(x1, y1, x2, y2));
 
 #define FLUSH_AND_SYNC() \
-    privateInstance->overlay->setText(posText);
+    privateInstance->overlay->setPixmap(pixmap);
 
 #define CLEAN_UP()
 
-//#define BEGIN_POLYLINE(X, Y)
+#define BEGIN_POLYLINE(X, Y)
 
-//#define END_POLYLINE()
+#define END_POLYLINE()
 
     int x,y,w,h;
     QPoint tl(privateInstance->widget->mapToGlobal(QPoint(0,0)));
@@ -369,29 +369,32 @@ vtkPositionLabelMapper2D::RenderOverlay_Qt(vtkViewport* viewport, vtkActor2D* ac
     w = privateInstance->widget->width();
     h = privateInstance->widget->height();
 
+    QPixmap pixmap(w, h);
+    pixmap.fill(Qt::transparent);
+
     //
     // Try and create the window if we've not yet created it.
     //
     if(privateInstance->overlay == 0)
     {
-        privateInstance->overlay = new QLabel(0, Qt::FramelessWindowHint);
-//        privateInstance->overlay->setAttribute(Qt::WA_TranslucentBackground);
+        privateInstance->overlay = new QLabel(nullptr, Qt::FramelessWindowHint | Qt::WindowTransparentForInput | Qt::WindowStaysOnTopHint);
+        privateInstance->overlay->setAttribute(Qt::WA_TranslucentBackground);
         // FIXME? We should need the following, but it triggers a Qt
         // bug and  strangely everything seems to work without it.
         //privateInstance->overlay->setAttribute(Qt::WA_TransparentForMouseEvents);
-//        privateInstance->overlay->setAutoFillBackground(false);
-//        privateInstance->overlay->setText(posText);
+        privateInstance->overlay->setAutoFillBackground(false);
+        privateInstance->overlay->setPixmap(pixmap);
     }
 
-    privateInstance->overlay->move(x, y);
+    privateInstance->overlay->setGeometry(x, y, w, h);
     privateInstance->overlay->show();
 
-//    // Clear the window so it's ready for us to draw.
-//    QPainter painter(&pixmap);
+    // Clear the window so it's ready for us to draw.
+    QPainter painter(&pixmap);
 
     // Set the line color
     double* actorColor = actor->GetProperty()->GetColor();
-//    SET_FOREGROUND_D(actorColor);
+    SET_FOREGROUND_D(actorColor);
 
     int numPts;
     vtkPolyData *input= vtkPolyData::SafeDownCast(this->GetInput());
@@ -426,9 +429,9 @@ vtkPositionLabelMapper2D::RenderOverlay_Qt(vtkViewport* viewport, vtkActor2D* ac
         return;
     }
 
-    if (numPts > 1)
+    if (numPts < 2)
     {
-        vtkDebugMacro(<< "More than one point!");
+        vtkDebugMacro(<< "Less than 2 points!");
         CLEAN_UP();
         return;
     }
@@ -458,6 +461,20 @@ vtkPositionLabelMapper2D::RenderOverlay_Qt(vtkViewport* viewport, vtkActor2D* ac
 
     // Transform the points, if necessary
     p = input->GetPoints();
+    if ( this->TransformCoordinate )
+    {
+        int *itmp;
+        numPts = p->GetNumberOfPoints();
+        displayPts = vtkPoints::New();
+        displayPts->SetNumberOfPoints(numPts);
+        for ( j=0; j < numPts; j++ )
+        {
+            this->TransformCoordinate->SetValue(p->GetPoint(j));
+            itmp = this->TransformCoordinate->GetComputedDisplayValue(viewport);
+            displayPts->SetPoint(j, itmp[0], itmp[1], 0.0);
+        }
+        p = displayPts;
+    }
 
     // Get colors
     if ( this->Colors )
@@ -469,21 +486,84 @@ vtkPositionLabelMapper2D::RenderOverlay_Qt(vtkViewport* viewport, vtkActor2D* ac
         }
     }
 
-    // Update text
-    if (c)
-    {
-        if (cellScalars)
-            rgba = c->GetPointer(4*cellNum);
-        else
-            rgba = c->GetPointer(4*pts[0]);
+//    // Draw the polygons.
+//    aPrim = input->GetPolys();
+//    for (aPrim->InitTraversal(); aPrim->GetNextCell(npts,pts); cellNum++)
+//    {
+//        if (c)
+//        {
+//            if (cellScalars)
+//                rgba = c->GetPointer(4*cellNum);
+//            else
+//                rgba = c->GetPointer(4*pts[0]);
 
-//        SET_FOREGROUND(rgba);
-    }
+//            SET_FOREGROUND(rgba);
+//        }
 
-    double pt[3];
-    p->GetPoint(0, pt);
-    QString posText = QString("%1, %2").arg(pt[0]).arg(pt[1]);
-    privateInstance->overlay->setText(posText);
+//        RESIZE_POINT_ARRAY(points, npts, currSize);
+
+//        for (j = 0; j < npts; j++)
+//        {
+//            ftmp = p->GetPoint(pts[j]);
+//            STORE_POINT(points[j],
+//                        actorPos[0] + ftmp[0],
+//                        actorPos[1] - ftmp[1]);
+//        }
+
+////        DRAW_POLYGON(points, npts);
+//    }
+
+    //
+    // Draw the lines.
+    // We need to scale our coordinates by the devicePixelRatio, which takes
+    // the OSX retina display into account. From the docs:
+    //
+    //     "Common values are 1 for normal-dpi displays and 2 for high-dpi
+    //     'retina' displays."
+    //
+    int devicePixelRatio = privateInstance->widget->devicePixelRatio();
+//    aPrim = input->GetLines();
+//    for (aPrim->InitTraversal(); aPrim->GetNextCell(npts,pts); cellNum++)
+//    {
+        if (c && cellScalars)
+        {
+            rgba = c->GetPointer(0);
+            SET_FOREGROUND(rgba);
+        }
+        double displayPoint[3];
+        p->GetPoint(0, displayPoint);
+
+        X = (int)(actorPos[0] + displayPoint[0]) / devicePixelRatio;
+        Y = (int)(actorPos[1] - displayPoint[1]) / devicePixelRatio;
+
+        double textPoint[3];
+        p->GetPoint(1, textPoint);
+
+        QString posText = QString("%1, %2").arg(textPoint[0]).arg(textPoint[1]);
+        QRect boundingRect = painter.boundingRect(QRect(X, Y, 1, 1), Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, posText);
+        painter.drawText(boundingRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, posText);
+
+//        BEGIN_POLYLINE(lastX, lastY);
+
+//        for (j = 1; j < npts; j++)
+//        {
+//            ftmp = p->GetPoint(pts[j]);
+//            if (c && !cellScalars)
+//            {
+//                rgba = c->GetPointer(4*pts[j]);
+//                SET_FOREGROUND(rgba)
+//            }
+//            X = (int)(actorPos[0] + ftmp[0]) / devicePixelRatio;
+//            Y = (int)(actorPos[1] - ftmp[1]) / devicePixelRatio;
+
+//            DRAW_XOR_LINE(lastX, lastY, X, Y);
+
+//            lastX = X;
+//            lastY = Y;
+//        }
+
+//        END_POLYLINE();
+//    }
 
     // Finish drawing.
     FLUSH_AND_SYNC();
@@ -494,11 +574,11 @@ vtkPositionLabelMapper2D::RenderOverlay_Qt(vtkViewport* viewport, vtkActor2D* ac
         p->Delete();
 
 #undef STORE_POINT
-//#undef DRAW_POLYGON
-//#undef RESIZE_POINT_ARRAY
-//#undef SET_FOREGROUND_D
+#undef DRAW_POLYGON
+#undef RESIZE_POINT_ARRAY
+#undef SET_FOREGROUND_D
 #undef SET_FOREGROUND
-//#undef DRAW_XOR_LINE
+#undef DRAW_XOR_LINE
 #undef FLUSH_AND_SYNC
 #undef CLEAN_UP
 }
