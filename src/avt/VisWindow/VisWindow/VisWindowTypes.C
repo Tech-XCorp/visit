@@ -74,7 +74,7 @@ WINDOW_MODE_FromString(const std::string &s, WINDOW_MODE &m)
 }
 
 static const char *INTERACTION_MODE_strings[] = {"NAVIGATE", "ZONE_PICK",
-    "NODE_PICK", "ZOOM", "LINEOUT", "SPREADSHEET_PICK"};
+    "NODE_PICK", "ZOOM", "LINEOUT", "SPREADSHEET_PICK", "CURSOR_LABEL" };
 
 // ****************************************************************************
 // Function: INTERACTION_MODE_ToString
@@ -98,7 +98,7 @@ std::string
 INTERACTION_MODE_ToString(INTERACTION_MODE m)
 {
     int index = int(m);
-    if(m < NAVIGATE || m > DDT_PICK) index = 0;
+    if(m < NAVIGATE || m > CURSOR_LABEL) index = 0;
     return INTERACTION_MODE_strings[index];
 }
 
@@ -106,7 +106,7 @@ std::string
 INTERACTION_MODE_ToString(int m)
 {
     int index = m;
-    if(index < 0 || index > 5) index = 0;
+    if(index < 0 || index > 6) index = 0;
     return INTERACTION_MODE_strings[index];
 }
 
@@ -130,7 +130,7 @@ INTERACTION_MODE_FromString(const std::string &s, INTERACTION_MODE &m)
 {
     m = NAVIGATE;
 
-    for(int i = 0; i < 6; ++i)
+    for(int i = 0; i < 7; ++i)
     {
         if(s == INTERACTION_MODE_strings[i])
         {

@@ -21,6 +21,7 @@
 #include <NavigateAxisArray.h>
 #include <NullInteractor.h>
 #include <Pick.h>
+#include <PositionLabelCurve.h>
 #include <Zoom2D.h>
 #include <Zoom3D.h>
 #include <ZoomAxisArray.h>
@@ -69,20 +70,21 @@
 VisitHotPointInteractor::VisitHotPointInteractor(VisWindowInteractorProxy &v) :
     VisitInteractor(v), currentHotPoint()
 {
-    dolly3D           = NULL;
-    flyThrough        = NULL;
-    lineout2D         = NULL;
-    navigate2D        = NULL;
-    navigate3D        = NULL;
-    navigateCurve     = NULL;
-    navigateAxisArray = NULL;
-    pick              = NULL;
-    zoom2D            = NULL;
-    zoom3D            = NULL;
-    zoomCurve         = NULL;
-    zoomAxisArray     = NULL;
-    nullInteractor    = new NullInteractor(proxy);
-    currentInteractor = NULL;
+    dolly3D            = NULL;
+    flyThrough         = NULL;
+    lineout2D          = NULL;
+    navigate2D         = NULL;
+    navigate3D         = NULL;
+    navigateCurve      = NULL;
+    navigateAxisArray  = NULL;
+    pick               = NULL;
+    positionLabelCurve = NULL;
+    zoom2D             = NULL;
+    zoom3D             = NULL;
+    zoomCurve          = NULL;
+    zoomAxisArray      = NULL;
+    nullInteractor     = new NullInteractor(proxy);
+    currentInteractor  = NULL;
     SetInteractor(nullInteractor);
 
     hotPointMode = false;
@@ -167,6 +169,11 @@ VisitHotPointInteractor::~VisitHotPointInteractor()
     {
         pick->Delete();
         pick = NULL;
+    }
+    if(positionLabelCurve != NULL)
+    {
+        positionLabelCurve->Delete();
+        positionLabelCurve = NULL;
     }
     if(zoom2D != NULL)
     {
@@ -339,6 +346,9 @@ VisitHotPointInteractor::Start2DMode(INTERACTION_MODE mode)
         }
         newInteractor = lineout2D;
         break;
+    default:
+        newInteractor = NULL;
+        break;
     }
 
     if(newInteractor == NULL)
@@ -455,6 +465,9 @@ VisitHotPointInteractor::Start3DMode(INTERACTION_MODE mode)
         }
         newInteractor = zoom3D;
         break;
+    default:
+        newInteractor = NULL;
+        break;
     }
 
     if(newInteractor == NULL)
@@ -548,6 +561,16 @@ VisitHotPointInteractor::StartCurveMode(INTERACTION_MODE mode)
         }
         newInteractor = pick;
         break;
+    case CURSOR_LABEL:
+        if(positionLabelCurve == NULL)
+        {
+            positionLabelCurve = new PositionLabelCurve(proxy);
+        }
+        newInteractor = positionLabelCurve;
+        break;
+    default:
+        newInteractor = NULL;
+        break;
     }
 
     if(newInteractor == NULL)
@@ -634,6 +657,9 @@ VisitHotPointInteractor::StartAxisArrayMode(INTERACTION_MODE mode)
             pick = new Pick(proxy);
         }
         newInteractor = pick;
+        break;
+      default:
+        newInteractor = NULL;
         break;
     }
 

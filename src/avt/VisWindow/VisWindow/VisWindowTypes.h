@@ -70,8 +70,9 @@ typedef enum
     ZONE_PICK,        /* 2 */
     NODE_PICK,        /* 3 */
     SPREADSHEET_PICK, /* 4 */
-    DDT_PICK,         /* 5 */
-    LINEOUT           /* 6 */
+    CURSOR_LABEL,     /* 5 */
+    DDT_PICK,         /* 6 */
+    LINEOUT           /* 7 */
 }  INTERACTION_MODE;
 
 typedef enum {

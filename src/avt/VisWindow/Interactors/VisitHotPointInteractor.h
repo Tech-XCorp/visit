@@ -19,6 +19,7 @@ class NavigateCurve;
 class NavigateAxisArray;
 class NullInteractor;
 class Pick;
+class PositionLabelCurve;
 class Zoom2D;
 class Zoom3D;
 class ZoomCurve;
@@ -118,8 +119,8 @@ public:
 private:
     VisitInteractor  *currentInteractor;
 
-    bool             hotPointMode;
-    HotPoint         currentHotPoint;
+    bool              hotPointMode;
+    HotPoint          currentHotPoint;
 
     Dolly3D          *dolly3D;
     FlyThrough       *flyThrough;
@@ -130,6 +131,7 @@ private:
     NavigateAxisArray *navigateAxisArray;
     NullInteractor   *nullInteractor;
     Pick             *pick;
+    PositionLabelCurve *positionLabelCurve;
     Zoom2D           *zoom2D;
     Zoom3D           *zoom3D;
     ZoomCurve        *zoomCurve;
