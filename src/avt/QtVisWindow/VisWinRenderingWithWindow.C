@@ -700,7 +700,7 @@ VisWinRenderingWithWindow::SetCursorForMode(INTERACTION_MODE m)
     // Determine the new cursor index. The arrow cursor is 0 and the pick
     // cursor is 1.
     //
-    if(m == ZONE_PICK || m == NODE_PICK || m == SPREADSHEET_PICK || m == DDT_PICK)
+    if(m == ZONE_PICK || m == NODE_PICK || m == SPREADSHEET_PICK || m == DDT_PICK || m == CURSOR_LABEL)
         newCursorIndex = 1;
     else
         newCursorIndex = 0;
