@@ -222,26 +222,54 @@ PositionLabelCurve::OnMouseMove()
     SetCanvasViewport();
 
     if (AreCoordsInViewport(x, y)) {
-        double worldX = (double) x;
-        double worldY = (double) y;
+        double displayX = (double) x;
+        double displayY = (double) y;
         double dummyZ = 0.;
 
-// Convert them to world coordinates.
+        VisWindow *vw = proxy;
+// Convert position to viewport coordinates.
         vtkRenderer *canvas = proxy.GetCanvas();
 
-        canvas->DisplayToNormalizedDisplay(worldX, worldY);
-        canvas->NormalizedDisplayToViewport(worldX, worldY);
-        canvas->ViewportToNormalizedViewport(worldX, worldY);
-        canvas->NormalizedViewportToView(worldX, worldY, dummyZ);
-        canvas->ViewToWorld(worldX, worldY, dummyZ);
+        canvas->DisplayToNormalizedDisplay(displayX, displayY);
+        canvas->NormalizedDisplayToViewport(displayX, displayY);
+        canvas->ViewportToNormalizedViewport(displayX, displayY);
+// Translate viewport to 2D or domain/range
+        switch (vw->GetWindowMode())
+        {
+          case WINMODE_2D:
+            {
+            const avtView2D view2D = vw->GetView2D();
+            displayX = view2D.window[0] +
+                       ((view2D.window[1] - view2D.window[0]) * displayX);
+            displayY = view2D.window[2] +
+                       ((view2D.window[3] - view2D.window[2]) * displayY);
+            }
+            break;
+          case WINMODE_CURVE:
+            {
+            avtViewCurve newViewCurve = vw->GetViewCurve();
+            displayX = newViewCurve.domain[0] +
+                ((newViewCurve.domain[1] - newViewCurve.domain[0]) * displayX);
+            displayY = newViewCurve.range[0] +
+                ((newViewCurve.range[1] - newViewCurve.range[0]) * displayY);
+            }
+            break;
+// Or translate to world coordinates
+          default:
+            {
+            canvas->NormalizedViewportToView(displayX, displayY, dummyZ);
+            canvas->ViewToWorld(displayX, displayY, dummyZ);
+            }
+            break;
+        }
 
         vtkViewport *ren = proxy.GetBackground();
         ren->AddActor2D(positionLabelActor);
         vtkPoints *pts = positionLabel->GetPoints();
-// Coordinates to display in text
-        pts->SetPoint(0, (double) x, (double) y, 0.);
 // Coordinates to draw at
-        pts->SetPoint(1, worldX, worldY, 0.);
+        pts->SetPoint(0, (double) x, (double) y, 0.);
+// Coordinates to display in text
+        pts->SetPoint(1, displayX, displayY, 0.);
         positionLabelMapper->RenderOverlay(ren, positionLabelActor);
     } else {
         vtkViewport *ren = proxy.GetBackground();

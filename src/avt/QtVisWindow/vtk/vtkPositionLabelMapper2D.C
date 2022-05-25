@@ -539,7 +539,7 @@ vtkPositionLabelMapper2D::RenderOverlay_Qt(vtkViewport* viewport, vtkActor2D* ac
         double textPoint[3];
         p->GetPoint(1, textPoint);
 
-        QString posText = QString("%1, %2").arg(textPoint[0]).arg(textPoint[1]);
+        QString posText = QString("  %1, %2").arg(textPoint[0], 0, 'g', 3).arg(textPoint[1], 0, 'g', 3);
         QRect boundingRect = painter.boundingRect(QRect(X, Y, 1, 1), Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, posText);
         painter.drawText(boundingRect, Qt::AlignLeft | Qt::AlignTop | Qt::TextSingleLine, posText);
 
