@@ -39,7 +39,7 @@ protected:
   vtkPositionLabelMapper2D();
   ~vtkPositionLabelMapper2D();
 
-//  void RenderOverlay_X11(vtkViewport* viewport, vtkActor2D* actor);
+  void RenderOverlay_X11(vtkViewport* viewport, vtkActor2D* actor);
   void RenderOverlay_Qt(vtkViewport* viewport, vtkActor2D* actor);
 
   vtkPositionLabelMapper2DPrivate *privateInstance;
