@@ -1399,7 +1399,7 @@ GetVisItEnvironment(stringVector &env, bool addPluginVars, bool &usingdev,
         sprintf(tmp, "PYTHONHOME=%s\\lib\\python",visitpath);
         if (!PathFileExists(tmp))
         {
-            sprintf(tmp, "PYTHONPATH=%s\\..\\python", visitpath);
+            sprintf(tmp, "PYTHONHOME=%s\\..\\python", visitpath);
         }
         env.push_back(tmp);
         sprintf(tmp, "LIBPATH=%s\\lib", visitpath);
