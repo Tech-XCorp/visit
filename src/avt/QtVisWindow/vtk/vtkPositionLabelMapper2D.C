@@ -279,10 +279,10 @@ vtkPositionLabelMapper2D::RenderOverlay_X11(vtkViewport* viewport, vtkActor2D* a
       XDrawLine(displayId, drawable, xorGC, x1, y1, x2, y2);
 
 #define DRAW_TEXT_STRING(textPoint, X, Y) \
-      const char *fmt = "  %.3g, %.3g";
-      int sz = std::snprintf(nullptr, 0, fmt, textPoint[0], textPoint[1]);
-      std::vector<char> buf(sz + 1);
-      std::snprintf(&buf[0], buf.size(), fmt, textPoint[0], textPoint[1]);
+      const char *fmt = "  %.3g, %.3g"; \
+      int sz = std::snprintf(nullptr, 0, fmt, textPoint[0], textPoint[1]); \
+      std::vector<char> buf(sz + 1); \
+      std::snprintf(&buf[0], buf.size(), fmt, textPoint[0], textPoint[1]); \
       XDrawString(displayId, drawable, gc, X, Y, &buf[0], sz);
 
 #define FLUSH_AND_SYNC() XFlush(displayId); XSync(displayId, False); \
