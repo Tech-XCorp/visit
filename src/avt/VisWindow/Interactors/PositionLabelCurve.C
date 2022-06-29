@@ -29,21 +29,9 @@ PositionLabelCurve::PositionLabelCurve(VisWindowInteractorProxy &v) : VisitInter
   positionLabel = vtkPolyData::New();
 
   vtkPoints *pts = vtkPoints::New();
-#if defined(__APPLE__) || defined(_WIN32)
   pts->SetNumberOfPoints(2);
   positionLabel->SetPoints(pts);
   pts->Delete();
-//#else
-//        pts->SetNumberOfPoints(2);
-//        rubberBand->SetPoints(pts);
-//        pts->Delete();
-
-//        vtkCellArray *lines  = vtkCellArray::New();
-//        vtkIdType  ids[2] = { 0, 1 };
-//        lines->InsertNextCell(2, ids);
-//        rubberBand->SetLines(lines);
-//        lines->Delete();
-#endif
 
   positionLabelMapper = proxy.CreatePositionLabelMapper();
   positionLabelMapper->SetInputData(positionLabel);
