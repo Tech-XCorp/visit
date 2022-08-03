@@ -251,6 +251,10 @@ PositionLabelCurve::OnMouseMove()
             break;
         }
 
+	double fg[3];
+	proxy.GetForegroundColor(fg);
+	positionLabelActor->GetProperty()->SetColor(fg[0], fg[1], fg[2]);
+
         vtkViewport *ren = proxy.GetBackground();
         ren->AddActor2D(positionLabelActor);
         vtkPoints *pts = positionLabel->GetPoints();

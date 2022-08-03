@@ -325,6 +325,18 @@ vtkPositionLabelMapper2D::RenderOverlay_X11(vtkViewport* viewport, vtkActor2D* a
     double* actorColor = actor->GetProperty()->GetColor();
     SET_FOREGROUND_D(actorColor);
 
+    // Get some font info
+    int actualCount;
+    char ** fontNames = XListFonts(displayId, "*courier-medium-o-normal--11*", 100, &actualCount);
+    if (actualCount < 1) {
+      vtkErrorMacro(<<"Unable to load font for position display!");
+    }
+    Font fontId = -1;
+    if (actualCount > 0) {
+      fontId = XLoadFont(displayId, fontNames[0]);
+      XSetFont(displayId, gc, fontId);
+    }
+    XFreeFontNames(fontNames);
 #include <vtkPositionLabelMapper2D_body.C>
 #endif
 }
