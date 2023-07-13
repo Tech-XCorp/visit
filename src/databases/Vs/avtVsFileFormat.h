@@ -185,13 +185,6 @@ class avtVsFileFormat: public avtSTMDFileFormat {
     VsReader* LoadData();
 
 /**
- * This is not the best way to do this.  In fact every type of mesh should
- * have a separate class and then there would be a pointer to the type selected.
- * Since I only have one class that uses this approach I'm doing it this way.
- */
-    HighOrderUnstructuredData thisData;
-
-/**
  * Change the default behavior so that the plugin does not populate
  * spatial extent information.
  */

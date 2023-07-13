@@ -1367,12 +1367,10 @@ avtVsFileFormat::getHighOrderUnstructuredMesh(VsReader* reader,
     VsLog::debugLog() << CLASSFUNCLINE << "Entering." << std::endl;
     VsRegistry* registry = reader->getRegistry();
 
-    thisData.setReader(reader);
-    thisData.setRegistry(registry);
-
+    HighOrderUnstructuredData thisData(reader, registry);
+    vtkDataSet* answer = thisData.getMesh(unstructuredMesh);
     VsLog::debugLog() << CLASSFUNCLINE << "exiting." << std::endl;
-
-    return thisData.getMesh(unstructuredMesh);
+    return answer;
 }
 
 // *****************************************************************************
@@ -3453,12 +3451,10 @@ vtkDataArray* avtVsFileFormat::NodalVar(VsReader* reader,
 
     VsRegistry* registry = reader->getRegistry();
 
-    thisData.setReader(reader);
-    thisData.setRegistry(registry);
-
+    HighOrderUnstructuredData thisData(reader, registry);
+    vtkDataArray* answer = thisData.getData(meta, name, component);
     VsLog::debugLog() << CLASSFUNCLINE << "exiting." << std::endl;
-
-    return thisData.getData(meta, name, component);
+    return answer;
 }
 
 // *****************************************************************************
