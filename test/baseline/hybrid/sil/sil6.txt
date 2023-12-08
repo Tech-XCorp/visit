@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:958cdbe0f622214840d0367898a2379314fbb745eda4f80d6b6c33629195ec3d
-size 35
+Material 1 was correctly left off.

@@ -1,3 +1,26 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2e63e6cd4d47d2b45408c4a85393427c6dcc0352edff9a117ee5d585b7c8b0ae
-size 781
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef VISWINRENDERINGCOCOAHIDEWINDOW_H
+#define VISWINRENDERINGCOCOAHIDEWINDOW_H
+
+// ****************************************************************************
+//  Class:  VisWinRenderingCocoa
+//
+//  Purpose:
+//    Hides the render window when the engines render window is not OSMesa
+//
+//  Programmer:  Hari Krishnan
+//  Creation:    December 13, 2007
+//
+//  Modifications:
+//
+// ****************************************************************************
+class VisWinRenderingCocoa
+{
+public:
+    static void HideRenderWindow(void* window);
+};
+
+#endif

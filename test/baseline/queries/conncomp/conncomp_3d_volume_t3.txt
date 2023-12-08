@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ba01c0ac69858a4dac6cf8d3a42c685d95a0c4a2fe2fe50a8ef22372481fbaeb
-size 59
+Found 1 connected component
+Component 0 Volume = (7.45191)

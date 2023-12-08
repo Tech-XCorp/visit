@@ -1,3 +1,40 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:81079467353a5dad07547b06e8ed8ed61e8935fb0065227e31f43c49c7bb09e5
-size 1027
+import sys
+
+###############################################################################
+# Function: main
+#
+# Purpose:    This is the main function for the program.
+#
+# Programmer: Brad Whitlock
+# Date:       Mon Jul 28 15:35:54 PST 2003
+#
+# Modifications:
+#
+###############################################################################
+
+def main():
+    makemovie = ""
+    for arg in sys.argv[0:]:
+        if arg.find("makemovie") != -1:
+            makemovie = arg.replace("makemoviemain", "makemovie")
+            break
+
+    if makemovie == "":
+        print("The makemoviemain script could not locate the makemovie script!")
+        sys.exit(-1)
+    else:
+        # Source the makemovie.py script, which contains all of the 
+        # code for the MakeMovie class.
+        Source(makemovie)
+
+        movie = MakeMovie()
+        movie.ProcessArguments()
+        if movie.GenerateFrames() > 0:
+            if movie.EncodeFrames():
+                movie.Cleanup()
+        sys.exit(0)
+
+#
+# Call the main function.
+#
+main()

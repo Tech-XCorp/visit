@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:92cc195d95d1f4c137844230855986b046f889c26dffbd00ef36fac614239a5a
-size 285
+<?xml version="1.0"?>
+  <Plugin name="Point3D" type="database" label="Point3D" version="1.0" dbtype="STSD">
+    <FilePatterns>
+      *.3D
+      *.3D.gz
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="false" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

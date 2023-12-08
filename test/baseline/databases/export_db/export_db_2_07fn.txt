@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8b37182e273098ce7cbc816c6df5686a5e64bd27e51430981bef8a0b2153ad2f
-size 44
+wg_WavefrontOBJ.1.obj
+wg_WavefrontOBJ.2.obj

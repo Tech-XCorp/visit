@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ea56623409ec114b329e23a685e9a564e405d8a6aa6fc73b35162fbf1f80e56a
-size 42
+The average value of vel2 is 1, 784.418, 0

@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5acb0e89e7551e074ef5cc7532015737090e4dbf7cbfa7cdd60f8a5b92b7de63
-size 666
+# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+# Project developers.  See the top-level LICENSE file for dates and other
+# details.  No copyright assignment is required to contribute to VisIt.
+
+#****************************************************************************
+# Modifications:
+#   Kathleen Biagas, Wed Oct 22 14:20:27 MST 2014
+#   Add call to VISIT_TOOLS_ADD_FOLDER.
+#
+#****************************************************************************
+
+IF(VISIT_PARALLEL)
+    ADD_PARALLEL_EXECUTABLE(mpitest mpitest.c)
+    VISIT_INSTALL_TARGETS(mpitest)
+    VISIT_TOOLS_ADD_FOLDER(diagnostics/mpitest mpitest)
+ENDIF(VISIT_PARALLEL)

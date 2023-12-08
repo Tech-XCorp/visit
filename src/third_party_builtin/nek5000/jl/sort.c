@@ -1,3 +1,31 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:97d99d9df65a64876f9020ebfd27020469807f367a9207712e7d008848b85d92
-size 607
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <limits.h>
+#include "c99.h"
+#include "name.h"
+#include "fail.h"
+#include "types.h"
+#include "mem.h"
+
+#define T unsigned int
+#define SORT_SUFFIX _ui
+#include "sort_imp.h"
+#undef SORT_SUFFIX
+#undef T
+
+#if defined(USE_LONG) || defined(GLOBAL_LONG)
+#  define T unsigned long
+#  define SORT_SUFFIX _ul
+#  include "sort_imp.h"
+#  undef SORT_SUFFIX
+#  undef T
+#endif
+
+#if defined(USE_LONG_LONG) || defined(GLOBAL_LONG_LONG)
+#  define T unsigned long long
+#  define SORT_SUFFIX _ull
+#  include "sort_imp.h"
+#  undef SORT_SUFFIX
+#  undef T
+#endif

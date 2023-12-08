@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c134406a8913e613888a7851e1be78a1301a166a94723a4459689a936051f259
-size 554
+<?xml version="1.0"?>
+  <Plugin name="Chombo" type="database" label="Chombo" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STMD" haswriter="false" hasoptions="true">
+    <CXXFLAGS>
+      ${HDF5_INCLUDE_DIR}
+    </CXXFLAGS>
+    <LDFLAGS>
+      ${HDF5_LIBRARY_DIR}
+    </LDFLAGS>
+    <LIBS>
+      ${HDF5_LIB}
+    </LIBS>
+    <FilePatterns>
+      *.hdf5
+      *.h5
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="true" keyframe="true">
+    </Attribute>
+  </Plugin>

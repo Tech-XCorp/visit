@@ -1,3 +1,38 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c0c6e6eac647a40ed29492540924b46ddec72c7c20a2ad0da9f5dfcacc2f9f49
-size 1193
+###############################################################################
+# Class: UtahLauncher
+#
+# Purpose:    Custom launcher for Utah
+#
+# Programmer: Allen Sanderson
+# Date:       Tues Jan 27 2016
+#
+# Modifications:
+#
+###############################################################################
+
+class UtahLauncher(MainLauncher):
+
+    def __init__(self):
+        super(UtahLauncher, self).__init__()
+
+    def Customize(self):
+        msg = """
+NOTE: Using a specific MPI implementation (mvapich2/2.2g49-c7) which the release versions of VisIt are known to be compiled against.
+If you are a *developer*, it's very likely I've chosen the wrong MPI implementation; you might have to hack internallauncher to load the module you need.\n"""
+#        print msg
+
+        SETENV("MV2_ENABLE_AFFINITY", "0")
+
+        sys.path.insert(0,"/uufs/chpc.utah.edu/sys/installdir/lmod/lmod-c7/init")
+        from env_modules_python import module
+
+        module("purge")
+        module("load","visit/3.2.0")
+        module("load","gcc/4.9.2")
+        module("load","mvapich2/2.2")
+        module("load","libxml2/2.9.9")
+
+
+# Launcher creation function
+def createlauncher():
+    return UtahLauncher()

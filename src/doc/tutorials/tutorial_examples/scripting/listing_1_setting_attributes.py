@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c578231d3be547e7f17dc429faeb65ae7f46423fa6c127aff2b58f9b62bbb052
-size 395
+###########################################
+# file: VisIt Scripting Tutorial Listing 1
+###########################################
+#
+# 1) Open VisIt
+# 2) Open 'example.silo'
+# 3) Paste and execute via the Commands window, or the CLI.
+#
+
+DeleteAllPlots()
+AddPlot("Pseudocolor", "temp")
+DrawPlots()
+p = PseudocolorAttributes()
+p.minFlag = 1
+p.maxFlag = 1
+p.min = 3.5
+p.max = 7.5
+SetPlotOptions(p)

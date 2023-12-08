@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:adc90f6eeb7772331fa934b917103ad261253aa45e2afddf0e1d3a76dfc39ea6
-size 410
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <MFEMPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(MFEM,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void MFEMMDServerPluginInfo::dummy()
+{
+}
+

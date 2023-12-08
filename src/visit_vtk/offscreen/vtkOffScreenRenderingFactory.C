@@ -1,3 +1,80 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d63f5441bce74161ed8a5690da97eef6ea62e238b6699a89b3b4c443f028c0c9
-size 2611
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include "vtkOffScreenRenderingFactory.h"
+#include <visit-config.h>
+#if defined(HAVE_OSMESA)
+  #include <vtkOSOpenGLRenderWindow.h>
+  VTK_CREATE_CREATE_FUNCTION(vtkOSOpenGLRenderWindow);
+#elif defined(HAVE_EGL)
+  #include <vtkEGLRenderWindow.h>
+  VTK_CREATE_CREATE_FUNCTION(vtkEGLRenderWindow);
+#endif
+
+
+
+// ****************************************************************************
+//  Method:  vtkOffScreenRenderingFactory Constructor
+//
+//  Purpose:
+//
+//  Arguments:
+//
+//  Modifications:
+//
+// ****************************************************************************
+
+vtkOffScreenRenderingFactory::vtkOffScreenRenderingFactory()
+{
+    // If VTK was compiled with VTK_OPENGL_HAS_OSMESA then
+    // vtkOSOpenGLRenderWindow was compiled into vtkRenderingOpenGL.
+    //
+    // If VTK was compiled with VTK_OPENGL_HAS_EGL then
+    // vtkEGLRenderWindow was compiled into vtkRenderingOpenGL.
+    //
+    // If VTK was comiled with VTK_USE_X, then, despite either of the above
+    // vtkXOpenGLRenderWindow will be the override when instantiating a
+    // vtkRenderWindow.
+    //
+    // This will cause problems for us on headless nodes, so here we create
+    // overrides for vtkXOpenGLRenderWindow, depending on whether we want
+    // OSMesa or EGL.
+    //
+
+#if defined(HAVE_OSMESA)
+    this->RegisterOverride("vtkXOpenGLRenderWindow",
+                           "vtkOSOpenGLRenderWindow",
+                           "Render Window Hijack Overrride",
+                           1,
+                           vtkObjectFactoryCreatevtkOSOpenGLRenderWindow);
+#elif defined(HAVE_EGL)
+    this->RegisterOverride("vtkXOpenGLRenderWindow",
+                           "vtkEGLRenderWindow",
+                           "Render Window Hijack Overrride",
+                           1,
+                           vtkObjectFactoryCreatevtkEGLRenderWindow);
+#endif
+}
+
+
+
+// ****************************************************************************
+//  Method:  vtkOffScreenRenderingFactory::ForceOffScreen
+//
+//  Purpose:
+//
+//  Arguments:
+//
+// ****************************************************************************
+
+void
+vtkOffScreenRenderingFactory::ForceOffScreen()
+{
+#if defined(HAVE_OSMESA) || defined(HAVE_EGL)
+    vtkOffScreenRenderingFactory *os_factory = vtkOffScreenRenderingFactory::New();
+    vtkObjectFactory::RegisterFactory(os_factory);
+    os_factory->Delete();
+#endif
+}
+

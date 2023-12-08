@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5be57afbb9889086d56a59d26bae2d66032e817ede1439d94ca123acd305a927
-size 1119
+<?xml version="1.0"?>
+  <Plugin name="Extrude" type="operator" label="Extrude" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" iconFile="Extrude.xpm" category="Geometry">
+    <Attribute name="ExtrudeAttributes" purpose="This class contains attributes for the extrude operator." persistent="true" keyframe="true" exportAPI="" exportInclude="">
+      <Field name="axis" label="Extrusion axis" type="doubleArray" length="3">
+        0.000000
+        0.000000
+        1.000000
+      </Field>
+      <Field name="byVariable" label="By variable" type="bool">
+        false
+      </Field>
+      <Field name="variable" label="Variable" type="variablename" enabler="byVariable:true" vartypes="01000000000">
+        default
+      </Field>
+      <Field name="length" label="Length" type="double">
+        1.
+      </Field>
+      <Field name="steps" label="Number of steps" type="int">
+        1
+      </Field>
+      <Field name="preserveOriginalCellNumbers" label="Preserve original cell numbers" type="bool">
+        true
+      </Field>
+    </Attribute>
+  </Plugin>

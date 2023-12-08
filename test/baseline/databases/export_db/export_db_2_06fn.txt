@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c473443adf74f470a593cc7b81ab86b885b59b50b1549125e78aa5ad0b64b8dd
-size 13
+wg_VTK.visit

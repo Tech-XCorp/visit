@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d1dc4804b45307a81dd99d8df53f3a7472fc74829f3703d43da4fc97486e01e6
-size 664
+<?xml version="1.0"?>
+  <Plugin name="MatrixMarket" type="database" label="MatrixMarket" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STSD" haswriter="false" hasoptions="false" filePatternsStrict="false">
+    <FilePatterns>
+      *.mpippv
+      *.mpippc
+      *.mtx
+    </FilePatterns>
+    <Files components="M">
+      avtMatrixMarketFileFormat.C
+      mmio.c
+    </Files>
+    <Files components="E">
+      avtMatrixMarketFileFormat.C
+      mmio.c
+    </Files>
+    <Attribute name="" purpose="" persistent="false" keyframe="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

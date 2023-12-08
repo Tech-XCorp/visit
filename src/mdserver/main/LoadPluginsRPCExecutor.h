@@ -1,3 +1,33 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f8deacc8b4cf08d8bc8a1c0c7bb63705e7921ceaaf2e992fd45ac9c3c786416c
-size 936
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef LOAD_PLUGINS_RPC_EXECUTOR_H
+#define LOAD_PLUGINS_RPC_EXECUTOR_H
+#include <Observer.h>
+
+class MDServerConnection;
+
+// ****************************************************************************
+// Class: LoadPluginsRPCExecutor
+//
+// Purpose:
+//   This class handles the RPC request to load the plugins.
+//
+// Programmer: Hank Childs
+// Creation:   January 22, 2004
+//
+// ****************************************************************************
+
+class LoadPluginsRPCExecutor : public Observer
+{
+public:
+    LoadPluginsRPCExecutor(MDServerConnection *parent_, Subject *s);
+    virtual ~LoadPluginsRPCExecutor();
+
+    virtual void Update(Subject *s);
+private:
+    MDServerConnection *parent;
+};
+
+#endif

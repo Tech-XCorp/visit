@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:bfc1e274b87e818f881b84abb90b213b8c8ca7260c8664e1326c4e1aa6fdd782
-size 93
+Pseudocolor:  (InvalidVariableException)
+viewer: An invalid variable (d_split) was specified.

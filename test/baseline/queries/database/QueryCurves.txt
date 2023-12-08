@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f239c0efa067d54ac487f9598b42919c7d54f5d50986540751a673f6f6bbf877
-size 264
+The area between the curves is 0.758574.
+The L2Norm between the two curves is 1.00294.
+
+The area between the curves is 0.888238.
+The L2Norm between the two curves is 1.00918.
+
+The area between the curves is 0.626439.
+The L2Norm between the two curves is 0.81381.
+

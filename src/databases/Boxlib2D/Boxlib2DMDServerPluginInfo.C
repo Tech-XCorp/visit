@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a9ec73f198b2766594b8c5e7ba4ee7b0fbf9139ebc61fe4edc912d5b056e04ad
-size 422
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <Boxlib2DPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(Boxlib2D,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void Boxlib2DMDServerPluginInfo::dummy()
+{
+}
+

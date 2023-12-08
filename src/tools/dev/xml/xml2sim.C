@@ -1,3 +1,52 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3ea0236d7560e0236bd438ad2f0e829a19310334e59881726f991d3267e1e46b
-size 1439
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include "main.h"
+#include "GenerateSim.h"
+#include "main.C"
+
+void
+CallGenerator(const QString &docType, Attribute *attribute, Plugin *plugin, const QString &)
+{
+    if (docType == "Plugin" && plugin->type == "database")
+    {
+        cErr << "No attributes to generate for database plugins\n";
+    }
+    else
+    {
+        QFile *fc;
+        if ((fc = Open(QString("VisIt_%1.h").arg(attribute->name))) != 0)
+        {
+            QTextStream c(fc);
+            attribute->WriteVisItHeader(c);
+            fc->close();
+            delete fc;
+        }
+
+        if ((fc = Open(QString("VisIt_%1.c").arg(attribute->name))) != 0)
+        {
+            QTextStream c(fc);
+            attribute->WriteVisItSource(c);
+            fc->close();
+            delete fc;
+        }
+
+        if ((fc = Open(QString("simv2_%1.h").arg(attribute->name))) != 0)
+        {
+            QTextStream c(fc);
+            attribute->WriteSimV2Header(c);
+            fc->close();
+            delete fc;
+        }
+
+
+        if ((fc = Open(QString("simv2_%1.C").arg(attribute->name))) != 0)
+        {
+            QTextStream c(fc);
+            attribute->WriteSimV2Source(c);
+            fc->close();
+            delete fc;
+        }
+    }
+}

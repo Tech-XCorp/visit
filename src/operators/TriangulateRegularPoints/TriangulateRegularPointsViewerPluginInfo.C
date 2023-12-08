@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e48591d961c339789f829fc8bad794e459fc6d788d9e11dca452d5358ec3bbb0
-size 601
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ****************************************************************************
+//  File: TriangulateRegularPointsViewerPluginInfo.C
+// ****************************************************************************
+
+#include <TriangulateRegularPointsPluginInfo.h>
+#include <TriangulateRegularPointsAttributes.h>
+
+VISIT_OPERATOR_PLUGIN_ENTRY_EV(TriangulateRegularPoints,Viewer)
+
+

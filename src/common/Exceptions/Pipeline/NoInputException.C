@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4923eac36166b958254b7ac1560c3f614e81a2752a1157a2c4785f96b6819e5b
-size 857
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                             NoInputException.C                            //
+// ************************************************************************* //
+
+#include <NoInputException.h>
+
+
+// ****************************************************************************
+//  Method: NoInputException constructor
+//
+//  Programmer: Hank Childs
+//  Creation:   July 24, 2000
+//
+// ****************************************************************************
+
+NoInputException::NoInputException()
+{
+    msg = "No input was defined for this filter.";
+}
+
+

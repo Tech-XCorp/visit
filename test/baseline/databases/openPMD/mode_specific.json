@@ -1,3 +1,5 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:15055f24431fe78a5ce03fafaf99734d3ac15302abf6c3ac4209e3186beaff0b
-size 85
+{"modes":
+    {"parallel":
+        {"openPMD_3D_Fieldsrho.png" : "parallel"}
+    }
+}

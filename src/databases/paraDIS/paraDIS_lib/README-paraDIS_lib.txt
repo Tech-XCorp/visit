@@ -1,3 +1,3 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ae3b883f65c152fc93abb1481fdde0ffa29336642c3dee207524c4b28a93a86c
-size 116
+This directory contains files copied out of paraDIS_lib revision 331 as of Feb 14, 2011. 
+-- Rich Cook
+925-423-9605

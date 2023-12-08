@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ab90786a191bb833faa440ad5e47098c117e32b5bb0731d24fce01fce1e1ac31
-size 405
+# ----------------------------------------------------------------------------
+#  CLASSES: nightly
+#
+#  Test Case:  truecolor.py
+#
+#  Programmer: Mark C. Miller 
+#  Date:       June 29, 2005 
+# ----------------------------------------------------------------------------
+
+
+
+OpenDatabase(data_path("Image_test_data/manhattan.jpg"))
+
+
+AddPlot("Truecolor","color");
+DrawPlots()
+
+Test("truecolor_01")
+
+Exit()

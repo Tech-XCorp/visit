@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e35c275e9a06dde8d922a8dcebfd011cbb46525a9cd0a4d91927b86b607743e9
-size 362
+<?xml version="1.0"?>
+  <Plugin name="CosmosPP" label="CosmosPP" type="database" dbtype="MTMD" version="1.0">
+    <FilePatterns> 
+      *.cosmospp 
+      *.cosmos++ 
+    </FilePatterns>
+    <CXXFLAGS> 
+      ${HDF5_INCLUDE_DIR} 
+    </CXXFLAGS>
+    <LDFLAGS>  
+      ${HDF5_LIBRARY_DIR} 
+    </LDFLAGS>
+    <LIBS>     
+      ${HDF5_LIB} 
+    </LIBS>
+  </Plugin>

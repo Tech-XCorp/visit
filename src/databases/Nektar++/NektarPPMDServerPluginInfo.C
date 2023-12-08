@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2b2103e835e6ee4cf16cf77ba177b24a2ad6dca067d5a2de5f8f13477227131b
-size 422
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <NektarPPPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(NektarPP,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void NektarPPMDServerPluginInfo::dummy()
+{
+}
+

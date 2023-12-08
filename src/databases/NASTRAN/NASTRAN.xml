@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a46acfd1d96edb20ddebe31fef1a499db00ce4ba35edd56ad052de0c15a99f6a
-size 373
+<?xml version="1.0"?>
+  <Plugin name="NASTRAN" type="database" label="NASTRAN Bulk data" version="1.0" enabled="true" mdspecificcode="true" onlyengine="false" noengine="false" dbtype="STSD" haswriter="false" hasoptions="true">
+    <FilePatterns>
+      *.nas
+      *.f06
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="false">
+    </Attribute>
+  </Plugin>

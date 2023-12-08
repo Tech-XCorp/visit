@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:00599245b83ea91530f58080b307907ca5c244fc3f98c80b86f892bb7335f34a
-size 466
+# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+# Project developers.  See the top-level LICENSE file for dates and other
+# details.  No copyright assignment is required to contribute to VisIt.
+
+"""
+ file: management.py
+ author: Cyrus Harrison <cyrush@llnl.gov>
+ created: 8/30/2012
+ description:
+    TODO
+
+"""
+
+import sys
+
+def module(name):
+    mname = "flow.filters." + name
+    if mname in sys.modules:
+        return sys.modules[mname]
+

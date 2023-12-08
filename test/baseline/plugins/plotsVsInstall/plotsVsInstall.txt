@@ -1,3 +1,4 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:20139bf12daeb46b5438f1551fb49f1e870db5b489f57ee437243a0ff83e0112
-size 100
+{   'Contour': 'success',
+    'Label': 'success',
+    'Tensor': 'success',
+    'Volume': 'success'}

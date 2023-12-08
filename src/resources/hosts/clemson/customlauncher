@@ -1,3 +1,30 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4f4dd8e8ab5523d201130304450863a28a088a59223c277a101900fa68c81d72
-size 823
+#
+# filename: customlauncher
+# description: Custom Launcher for Clemson
+#
+ 
+import subprocess
+import os
+ 
+class ClemsonLauncher(MainLauncher):
+    def __init__(self):
+        super(ClemsonLauncher, self).__init__()
+ 
+    def LaunchOnInsight(self):
+        sname = self.sectorname()
+        return sname.count("insight") > 0 or sname.count("master") >0
+
+    def Customize(self):
+        if self.LaunchOnInsight():
+            # print "[Setting up env to launch on insight.clemson.edu]"
+            SETENV("PATH", self.joinpaths([GETENV("PATH"), "/usr/mpi/gcc/openmpi-1.6.5/bin"]))
+            SETENV("LD_LIBRARY_PATH", self.joinpaths([GETENV("LD_LIBRARY_PATH"), "/usr/mpi/gcc/openmpi-1.6.5/lib64"]))
+
+
+
+# Launcher creation function
+def createlauncher():
+    # print "[Using Clemson Launcher]"
+    return ClemsonLauncher()
+
+

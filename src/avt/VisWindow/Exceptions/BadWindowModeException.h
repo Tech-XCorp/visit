@@ -1,3 +1,39 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:53ed5f6f1c264479aec37ce6e77184eb8ad72c47d7f3aebdeb9e1b37c5edbc39
-size 1230
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                         BadWindowModeException.h                          //
+// ************************************************************************* //
+
+#ifndef BAD_WINDOW_MODE_EXCEPTION_H
+#define BAD_WINDOW_MODE_EXCEPTION_H
+#include <viswindow_exports.h>
+
+#include <VisWindowException.h>
+#include <VisWindowTypes.h>
+
+
+// ****************************************************************************
+//  Method: BadWindowModeException
+//
+//  Purpose:
+//      The exception that should be thrown when an unexpected window mode is
+//      encountered.
+//
+//  Programmer: Hank Childs
+//  Creation:   May 19, 2000
+//
+// ****************************************************************************
+
+class VISWINDOW_API2 BadWindowModeException : public VisWindowException
+{
+  public:
+                    BadWindowModeException(WINDOW_MODE);
+    virtual        ~BadWindowModeException() VISIT_THROW_NOTHING {;};
+};
+
+
+#endif
+
+

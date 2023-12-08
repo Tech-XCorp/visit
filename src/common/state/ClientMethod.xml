@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:27edead8a94708d15bdd07340fe30b6e14d4e0f56aaf0e9a4e1bcc9d5f29b7ee
-size 919
+<?xml version="1.0"?>
+  <Attribute name="ClientMethod" purpose="This class contains the attributes needed to make one client execute a method on another client." persistent="false" exportAPI="STATE_API" exportInclude="state_exports.h" codefile="ClientMethod.code">
+    <Field name="methodName" label="methodName" type="string">
+    </Field>
+    <Field name="intArgs" label="Integer arguments" type="intVector">
+    </Field>
+    <Field name="doubleArgs" label="Double arguments" type="doubleVector">
+    </Field>
+    <Field name="stringArgs" label="String arguments" type="stringVector">
+    </Field>
+    <Function name="ClearArgs" user="true" member="true">
+    </Function>
+    <Function name="AddArgument" user="true" member="true">
+    </Function>
+    <Function name="AddArgument2" user="true" member="true">
+    </Function>
+    <Function name="AddArgument3" user="true" member="true">
+    </Function>
+  </Attribute>

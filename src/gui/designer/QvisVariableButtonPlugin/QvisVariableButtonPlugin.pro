@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d9c965653b4d17b7015f5a6eedc50da77da8c3023cbc97b4aa46ee8bb8903257
-size 601
+CONFIG      += designer plugin debug_and_release
+ 
+TARGET      = $$qtLibraryTarget($$TARGET)
+TEMPLATE    = lib
+QTDIR_build:DESTDIR     = $$QT_BUILD_TREE/plugins/designer
+
+INCLUDEPATH += ../../../include/visit
+
+DEFINES += "DESIGNER_PLUGIN"
+
+HEADERS     = QvisVariableButton.h \
+              QvisVariableButtonPlugin.h 
+SOURCES     = QvisVariableButton.cpp \
+              QvisVariableButtonPlugin.cpp 
+
+# install
+target.path = $$[QT_INSTALL_PLUGINS]/designer
+sources.files = $$SOURCES $$HEADERS *.pro
+sources.path = $$[QT_INSTALL_EXAMPLES]/designer/QvisVariableButtonPlugin
+INSTALLS += target sources

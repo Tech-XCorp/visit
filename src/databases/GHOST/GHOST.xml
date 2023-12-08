@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e817f104d0eba5fa3d34215ecaa17ce9900b4bdbb7cca0446b7ee4f9b3c47471
-size 473
+<?xml version="1.0"?>
+  <Plugin name="GHOST" type="database" label="GHOST" version="1" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STMD" haswriter="false" hasoptions="false" filePatternsStrict="false" opensWholeDirectory="false">
+    <FilePatterns>
+      *.ghost
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

@@ -1,3 +1,4 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b539c12a3bb0fcee23b02bfba020c0f1735a52a2e0ad4fd7ab62e7ad511f2fa2
-size 144
+The total Surface Area is 5.56925e+06
+The total Volume is 3.26942e+07
+The actual number of nodes is 17852.
+The actual number of zones is 15003.

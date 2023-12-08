@@ -1,3 +1,11 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:298f55b7b2c3b4476211aa8f10a40773075fbf11b62bc89bb5023d7ca3e76937
-size 587
+<?xml version="1.0"?>
+  <Attribute name="PlaneAttributes" purpose="Attributes for a plane" exportAPI="STATE_API" exportInclude="state_exports.h">
+    <Field name="origin" type="doubleArray" length="3"> 0. 0. 0. </Field>
+    <Field name="normal" type="doubleArray" length="3"> 0. 0. 1. </Field>
+    <Field name="upAxis" type="doubleArray" length="3"> 0. 1. 0. </Field>
+    <Field name="haveRadius" type="bool">false</Field>
+    <Field name="radius" type="double" >1 </Field>
+    <Field name="threeSpace" label="threeSpace" type="bool" internal="true"> false 
+    </Field>
+  </Attribute>
+

@@ -1,3 +1,30 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8311fe8b028bed3bab40c271d0db7ba3d9c98f0598bf2b9126064f55dabb3bd8
-size 1103
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                        PointerNotInCacheException.C                       //
+// ************************************************************************* //
+
+
+#include <PointerNotInCacheException.h>
+
+
+// ****************************************************************************
+//  Method: PointerNotInCacheException constructor
+//
+//  Programmer: Mark C. Miller 
+//  Creation:   November 30, 2006 
+//
+//  Modifications:
+//    Jeremy Meredith, Thu Aug  7 16:19:35 EDT 2008
+//    Use %p format for pointers, not %x.
+//
+// ****************************************************************************
+
+PointerNotInCacheException::PointerNotInCacheException(const void *p)
+{
+    char str[1024];
+    snprintf(str, sizeof(str), "Unable to find object with pointer %p in cache", p);
+    msg = str;
+}

@@ -1,3 +1,38 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e8f0167b08ce30046bc691f3d76736ad3f307aaef2c4c9e77043d3d6573bb949
-size 1103
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef VISIT_LINE_TOOL_INTERFACE_H
+#define VISIT_LINE_TOOL_INTERFACE_H
+#include <viswindow_exports.h>
+#include <avtToolInterface.h>
+
+// ****************************************************************************
+// Class: avtLineToolInterface
+//
+// Purpose:
+//   This class contains the information passed to users of the line tool.
+//
+// Notes:      
+//
+// Programmer: Brad Whitlock
+// Creation:   Tue Jun 18 15:17:24 PST 2002
+//
+// Modifications:
+//
+// ****************************************************************************
+
+class VISWINDOW_API avtLineToolInterface : public avtToolInterface
+{
+   public:
+     avtLineToolInterface(const VisWindow *v);
+     virtual ~avtLineToolInterface();
+
+     void SetPoint1(double, double, double);
+     void SetPoint2(double, double, double);
+
+     const double *GetPoint1() const;
+     const double *GetPoint2() const;
+};
+
+#endif

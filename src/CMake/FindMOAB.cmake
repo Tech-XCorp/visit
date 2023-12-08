@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:aace48f13aaf603c4680fa9c2401d46b91d8a3a005377f061096b215e48ce154
-size 807
+# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+# Project developers.  See the top-level LICENSE file for dates and other
+# details.  No copyright assignment is required to contribute to VisIt.
+
+#****************************************************************************
+# Modifications:
+#    Iulian R. Grindeanu & Vijay S. Mahadevan via Mark C Miller
+#    Wed Aug 10 14:54:05 PDT 2016
+#    Added support for ANL's Mesh Object datABase (MOAB)
+#****************************************************************************/
+
+# Use the H5PART_DIR hint from the config-site .cmake file 
+
+INCLUDE(${VISIT_SOURCE_DIR}/CMake/SetUpThirdParty.cmake)
+
+SET_UP_THIRD_PARTY(MOAB lib include MOAB)
+IF(VISIT_PARALLEL)
+    SET_UP_THIRD_PARTY(MOAB_MPI lib include MOAB_mpi)
+ENDIF(VISIT_PARALLEL)

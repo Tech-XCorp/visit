@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:55a30aff8cad82ce0043bed82d630146428d934ea49ad63c2fc93eb05f14be81
-size 525
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ****************************************************************************
+//  File: ScatterEnginePluginInfo.C
+// ****************************************************************************
+
+#include <ScatterPluginInfo.h>
+#include <avtScatterPlot.h>
+
+VISIT_PLOT_PLUGIN_ENTRY_EV(Scatter,Engine)
+

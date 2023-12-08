@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:cd40f519c48c65858d971998cfac8b38e24a8a51e175189bb7d4b337e13ed87d
-size 264
+localhost:VISIT_TOP_DIR/test/reopen_samrai.visit has 3 states
+activeSource = "localhost:VISIT_TOP_DIR/test/reopen_samrai.visit"
+activeTimeSlider = 0
+timeSliders = ("localhost:VISIT_TOP_DIR/test/reopen_samrai.visit")
+timeSliderCurrentStates = (0)
+animationMode = 2

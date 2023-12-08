@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:99f68b4f519d326a1a87f835f39dd88a0ec91e67f2dfb01ef43e3f06ff8b6f72
-size 468
+<?xml version="1.0"?>
+  <Plugin name="ANALYZE" type="database" label="ANALYZE" version="1.0" enabled="true" dbtype="STSD" haswriter="false" filePatternsStrict="true">
+    <FilePatterns>
+      *.img
+      *.hdr
+    </FilePatterns>
+    <Files components="M">
+      avtANALYZEFileFormat.C
+      DSRObject.C
+    </Files>
+    <Files components="E">
+      avtANALYZEFileFormat.C
+      DSRObject.C
+    </Files>
+    <Attribute persistent="false">
+    </Attribute>
+  </Plugin>

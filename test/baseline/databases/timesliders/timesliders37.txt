@@ -1,3 +1,5 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:81ec448b3a593b4976f37d0a2ba9a34530733784a4d05c2b53a3840dbf7e8dd9
-size 225
+activeSource = "localhost:VISIT_TOP_DIR/data/silo_hdf5_test_data/curv3d.silo"
+activeTimeSlider = 0
+timeSliders = ("localhost:VISIT_TOP_DIR/data/silo_hdf5_test_data/wave.visit")
+timeSliderCurrentStates = (0)
+animationMode = 2

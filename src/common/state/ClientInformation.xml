@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ff1b2ed1ac83792ca4207b4d3d16501e3a2ece21e73aa30e8f82dd43f0e24846
-size 901
+<?xml version="1.0"?>
+  <Attribute name="ClientInformation" purpose="This class contains the attributes that describe the client" persistent="false" exportAPI="STATE_API" exportInclude="state_exports.h" codefile="ClientInformation.code">
+    <Field name="clientName" label="Client name" type="string">
+    </Field>
+    <Field name="methodNames" label="Method names" type="stringVector">
+    </Field>
+    <Field name="methodPrototypes" label="Method prototypes" type="stringVector">
+    </Field>
+    <Function name="DeclareMethod" user="true" member="true">
+    </Function>
+    <Function name="GetMethodIndex" user="true" member="true">
+    </Function>
+    <Function name="GetMethod" user="true" member="true">
+    </Function>
+    <Function name="GetMethodPrototype" user="true" member="true">
+    </Function>
+    <Function name="ClearMethods" user="true" member="true">
+    </Function>
+  </Attribute>

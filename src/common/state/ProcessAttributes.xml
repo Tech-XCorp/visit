@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7c1fee9f8908538a5222cfd68f3b4b011673c679cff4688216ba47f96e76a908
-size 664
+<?xml version="1.0"?>
+  <Attribute name="ProcessAttributes" purpose="attributes to describe a running process" persistent="false" keyframe="true" exportAPI="STATE_API" exportInclude="state_exports.h">
+    <Field name="pids" label="pids" type="intVector">
+    </Field>
+    <Field name="ppids" label="pids" type="intVector">
+    </Field>
+    <Field name="hosts" label="hosts" type="stringVector">
+    </Field>
+    <Field name="isParallel" label="isParallel" type="bool">
+      false
+    </Field>
+    <Field name="memory" label="Memory usage" type="intVector">
+    </Field>
+    <Field name="times" label="Time of day" type="doubleVector">
+    </Field>
+  </Attribute>

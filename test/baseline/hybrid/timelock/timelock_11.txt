@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:121d043581362fa2c9d7203450a1e1e293c740c687e52403fb95b894bd2ac426
-size 424
+activeSource = "localhost:VISIT_TOP_DIR/test/wave1.visit"
+activeTimeSlider = 0
+timeSliders = ("Correlation01", "localhost:VISIT_TOP_DIR/test/wave1.visit")
+timeSliderCurrentStates = (36, 36)
+animationMode = 2
+interactionMode = 0
+toolUpdateMode = 1
+boundingBoxNavigate = 1
+spin = 0
+fullFrame = 0
+perspective = 1
+maintainView = 0
+lockView = 0
+lockTools = 0
+lockTime = 1
+viewExtentsType = 0
+viewDimension = 3
+viewKeyframes = ()

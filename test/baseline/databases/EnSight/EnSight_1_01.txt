@@ -1,3 +1,11 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:689fd7fad7a5598aa949cf47a4c9e724ad0c3d785c82a5872ec135f701994891
-size 136
+Dataset values
+Min Value=1
+Min Value=2
+Min Value=3
+Min Value=4
+Min Value=5
+Min Value=6
+Min Value=7
+Min Value=8
+Min Value=9
+Min Value=10

@@ -1,3 +1,48 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ca2a73437eabf7f07cd0b9d1b567c73469755eea3130627267e096b2e3171cfe
-size 1652
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                     avtRelativeDifferenceExpression.h                     //
+// ************************************************************************* //
+
+#ifndef AVT_RELATIVE_DIFFERENCE_FILTER_H
+#define AVT_RELATIVE_DIFFERENCE_FILTER_H
+
+#include <avtBinaryMathExpression.h>
+
+class     vtkDataArray;
+
+
+// ****************************************************************************
+//  Class: avtRelativeDifferenceExpression
+//
+//  Purpose:
+//      A filter that calculates the relative difference between its two 
+//      inputs.
+//
+//  Programmer: Hank Childs
+//  Creation:   December 28, 2004
+//
+// ****************************************************************************
+
+class EXPRESSION_API avtRelativeDifferenceExpression : public avtBinaryMathExpression
+{
+  public:
+                              avtRelativeDifferenceExpression();
+    virtual                  ~avtRelativeDifferenceExpression();
+
+    virtual const char       *GetType(void) 
+                                 { return "avtRelativeDifferenceExpression"; };
+    virtual const char       *GetDescription(void)
+                                 { return "Calculating relative difference"; };
+
+  protected:
+    virtual void     DoOperation(vtkDataArray *in1, vtkDataArray *in2,
+                                 vtkDataArray *out, int ncomps, int ntuples);
+};
+
+
+#endif
+
+

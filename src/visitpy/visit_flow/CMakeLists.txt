@@ -1,3 +1,11 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:946d1f64226468ee3b4dafbf1024af1ca8f0d0051cbf0ebeacfc2555525d8d7e
-size 455
+# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+# Project developers.  See the top-level LICENSE file for dates and other
+# details.  No copyright assignment is required to contribute to VisIt.
+
+#****************************************************************************/
+# Modifications:
+#
+#****************************************************************************/
+
+ADD_SUBDIRECTORY(flow)
+ADD_SUBDIRECTORY(visit_flow_vpe)

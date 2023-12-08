@@ -1,3 +1,47 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e0d5e02a294497d6a3a57746b07f4ced84a7eedf077fa2b80f6e623b6360d0a1
-size 1512
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                         avtTerminatingNullDataSink.C                      //
+// ************************************************************************* //
+
+#include <avtTerminatingNullDataSink.h>
+
+
+// ****************************************************************************
+//  Method: avtTerminatingNullDataSink constructor
+//
+//  Purpose:
+//      Defines the constructor.  Note: this should not be inlined in the
+//      header because it causes problems for certain compilers.
+//
+//  Programmer: Hank Childs
+//  Creation:   February 5, 2004
+//
+// ****************************************************************************
+
+avtTerminatingNullDataSink::avtTerminatingNullDataSink()
+{
+    ;
+}
+
+
+// ****************************************************************************
+//  Method: avtTerminatingNullDataSink destructor
+//
+//  Purpose:
+//      Defines the destructor.  Note: this should not be inlined in the header
+//      because it causes problems for certain compilers.
+//
+//  Programmer: Hank Childs
+//  Creation:   February 5, 2004
+//
+// ****************************************************************************
+
+avtTerminatingNullDataSink::~avtTerminatingNullDataSink()
+{
+    ;
+}
+
+

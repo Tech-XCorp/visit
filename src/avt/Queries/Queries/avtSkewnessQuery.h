@@ -1,3 +1,53 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0b1169e95897f8b15b687e27ab2517a227c6d14dc921cfbc996c4d24e93cf9c1
-size 1720
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                            avtSkewnessQuery.h                             //
+// ************************************************************************* //
+
+#ifndef AVT_SKEWNESS_QUERY_H
+#define AVT_SKEWNESS_QUERY_H
+
+#include <query_exports.h>
+
+#include <avtCurveQuery.h>
+
+#include <string>
+
+// ****************************************************************************
+//  Class: avtSkewnessQuery
+//
+//  Purpose:
+//    A query that calculates the skewness of a distribution.
+//
+//    Skewness is a measure of "symmetry".  A distribution has "symmetry"
+//    if it similar to the left and to the right of the center point.
+//
+//    More information about skewness can be found at:
+//    http://mathworld.wolfram.com/Skewness.html
+//
+//  Programmer: Hank Childs
+//  Creation:   August 5, 2005
+//
+// ****************************************************************************
+
+class QUERY_API avtSkewnessQuery : public avtCurveQuery
+{
+  public:
+                              avtSkewnessQuery();
+    virtual                  ~avtSkewnessQuery();
+
+    virtual const char       *GetType(void)  { return "avtSkewnessQuery"; };
+    virtual const char       *GetDescription(void)
+                                           { return "Calculating skewness."; };
+
+  protected:
+    virtual double            CurveQuery(int, const float *, const float *);
+    virtual std::string       CreateMessage(double);
+};
+
+
+#endif
+
+

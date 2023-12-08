@@ -1,3 +1,12 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d277df4b1b1e85ad3aaf33e6de000744c707ca5de66db007be3b60cc99e4e173
-size 482
+# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+# Project developers.  See the top-level LICENSE file for dates and other
+# details.  No copyright assignment is required to contribute to VisIt.
+
+#****************************************************************************
+# Modifications:
+#  Kathleen Biagas, Tue Aug 19 16:35:33 PDT 2014
+#  Removed V1.
+#
+#****************************************************************************
+
+ADD_SUBDIRECTORY(V2)

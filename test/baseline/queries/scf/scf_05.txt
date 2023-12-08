@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:34aa29ae75a1e73880389fc262f34f53ef4b9d323d19c3a0f25ea112cde6f5eb
-size 159
+Elliptical Compactness Factor = 0.945158.  Using centroid for ellipse origin.  Centroid used was (0.5, 0, 0).  Best fitting axes were 0.574423,1.01918,1.01918.

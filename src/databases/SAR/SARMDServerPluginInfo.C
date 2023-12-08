@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5ca4589c145592caf72d07f2e1f8a7508a949d243c052f9249d8fe6d7071df40
-size 407
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <SARPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(SAR,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void SARMDServerPluginInfo::dummy()
+{
+}
+

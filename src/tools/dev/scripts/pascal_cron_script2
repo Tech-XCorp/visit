@@ -1,3 +1,64 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:78ec7736cb6ce4982c3e829587b58a3cd65c09eb5f27b35c7e06f6c2b80fb1fe
-size 1418
+#!/bin/sh
+
+#
+# Determine the users name and e-mail address.
+#
+user=`whoami`
+
+#
+# Set the user e-mail address.
+#
+userNersc=unknown
+userEmail=unknown
+case $user in
+    bonnell)
+        userNersc=bonnell
+        userEmail=biagas2@llnl.gov
+        ;;
+    kbonnell)
+        userNersc=bonnell
+        userEmail=biagas2@llnl.gov
+        ;;
+    brugger)
+        userNersc=brugger
+        userEmail=brugger1@llnl.gov
+        ;;
+    cyrush)
+        userNersc=cyrush
+        userEmail=cyrush@llnl.gov
+        ;;
+    hrchilds)
+        userNersc=hrchilds
+        userEmail=hank@uoregon.edu
+        ;;
+    mcmiller)
+        userNersc=miller86
+        userEmail=miller86@llnl.gov
+        ;;
+    miller86)
+        userNersc=miller86
+        userEmail=miller86@llnl.gov
+        ;;
+    harrison37)
+        userNersc=cyrush
+        userEmail=cyrush@llnl.gov
+        ;;
+    cyrush)
+        userNersc=cyrush
+        userEmail=cyrush@llnl.gov
+        ;;
+esac
+
+nerscHost="cori.nersc.gov"
+
+# Change directories to the working directory.
+cd visit_run_tests
+
+# Get the latest version of the update script
+rm -f visit-update-test-website
+wget https://raw.githubusercontent.com/visit-dav/visit/develop/src/tools/dev/scripts/visit-update-test-website
+
+# Copy the update script to nersc and execute it.
+chmod 755 visit-update-test-website
+scp visit-update-test-website $userNersc@$nerscHost:
+ssh $userNersc@$nerscHost "./visit-update-test-website"

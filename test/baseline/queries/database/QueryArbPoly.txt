@@ -1,3 +1,23 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5e2f6635e5206aada4072e6396aa7cf9e7ca72f76fec6963e9659371a408ed29
-size 619
+arbpoly-zoohybrid:
+The actual number of zones is 27.
+The original number of zones is 11.
+The actual number of nodes is 30.
+The original number of nodes is 28.
+
+poly3d:
+The actual number of zones is 4600.
+The original number of zones is 3000.
+The actual number of nodes is 4001.
+The original number of nodes is 3801.
+
+OvlTop:
+The actual number of zones is 2786.
+The original number of zones is 100.
+The actual number of nodes is 869.
+The original number of nodes is 769.
+
+arbpoly:
+The actual number of zones is 10.
+The original number of zones is 1.
+The actual number of nodes is 11.
+The original number of nodes is 10.

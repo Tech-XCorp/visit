@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7ab3aa69ed1f5c3a877381fd3d770ecb0ab7f9074fc82cc43c2df57ad3ed82b0
-size 318
+Function: avtLabelMetaData2
+Declaration: avtLabelMetaData(const std::string &, const std::string &, avtCentering);
+Definition:
+avtLabelMetaData::avtLabelMetaData(const std::string &n, const std::string &mn,
+   avtCentering c) : avtVarMetaData(avtLabelMetaData::TmfsStruct, n, mn, c)
+{
+    avtLabelMetaData::Init();
+}
+

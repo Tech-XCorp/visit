@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:552432e81eefc9e2c7b23daf017408775fd1bd837ef8a2203e23f61bf1c3a3f5
-size 493
+Pseudocolor:  ()
+viewer: The 'curvature' expression failed because The curvature expression can only be calculated on surfaces.  VisIt tries to evaluate expressions as soon as they are read from a database.  For curvature, the expression is typically desired after some operators have been applied.  You can defer the evaluation of the curvature expression using the DeferExpression operator. The defer expression operator is available through the plugin manager located under the Options menu

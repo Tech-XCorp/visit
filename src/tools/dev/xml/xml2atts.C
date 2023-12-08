@@ -1,3 +1,36 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8752cada49fabd8f9b949a564de04774a004b2f78224065dfd369e5d2b056d47
-size 1012
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include "main.h"
+#include "GenerateAtts.h"
+#include "main.C"
+
+void
+CallGenerator(const QString &docType, Attribute *attribute, Plugin *plugin, const QString &)
+{
+    if (docType == "Plugin" && plugin->type == "database")
+    {
+        cErr << "No attributes to generate for database plugins\n";
+    }
+    else
+    {
+        // atts writer mode
+        QFile *fh;
+        if ((fh = Open("pre_"+attribute->name+".h")) != 0)
+        {
+            QTextStream h(fh);
+            attribute->WriteHeader(h);
+            CloseHeader(h, "pre_"+attribute->name+".h");
+        }
+
+        QFile *fc;
+        if ((fc = Open(attribute->name+".C")) != 0)
+        {
+            QTextStream c(fc);
+            attribute->WriteSource(c);
+            fc->close();
+            delete fc;
+        }
+    }
+}

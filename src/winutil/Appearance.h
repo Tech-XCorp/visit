@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d788d4762e130cb3c5b587cbc5c08c23a9ec84a9c785d8a7a011e4cb2d4b22f4
-size 503
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef APPEARANCE_H
+#define APPEARANCE_H
+#include <winutil_exports.h>
+
+class QApplication;
+class AppearanceAttributes;
+
+void WINUTIL_API GetAppearance(QApplication *a, AppearanceAttributes *aa);
+void WINUTIL_API SetAppearance(QApplication *a, AppearanceAttributes *aa);
+
+#endif

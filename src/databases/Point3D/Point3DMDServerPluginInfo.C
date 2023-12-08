@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a769c416e335ea74f477002d5b00874537e412f35dc9d856bf10210347e3dfc8
-size 419
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <Point3DPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(Point3D,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void Point3DMDServerPluginInfo::dummy()
+{
+}
+

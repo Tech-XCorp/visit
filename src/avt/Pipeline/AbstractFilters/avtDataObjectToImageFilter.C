@@ -1,3 +1,47 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:faa50764ec67e5b27873d1d5e35a06df9f6405a26a9385d78a4b62dd47f9d1ed
-size 1512
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                         avtDataObjectToImageFilter.C                      //
+// ************************************************************************* //
+
+#include <avtDataObjectToImageFilter.h>
+
+
+// ****************************************************************************
+//  Method: avtDataObjectToImageFilter constructor
+//
+//  Purpose:
+//      Defines the constructor.  Note: this should not be inlined in the
+//      header because it causes problems for certain compilers.
+//
+//  Programmer: Hank Childs
+//  Creation:   February 5, 2004
+//
+// ****************************************************************************
+
+avtDataObjectToImageFilter::avtDataObjectToImageFilter()
+{
+    ;
+}
+
+
+// ****************************************************************************
+//  Method: avtDataObjectToImageFilter destructor
+//
+//  Purpose:
+//      Defines the destructor.  Note: this should not be inlined in the header
+//      because it causes problems for certain compilers.
+//
+//  Programmer: Hank Childs
+//  Creation:   February 5, 2004
+//
+// ****************************************************************************
+
+avtDataObjectToImageFilter::~avtDataObjectToImageFilter()
+{
+    ;
+}
+
+

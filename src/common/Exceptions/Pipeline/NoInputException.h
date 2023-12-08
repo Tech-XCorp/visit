@@ -1,3 +1,38 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ca9a1df0c8e04c6968bca7d8ed08a567f2fb30368f1105c5b73e5261bc69cac2
-size 1150
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                              NoInputException.h                           //
+// ************************************************************************* //
+
+#ifndef NO_INPUT_EXCEPTION_H
+#define NO_INPUT_EXCEPTION_H
+#include <avtexception_exports.h>
+
+
+#include <PipelineException.h>
+
+
+// ****************************************************************************
+//  Class: NoInputException
+//
+//  Purpose:
+//      The exception that should be called when there is no input to a filter.
+//
+//  Programmer: Hank Childs
+//  Creation:   July 24, 2000
+//
+// ****************************************************************************
+
+class AVTEXCEPTION_API NoInputException : public PipelineException
+{
+  public:
+                          NoInputException();
+    virtual              ~NoInputException() VISIT_THROW_NOTHING {;};
+};
+
+
+#endif
+
+

@@ -1,3 +1,47 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7ef8a0b5a2c94d8d96ddcb23d42f6db23d44a3075b47b18a816ed838f0e341fe
-size 1477
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                           avtSourceFromNullData.C                         //
+// ************************************************************************* //
+
+#include <avtSourceFromNullData.h>
+
+
+// ****************************************************************************
+//  Method: avtSourceFromNullData constructor
+//
+//  Purpose:
+//      Defines the constructor.  Note: this should not be inlined in the
+//      header because it causes problems for certain compilers.
+//
+//  Programmer: Hank Childs
+//  Creation:   February 5, 2004
+//
+// ****************************************************************************
+
+avtSourceFromNullData::avtSourceFromNullData()
+{
+    ;
+}
+
+
+// ****************************************************************************
+//  Method: avtSourceFromNullData destructor
+//
+//  Purpose:
+//      Defines the destructor.  Note: this should not be inlined in the header
+//      because it causes problems for certain compilers.
+//
+//  Programmer: Hank Childs
+//  Creation:   February 5, 2004
+//
+// ****************************************************************************
+
+avtSourceFromNullData::~avtSourceFromNullData()
+{
+    ;
+}
+
+

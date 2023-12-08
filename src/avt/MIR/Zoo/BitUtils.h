@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a444e5f738c35cde72d1486b79db57ac1d51a9893f352b20ed2294470b945509
-size 696
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef BIT_UTILS_H
+#define BIT_UTILS_H
+
+// ----------------------------------------------------------------------------
+//  Programmer: Jeremy Meredith
+//  Date:       August 21, 2003
+// ----------------------------------------------------------------------------
+
+#define byteForBit(m) int((m)/8)
+#define bitForBit(m)  (1<<((m)%8))
+extern const unsigned char nBitsSet[256];
+extern const signed   char bitsSet[256][8];
+extern const signed   char bitPos[256][8];
+
+
+#endif

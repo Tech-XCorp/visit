@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:71b060b704c58beaf1a40a97a5a08f7fb05f4d7eb5ed002286df29f63615655e
-size 416
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <AVSucdPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(AVSucd,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void AVSucdMDServerPluginInfo::dummy()
+{
+}
+

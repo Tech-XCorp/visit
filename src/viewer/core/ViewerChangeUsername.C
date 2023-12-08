@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:846cbac4c522b5b63bdf70db6312a7d3ba36b5dcf7f085dcf1e9a4c47792a003
-size 523
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <ViewerChangeUsername.h>
+
+ViewerChangeUsername::ViewerChangeUsername() : ViewerBase()
+{
+}
+
+ViewerChangeUsername::~ViewerChangeUsername()
+{
+}
+
+bool
+ViewerChangeUsername::ChangeUsername(const std::string &host, std::string &newUsername)
+{
+    newUsername = std::string();
+    return false;
+}

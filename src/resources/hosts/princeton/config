@@ -1,3 +1,11 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2646f9269bdcde7226d3b1865d4eaa5a5865048b6c00bfa33cc2cffce153d5ab
-size 351
+<?xml version="1.0"?>
+<Object name="VisIt">
+    <Field name="Version" type="string">1.11.0</Field>
+    <Object name="VIEWER">
+        <Object name="DEFAULT_VALUES">
+            <Object name="GlobalAttributes">
+                <Field name="cloneWindowOnFirstRef" type="bool">true</Field>
+            </Object>
+        </Object>
+    </Object>
+</Object>

@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7d1f3a84a4b38c96adac1a80067eb77ef8da9e0aedf76e2106d070c986b52e1e
-size 522
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.security.cs.disable-library-validation</key>
+	<true/>
+	<key>com.apple.security.cs.allow-dyld-environment-variables</key>
+        <true/>
+        <key>com.apple.security.cs.disable-execution-page-protection</key>
+        <true/>
+        <key>com.apple.security.personal-information.photos-library</key>
+        <true/>
+</dict>
+</plist>

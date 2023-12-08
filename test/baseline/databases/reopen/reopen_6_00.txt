@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:fd279238f80440d5333f52e7ee7f7044cea25a08ea70b27530c2b3364cbe2846
-size 124
+ has 1 states
+activeSource = "notset"
+activeTimeSlider = -1
+timeSliders = ()
+timeSliderCurrentStates = ()
+animationMode = 2

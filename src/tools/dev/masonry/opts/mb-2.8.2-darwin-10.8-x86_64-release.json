@@ -1,3 +1,33 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f048b470fc4a3ca9e7e6d5652ecaa1e2a9ed5510a1f52aaf77fc5425c9b1a9b7
-size 903
+{"bootstrap_visit":
+ {"version": "2.8.2",
+ "build_types": ["release"],
+ "arch":   "darwin-x86_64",
+ "branch": "2.8RC", 
+ "make_nthreads": 8, 
+ "boost_dir": "/Users/harrison37/Work/boost/1.54.0",
+ "svn": {"mode":"ssh","nersc_uname":"cyrush"},
+ "build_visit":  { "cmake_ver": "2.8.12.2",
+                    "args":"--no-thirdparty",
+          "libs":["cmake",
+                 "python",
+                 "vtk",
+                 "qt",
+                 "mxml",
+                 "pyside",
+                 "mpich",
+                 "adios",
+                 "advio",
+                 "boxlib",
+                 "ccmio",
+                 "cfitsio",
+                 "cgns",
+                 "gdal",
+                 "hdf4",
+                 "h5part",
+                 "hdf5",
+                 "netcdf",
+                 "silo",
+                 "szip",
+                 "uintah",
+                 "xdmf"]}
+}}

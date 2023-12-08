@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e230aa02604da40ca9447ded99ccda2e3681610a0569b57106249a28c06f7da5
-size 34
+The average difference is 0.662186

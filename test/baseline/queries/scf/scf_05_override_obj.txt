@@ -1,3 +1,12 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ef9ded06ec1056fa20106daf526c6a99ef2139cbdca920a8395c17fdf5e56045
-size 257
+{
+  "biggest_x_radius": 0.7218698082510029,
+  "biggest_y_radius": 0.9091518775583171,
+  "biggest_z_radius": 0.9091518775583171,
+  "centroid": [
+    1.0,
+    0.0,
+    0.0
+  ],
+  "elliptical_compactness_factor": 0.43999069162082766,
+  "override_centroid": 1
+}

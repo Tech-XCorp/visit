@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f7e06fe200c2f7f18c195dca3438b2b30214ed7a8566beef866eacdecbee7961
-size 599
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ****************************************************************************
+//  File: ToroidalPoloidalProjectionViewerPluginInfo.C
+// ****************************************************************************
+
+#include <ToroidalPoloidalProjectionPluginInfo.h>
+#include <ToroidalPoloidalProjection.h>
+
+VISIT_OPERATOR_PLUGIN_ENTRY_EV(ToroidalPoloidalProjection,Viewer)
+
+

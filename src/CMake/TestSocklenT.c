@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8b2fd38d5ad84f752da41dd7efedbf33cbd8f2e29897081c7c9e7641690e9f71
-size 330
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef WIN32
+#include <sys/types.h>
+#include <sys/socket.h>
+#endif
+
+int
+main()
+{
+    socklen_t dummy;
+}
+

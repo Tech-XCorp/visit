@@ -1,3 +1,10 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:237cd1050054826a82ef15331e5041e388dde0b473a15a8037f122eac7c932fb
-size 589
+<?xml version="1.0"?>
+  <Plugin name="AugDecomp" type="database" label="AugDecomp" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="true" onlyengine="false" noengine="false" dbtype="MTMD" haswriter="false" hasoptions="false" filePatternsStrict="false">
+    <FilePatterns>
+      *.augd
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="" codefile="AugDecomp.code">
+      <Function name="AugDecompCommonPluginInfo::SetupDatabase" user="false" member="true">
+      </Function>
+    </Attribute>
+  </Plugin>

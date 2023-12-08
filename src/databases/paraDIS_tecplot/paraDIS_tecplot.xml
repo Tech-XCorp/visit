@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7e3ce666c0af1f729ca7a6884bd1e3166c4ae8264115f0d2cdca214222a4b63e
-size 730
+<?xml version="1.0"?>
+  <Plugin name="paraDIS_tecplot" type="database" label="paraDIS simulation dump metafile" version="1.0a1" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STSD" haswriter="false" hasoptions="false" filePatternsStrict="false">
+    <Files components="M,E">
+        avtparaDIS_tecplotFileFormat.C
+    </Files>
+    <CXXFLAGS>
+        -IRC_cpp_lib
+    </CXXFLAGS>
+    <DEFINES>
+        -DNO_BOOST
+    </DEFINES>
+    <FilePatterns>
+        *.fld
+        *.field
+        *.cyl
+        *.cylinder
+        *.dat
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:19e9da7c83e15104b69f015d42e9283426177546665b01e9a4b4f30dbe64a619
-size 526
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef EXCEPTION_SCANNER_H
+#define EXCEPTION_SCANNER_H
+
+void ignoreToken(void);
+void processToken(const char *);
+void incrementScope(void);
+void decrementScope(void);
+void advanceSourceLineCount();
+void set_filename(const char *fn);
+void set_debugflag(int val);
+void set_verboseflag(int val);
+
+#endif

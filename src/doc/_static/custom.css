@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:11471d29943b7f5a3f258920842e6d6bef9b13407577f127cee6dcdf4a27e343
-size 199
+.collapsible .header {
+    display: block;
+    clear: both;
+    margin-bottom: 0.5cm;
+}
+
+.collapsible .header:after {
+    content: " ▶";
+}
+
+.collapsible .header.open:after {
+    content: " ▼";
+}

@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d03340d4070f0537dc2a789b3b8545b313dcd4287b3edec153318672e4cf4463
-size 443
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <ProteinDataBankPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(ProteinDataBank,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void ProteinDataBankMDServerPluginInfo::dummy()
+{
+}
+

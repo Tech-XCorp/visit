@@ -1,3 +1,71 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:682c932dfe4f3425feeb067b8da55f69629249eb06e7d90843dd9bad98ca41a5
-size 2424
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                         avtWholeImageCompositerNoZ.h                      //
+// ************************************************************************* //
+
+#ifndef AVT_WHOLE_IMAGE_COMPOSITER_NOZ_H
+#define AVT_WHOLE_IMAGE_COMPOSITER_NOZ_H
+
+#include <filters_exports.h>
+
+#ifdef PARALLEL
+#include <mpi.h>
+#endif
+
+#include <avtWholeImageCompositer.h>
+
+// ****************************************************************************
+//  Class: avtWholeImageCompositerNoZ
+//
+//  Purpose:
+//      An image compositor based largely on MeshTV's image compositer.
+//      The key limitation of this image compositer is that it assumes that
+//      every piece of image to be composited has origin 0,0 and size of the
+//      intended output image. That is, every piece being composited is a
+//      whole image. All the algorithms for chunking and message passing
+//      depend on this being the case.
+//
+//  Programmer: Mark C. Miller 
+//  Creation:   February 12, 2003
+//
+// ****************************************************************************
+
+class AVTFILTERS_API avtWholeImageCompositerNoZ : public avtWholeImageCompositer
+{
+   public:
+                              avtWholeImageCompositerNoZ();
+      virtual                ~avtWholeImageCompositerNoZ();
+
+      const char             *GetType(void);
+      const char             *GetDescription(void);
+
+      void                    Execute();
+
+   private:
+
+      void                    MergeBuffers(int npixels, bool doParallel,
+                                 const unsigned char *inrgb,
+                                 unsigned char *iorgb);
+
+      static int              objectCount;
+
+      static void             InitializeMPIStuff();
+      static void             FinalizeMPIStuff();
+
+#ifdef PARALLEL
+      static MPI_Datatype     mpiTypeZFPixel;
+      static MPI_Op           mpiOpMergeZFPixelBuffers;
+#endif
+
+};
+
+inline const char* avtWholeImageCompositerNoZ::GetType()
+{ return "avtWholeImageCompositerNoZ";}
+
+inline const char* avtWholeImageCompositerNoZ::GetDescription()
+{ return "performing whole-image composite without zbuffer"; }
+
+#endif

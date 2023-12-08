@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5c1691ba380c37bfb5a889f760441318fd1dd11a9751d9281b7f991a6e9c72a7
-size 387
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+#ifndef AVT_IMAGE_TYPE_H
+#define AVT_IMAGE_TYPE_H
+
+typedef enum
+{
+    ColorRGBImage,
+    ColorRGBAImage,
+    LuminanceImage,
+    ValueImage
+} avtImageType;
+
+#endif

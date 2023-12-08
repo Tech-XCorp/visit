@@ -1,3 +1,35 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e222a1bfdb325bb55cb64dc20f13e96b56e4ff4f76b92888e9f06b92850fc1c6
-size 962
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef VIEWER_CHANGE_USERNAME_H
+#define VIEWER_CHANGE_USERNAME_H
+#include <viewercore_exports.h>
+#include <ViewerBase.h>
+#include <string>
+
+// ****************************************************************************
+// Class: ViewerChangeUsername
+//
+// Purpose:
+//   Lets the user change the username.
+//
+// Notes:    
+//
+// Programmer: Brad Whitlock
+// Creation:   Thu Sep 11 14:42:36 PDT 2014
+//
+// Modifications:
+//
+// ****************************************************************************
+
+class VIEWERCORE_API ViewerChangeUsername : public ViewerBase
+{
+public:
+    ViewerChangeUsername();
+    virtual ~ViewerChangeUsername();
+
+    virtual bool ChangeUsername(const std::string &host, std::string &newUsername);
+};
+
+#endif

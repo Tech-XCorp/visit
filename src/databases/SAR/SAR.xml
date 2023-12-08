@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ff28470fd5379d9ded84e08e387f81e3ea24cb390330995b09179f15c1cf50e5
-size 320
+<?xml version="1.0"?>
+  <Plugin name="SAR" type="database" label="SAR" version="1.0" enabled="true" mdspecificcode="false" dbtype="STSD" haswriter="false">
+    <FilePatterns>
+      *.sar
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="false" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

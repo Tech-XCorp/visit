@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a8dbeb40271750e7478ad6efba1fb9488bd82101929377d010f576561105aab9
-size 49
+The average mean curvature (manual) is -1.971365

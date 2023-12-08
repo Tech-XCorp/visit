@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:91a0fb17daa11f94d14c9cb524f5ebaa253c8064de38d949cab00949e55a6b8d
-size 26
+wg_RAW.1.raw
+wg_RAW.2.raw

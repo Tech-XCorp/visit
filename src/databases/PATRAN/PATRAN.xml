@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8c6a02d95e08ca32ecde80926ac7c67d31b56f572a2092fb18596424a19cc8df
-size 287
+<?xml version="1.0"?>
+  <Plugin name="PATRAN" type="database" label="PATRAN Neutral" version="1.0" enabled="true" mdspecificcode="true" onlyengine="false" noengine="false" dbtype="STSD" haswriter="false" hasoptions="false">
+    <FilePatterns>
+      *.neu
+    </FilePatterns>
+  </Plugin>

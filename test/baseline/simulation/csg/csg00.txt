@@ -1,3 +1,3 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b673e3d31a560b83737020688e5156db5630483d3b64a5eaa61bf039a335e1ac
-size 98
+Simulation executable "csg" exists.
+Simulation "csg" started.
+VisIt connected to simulation "csg".

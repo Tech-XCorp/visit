@@ -1,3 +1,35 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:11d2b1f53d8e452609ac61032c387b129c5f65e7c39018f3b0ed7f97caece950
-size 909
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef PRINT_WINDOW_ACTION_H
+#define PRINT_WINDOW_ACTION_H
+#include <ViewerActionLogic.h>
+
+class ViewerWindow;
+
+// ****************************************************************************
+// Class: PrintWindowAction
+//
+// Purpose:
+//   Handles ViewerRPC::OpenMDServerRPC
+//
+// Notes:      
+//
+// Programmer: Brad Whitlock
+// Creation:   Fri Aug 22 10:48:37 PDT 2014
+//
+// Modifications:
+//   
+// ****************************************************************************
+
+class PrintWindowAction : public ViewerActionLogic
+{
+public:
+    PrintWindowAction(ViewerWindow *win) : ViewerActionLogic(win) {}
+    virtual ~PrintWindowAction() {}
+
+    virtual void Execute();
+};
+
+#endif

@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6936ec28bb46285c871d09b49bea20466c450f85e0487944b04287de525962b1
-size 26
+wg_XYZ.1.xyz
+wg_XYZ.2.xyz

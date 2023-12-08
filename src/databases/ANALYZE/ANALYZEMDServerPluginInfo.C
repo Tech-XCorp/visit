@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5ac161a93518a6461c49c9d688c08149f24e45725cfd9174ea3edb617661abd3
-size 419
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <ANALYZEPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(ANALYZE,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void ANALYZEMDServerPluginInfo::dummy()
+{
+}
+

@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:401f2d84a2911a44918f90e96e51e6f1c9582ac6d8de6160fa080832945c1172
-size 848
+<?xml version="1.0"?>
+  <Attribute name="DBPluginInfoAttributes" purpose="This class contains the attributes for all the database plugins." persistent="true" exportAPI="STATE_API" exportInclude="state_exports.h">
+    <Field name="types" label="types" type="stringVector">
+    </Field>
+    <Field name="hasWriter" label="hasWriter" type="intVector">
+    </Field>
+    <Field name="dbReadOptions" label="dbReadOptions" type="attVector" subtype="DBOptionsAttributes">
+    </Field>
+    <Field name="dbWriteOptions" label="dbWriteOptions" type="attVector" subtype="DBOptionsAttributes">
+    </Field>
+    <Field name="typesFullNames" label="typesFullNames" type="stringVector">
+    </Field>
+    <Field name="license" label="license" type="stringVector">
+    </Field>
+    <Field name="host" label="host" type="string">
+      ""
+    </Field>
+  </Attribute>

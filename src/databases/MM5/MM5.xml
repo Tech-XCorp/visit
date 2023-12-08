@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c8d45c515dd3a8feeadcd36d08379cbbc2e79dce207d03fb0f3a227ac0144555
-size 480
+<?xml version="1.0"?>
+  <Plugin name="MM5" type="database" label="MM5" version="1.0" enabled="true" mdspecificcode="false" onlyengine="false" noengine="false" dbtype="MTSD" haswriter="false">
+    <FilePatterns>
+      *.mm5
+    </FilePatterns>
+    <Files components="M">
+      avtMM5FileFormat.C
+      MM5.C
+    </Files>
+    <Files components="E">
+      avtMM5FileFormat.C
+      MM5.C
+    </Files>
+    <Attribute name="" purpose="" persistent="false">
+    </Attribute>
+  </Plugin>

@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:518d7c4dcd8dcb17148ce360fc58574a58d9b3de3ab71410a8f462dd665fded8
-size 259
+Correlation01 has 20 states
+activeSource = "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbA00.pdb"
+activeTimeSlider = 0
+timeSliders = ("Correlation01", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbA00.pdb")
+timeSliderCurrentStates = (17, 8)
+animationMode = 2

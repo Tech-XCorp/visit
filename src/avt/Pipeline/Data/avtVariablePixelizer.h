@@ -1,3 +1,49 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:15b7c0f585a1690a457efbe247cc5a1e19206ec91dae87623a710dff84687ae0
-size 1402
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                         avtVariablePixelizer.h                            //
+// ************************************************************************* //
+
+#ifndef AVT_VARIABLE_PIXELIZER_H
+#define AVT_VARIABLE_PIXELIZER_H
+#include <pipeline_exports.h>
+
+
+#include <avtPixelizer.h>
+
+class   vtkLookupTable;
+
+
+// ****************************************************************************
+//  Class: avtVariablePixelizer
+//
+//  Purpose:
+//      Pixelizes values based on value.
+//
+//  Programmer: Hank Childs
+//  Creation:   December 5, 2000
+//
+// ****************************************************************************
+
+class PIPELINE_API avtVariablePixelizer : public avtPixelizer
+{
+  public:
+                      avtVariablePixelizer(double, double);
+    virtual          ~avtVariablePixelizer();
+
+    virtual void      GetColor(double value, double intensity,
+                               unsigned char rgb[3]);
+    void              SetLookupTable(vtkLookupTable *);
+
+  protected:
+    vtkLookupTable   *lut;
+    double            minVal;
+    double            maxVal;
+};
+
+
+#endif
+
+

@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5af19f3abc914806a9757ba075ade4f09afacf8ecf8d4f53a2e5b656c92591cb
-size 38
+The area under the curve is 0.0798091.

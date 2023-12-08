@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9d46ca0df39357d9f1970f74c16044ea3862658789f9b6244077443d36ce2fc2
-size 61
+The standard deviation of the relative difference is 0.185888

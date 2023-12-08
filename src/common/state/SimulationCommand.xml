@@ -1,3 +1,5 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4c5f340478619395c937884ba646494f31c5e873d6c764ea2120a66e4fc1e86f
-size 261
+<?xml version="1.0"?>
+  <Attribute name="SimulationCommand" purpose="Commands to control simulations" persistent="false" exportAPI="STATE_API" exportInclude="state_exports.h">
+    <Field name="command" label="Command" type="string">
+    </Field>
+  </Attribute>

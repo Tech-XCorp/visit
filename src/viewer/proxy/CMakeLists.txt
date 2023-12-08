@@ -1,3 +1,38 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3f0651e3693cd6b6784807edba47dab32960397b3338fff7dda9f77e363434b0
-size 1278
+# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+# Project developers.  See the top-level LICENSE file for dates and other
+# details.  No copyright assignment is required to contribute to VisIt.
+
+#****************************************************************************
+# Modifications:
+#  Kathleen Biagas, Thu Feb 27 2020
+#  Only build examples if VISIT_ENABLE_EXAMPLES is ON (the default is ON).
+#
+#****************************************************************************
+
+SET(VIEWERPROXY_SOURCES
+ViewerProxy.C
+)
+
+INCLUDE_DIRECTORIES(
+${CMAKE_CURRENT_SOURCE_DIR}
+${VISIT_COMMON_INCLUDES}
+${VISIT_SOURCE_DIR}/viewer/rpc
+${VISIT_SOURCE_DIR}/avt/DBAtts/MetaData
+${VISIT_SOURCE_DIR}/avt/DBAtts/SIL
+)
+
+LINK_DIRECTORIES(${LIBRARY_OUTPUT_DIRECTORY})
+
+ADD_LIBRARY(viewerproxy ${VIEWERPROXY_SOURCES})
+TARGET_LINK_LIBRARIES(viewerproxy viewerrpc visitcommon avtdbatts)
+
+if(VISIT_ENABLE_EXAMPLES)
+  add_executable(proxyexample proxyexample.C)
+  set_target_properties(proxyexample PROPERTIES
+                        FOLDER examples
+                        EXCLUDE_FROM_ALL 1
+                        EXCLUDE_FROM_DEFAULT_BUILD 1)
+  target_link_libraries(proxyexample viewerrpc viewerproxy visitcommon avtdbatts)
+endif()
+
+VISIT_INSTALL_TARGETS(viewerproxy)

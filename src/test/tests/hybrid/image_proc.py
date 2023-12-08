@@ -1,3 +1,33 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ad61cad7d4fa1251111f713ac0de9bbcba9939d6e46a4163c3ed62f923371e04
-size 790
+# ----------------------------------------------------------------------------
+#  CLASSES: nightly
+#
+#  Test Case:  image_proc.py
+#
+#  Tests:      mesh      - Image
+#              plots     - Pseudocolor
+#
+#  Defect ID:  '6492
+#
+#  Programmer: Hank Childs
+#  Date:       August 19, 2005
+#
+# ----------------------------------------------------------------------------
+
+
+
+OpenDatabase(data_path("Image_test_data/manhattan.jpg"))
+
+DefineScalarExpression("cm", "conservative_smoothing(intensity)")
+AddPlot("Pseudocolor", "cm")
+DrawPlots()
+Test("image_proc_01")
+
+DefineScalarExpression("median", "median_filter(intensity)")
+ChangeActivePlotsVar("median")
+Test("image_proc_02")
+
+DefineScalarExpression("mean", "mean_filter(intensity)")
+ChangeActivePlotsVar("mean")
+Test("image_proc_03")
+
+Exit()

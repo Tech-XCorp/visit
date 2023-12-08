@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e4048ea5623acfa81bdfcaf5deeda0fb34ada4fb461b13c7aab2004353aa2d18
-size 492
+<?xml version="1.0"?>
+  <Attribute name="TimeFormat" purpose="This class encapsulates the attributes needed to format time." persistent="true" exportAPI="STATE_API" exportInclude="state_exports.h">
+    <Enum name="DisplayMode">
+      Cycles
+      Times
+      CyclesAndTimes
+    </Enum>
+    <Field name="displayMode" label="Display mode" type="enum" subtype="DisplayMode">
+      Cycles
+    </Field>
+    <Field name="precision" label="Precision" type="int">
+      5
+    </Field>
+  </Attribute>

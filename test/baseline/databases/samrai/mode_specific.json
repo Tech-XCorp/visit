@@ -1,3 +1,11 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c3747a038493b03aa9ac0937a3a5e018fb7241dc1334e96f9aa125de9e3819fb
-size 386
+{"modes":
+    {"scalable,parallel,icet":
+        {"samrai_07.png" : "scalable_parallel",
+         "samrai_08.png" : "scalable_parallel",
+         "samrai_09.png" : "scalable_parallel",
+         "samrai_10.png" : "scalable_parallel",
+         "samrai_11.png" : "scalable_parallel",
+         "samrai_12.png" : "scalable_parallel",
+         "samrai_24.png" : "scalable_parallel"}
+     }
+}

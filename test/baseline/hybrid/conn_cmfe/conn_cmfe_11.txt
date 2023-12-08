@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f8c93b35cdb639d7d66471d39ef06d9531ecc7e49c5afbec1ecc398c04c0a636
-size 172
+Pseudocolor:  (ExpressionException)
+viewer: The databases cannot be compared because they have a different number of cells for domain 0. The cell counts are 15000 and 1200.

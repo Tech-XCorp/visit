@@ -1,3 +1,7 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:aab0942bf3655d429d555b2b3bee76d068a34974a1228e801895ba8d42347010
-size 295
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <EngineKey.h>
+
+std::string EngineKey::localhost("localhost");

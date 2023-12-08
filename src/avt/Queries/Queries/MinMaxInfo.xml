@@ -1,3 +1,30 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b5b780c713da0d9e858ba16e57b57f587c9d705b29376ee489066b036c7be985
-size 1057
+<?xml version="1.0"?>
+  <Attribute name="MinMaxInfo" purpose="Results storage for MinMaxQuery." persistent="false" exportAPI="QUERY_API" exportInclude="query_exports.h" codefile="MinMaxInfo.code">
+    <Field name="elementNum" label="elementNum" type="int">
+      -1
+    </Field>
+    <Field name="domain" label="domain" type="int">
+      -1
+    </Field>
+    <Field name="mvalue" label="mvalue" type="double">
+      0.000000
+    </Field>
+    <Field name="coord" label="coord" type="doubleArray" length="3">
+    </Field>
+    <Field name="type" label="type" type="string">
+    </Field>
+    <Field name="matName" label="matName" type="string">
+    </Field>
+    <Function name="Initialize" user="true" member="true">
+    </Function>
+    <Function name="TransformCoord" user="true" member="true">
+    </Function>
+    <Function name="EquivalentForOutput" user="true" member="true">
+    </Function>
+    <Include file="header" quoted="false">
+      avtMatrix.h
+    </Include>
+    <Include file="source" quoted="false">
+      avtVector.h
+    </Include>
+  </Attribute>

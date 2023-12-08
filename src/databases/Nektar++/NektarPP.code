@@ -1,3 +1,4 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b7dbe31f4db4dd2a86142408708f918262ea85419c5d73657d4b571c8f82e6e0
-size 72
+Target: xml2cmake
+Condition: LINUX
+Definitions: -fext-numeric-literals
+

@@ -1,3 +1,50 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6aefca509b68ae408b375a10d648fe15e46cb869ab7880b6176ca56009d7d5ae
-size 1568
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                    avtSamplePointsToSamplePointsFilter.h                  //
+// ************************************************************************* //
+
+#ifndef AVT_SAMPLE_POINTS_TO_SAMPLE_POINTS_FILTER_H
+#define AVT_SAMPLE_POINTS_TO_SAMPLE_POINTS_FILTER_H
+#include <pipeline_exports.h>
+
+
+#include <avtSamplePointsToDataObjectFilter.h>
+#include <avtDataObjectToSamplePointsFilter.h>
+
+
+// ****************************************************************************
+//  Class: avtSamplePointsToSamplePointsFilter
+//
+//  Purpose:
+//      A filter that takes in sample points as input and has sample points
+//      as output.
+//
+//  Programmer: Hank Childs
+//  Creation:   June 4, 2001
+//
+//  Modifications:
+//
+//    Hank Childs, Wed Nov 28 12:46:49 PST 2001 
+//    Added support for multiple variables.
+//
+// ****************************************************************************
+
+class PIPELINE_API avtSamplePointsToSamplePointsFilter
+    : virtual public avtSamplePointsToDataObjectFilter,
+      virtual public avtDataObjectToSamplePointsFilter
+{
+  public:
+                       avtSamplePointsToSamplePointsFilter();
+    virtual           ~avtSamplePointsToSamplePointsFilter();
+
+  protected:
+    virtual void       PreExecute(void);
+};
+
+
+#endif
+
+

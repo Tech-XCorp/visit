@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7d8678914626a2a08869998b1d00bdb483230a02db4a5f3e215e2e589989bd34
-size 50
+The total mesh_quality/ucdmesh3d/volume is 401.263

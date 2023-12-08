@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9f9107825fffc6b6c86435b48744d87b1c013da24fbb51b11f59bf701f45c855
-size 503
+# Doxyfile 1.7.4
+
+#---------------------------------------------------------------------------
+# Project related configuration options
+#---------------------------------------------------------------------------
+DOXYFILE_ENCODING      = UTF-8
+PROJECT_NAME           = VisItPythonDocs
+JAVADOC_AUTOBRIEF      = YES
+TAB_SIZE               = 2
+OPTIMIZE_OUTPUT_JAVA   = YES
+FILE_PATTERNS          = *.py
+GENERATE_HTML          = NO
+GENERATE_LATEX         = YES
+COMPACT_LATEX          = YES
+
+

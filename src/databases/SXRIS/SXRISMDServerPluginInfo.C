@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:504dcf9c0afcc4d24d19982b57982b976897849fa69387c2f4543eb2661da85b
-size 413
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <SXRISPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(SXRIS,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void SXRISMDServerPluginInfo::dummy()
+{
+}
+

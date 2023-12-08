@@ -1,3 +1,10 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a8d125f3647de328a7783354093ad6dbbf015435a961280e6f047291a5b8956f
-size 469
+<?xml version="1.0"?>
+  <Attribute name="CompactSILRestrictionAttributes" purpose="The class contains attributes for a compacted SIL restrictions." persistent="true" exportAPI="STATE_API" exportInclude="state_exports.h">
+    <Field name="useSet" label="useSet" type="ucharVector">
+    </Field>
+    <Field name="topSet" label="topSet" type="string">
+    </Field>
+    <Field name="topSetIsAllOn" label="topSetIsAllOn" type="bool">
+      false
+    </Field>
+  </Attribute>

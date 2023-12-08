@@ -1,3 +1,31 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:73a10d9a4cbf074b9414967c1436a23df772df2bbd3fe7e91edbd077098d7360
-size 1079
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                     avtVMetricDiagonalRatio.h                             //
+// ************************************************************************* //
+
+#ifndef AVT_VMETRIC_DIAGONAL_RATIO_H
+#define AVT_VMETRIC_DIAGONAL_RATIO_H
+#include <expression_exports.h>
+#include <avtVerdictExpression.h>
+
+// ****************************************************************************
+//  Class: avtVMetricDiagonalRatio
+//
+//  Purpose:
+//    This metric measures diagonal ratio.
+//
+//  Programmer: Akira Haddox
+//  Creation:   June 13, 2002
+//
+// ****************************************************************************
+
+class EXPRESSION_API avtVMetricDiagonalRatio : public avtVerdictExpression
+{
+    public:
+        double Metric(double coords[][3], int type);
+};
+
+#endif

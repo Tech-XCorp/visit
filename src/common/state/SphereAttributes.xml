@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6840f2095c22a29fb527660f1f1f41cb955b489851504ebddab301822b3fd22d
-size 289
+<?xml version="1.0"?>
+  <Attribute name="SphereAttributes" purpose="Attributes for a sphere" exportAPI="STATE_API" exportInclude="state_exports.h">
+    <Field name="origin" type="doubleArray" length="3"> 0. 0. 0. </Field>
+    <Field name="radius" type="double"> 1.</Field>
+  </Attribute>
+

@@ -1,3 +1,39 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:72717c9f34ab00bd67dcc71885fbc90df83c36761485b289d109b397580e3071
-size 1285
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                     IntervalTreeNotCalculateException.h                   //
+// ************************************************************************* //
+
+#ifndef INTERVAL_TREE_NOT_CALCULATED_EXCEPTION_H
+#define INTERVAL_TREE_NOT_CALCULATED_EXCEPTION_H
+#include <avtexception_exports.h>
+
+
+#include <PipelineException.h>
+
+
+// ****************************************************************************
+//  Class: IntervalTreeNotCalculatedException
+//
+//  Purpose:
+//      The exception that is thrown when the interval tree is accessed 
+//      although it has not been fully calculated.
+//
+//  Programmer: Hank Childs
+//  Creation:   August 8, 2000
+//
+// ****************************************************************************
+
+class AVTEXCEPTION_API IntervalTreeNotCalculatedException : public PipelineException
+{
+  public:
+               IntervalTreeNotCalculatedException();
+    virtual   ~IntervalTreeNotCalculatedException() VISIT_THROW_NOTHING {;};
+};
+
+
+#endif
+
+

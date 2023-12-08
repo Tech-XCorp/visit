@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:529aa9d0a7ca00f8206ffb042652d1649b9f3b877c8efb938efaca3b5ac2833e
-size 488
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef AVT_LAMMPS_FILE_FORMAT_H
+#define AVT_LAMMPS_FILE_FORMAT_H
+
+class avtFileFormatInterface;
+
+//
+// Prototype for the file format interface factory function.
+//
+avtFileFormatInterface *
+LAMMPS_CreateFileFormatInterface(const char * const *, int, int);
+
+#endif

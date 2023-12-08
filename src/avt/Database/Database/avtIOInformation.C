@@ -1,3 +1,66 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:649f1b88611db955158899848fdc183ff1f7f45c87d812f4d37e737a448bac96
-size 1704
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                              avtIOInformation.C                           //
+// ************************************************************************* //
+
+#include <avtIOInformation.h>
+
+
+// ****************************************************************************
+//  Method: avtIOInformation constructor
+//
+//  Programmer: Hank Childs
+//  Creation:   September 20, 2001
+//
+// ****************************************************************************
+
+avtIOInformation::avtIOInformation()
+{
+    nDomains = 0;
+}
+
+
+// ****************************************************************************
+//  Method: avtIOInformation::AddHints
+//
+//  Purpose:
+//      Assigns the hints to use.
+//
+//  Arguments:
+//      h     The new hints.
+//
+//  Programmer: Hank Childs
+//  Creation:   May 11, 2001
+//
+// ****************************************************************************
+
+void
+avtIOInformation::AddHints(HintList &h)
+{
+    hints = h;
+}
+
+// ****************************************************************************
+//  Method: avtIOInformation::SetNDomains
+//
+//  Purpose:
+//      Sets the number of domains.
+//
+//  Arguments:
+//      n       the number of domains
+//
+//  Programmer: Jeremy Meredith
+//  Creation:   September 18, 2001
+//
+// ****************************************************************************
+
+void
+avtIOInformation::SetNDomains(int n)
+{
+    nDomains = n;
+}
+
+

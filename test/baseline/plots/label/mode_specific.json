@@ -1,3 +1,10 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:34945b53d1b00b2b68d065f6ac9c60561d91081db08608ba64cb39bede51af21
-size 344
+{"modes":
+    {"scalable,parallel,icet":
+        {"label_6_00.png" : "scalable_parallel",
+         "label_6_01.png" : "scalable_parallel",
+         "label_6_02.png" : "scalable_parallel",
+         "label_8_08.png" : "scalable_parallel",
+         "label_8_09.png" : "scalable_parallel",
+         "label_8_10.png" : "scalable_parallel"}
+     }
+}

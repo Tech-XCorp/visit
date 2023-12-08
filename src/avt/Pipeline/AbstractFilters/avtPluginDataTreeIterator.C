@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7f232fc2ddd69b216df49088de164916795317aa6bb63539263817c5a7ab595b
-size 511
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <avtPluginDataTreeIterator.h>
+
+avtPluginDataTreeIterator::avtPluginDataTreeIterator() : avtDataTreeIterator(), avtPluginFilter()
+{
+    // Implementation needed for windows.
+}
+
+avtPluginDataTreeIterator::~avtPluginDataTreeIterator()
+{
+    // Implementation needed for windows.
+}

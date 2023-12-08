@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:92b7181788c36f289cd85d224f6f65cb33c01e4fea9846aaf3c94696db271b32
-size 452
+<?xml version="1.0"?>
+  <Attribute name="PlotList" purpose="This class contains a list of plots." persistent="true" exportAPI="STATE_API" exportInclude="state_exports.h" codefile="PlotList.code">
+    <Field name="plots" label="plots" type="attVector" subtype="Plot">
+    </Field>
+    <Function name="PlotList2" user="true" member="true">
+    </Function>
+    <Function name="FirstSelectedIndex" user="true" member="true">
+    </Function>
+  </Attribute>

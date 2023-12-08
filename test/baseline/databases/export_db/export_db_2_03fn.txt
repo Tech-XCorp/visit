@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:acc632aee67a890ee9be4bca2dc5ac86711a361cc13bb3168119336062a6a7bc
-size 26
+wg_STL.1.stl
+wg_STL.2.stl

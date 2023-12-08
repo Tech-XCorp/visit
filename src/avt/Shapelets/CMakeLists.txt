@@ -1,3 +1,32 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:98dd1e6c290328af522bc54de0478e028560a1a4f6fcdd3cb20f8195e3389891
-size 933
+# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+# Project developers.  See the top-level LICENSE file for dates and other
+# details.  No copyright assignment is required to contribute to VisIt.
+
+#*****************************************************************************
+# Modifications:
+#
+#****************************************************************************
+
+SET(AVTSHAPELETS_SOURCES
+avtShapeletBasis1D.C
+avtShapeletBasis2D.C
+avtShapeletBasisSet.C
+avtShapeletDecompResult.C
+avtShapeletDecompose.C
+avtShapeletReconstruct.C
+)
+
+INCLUDE_DIRECTORIES(
+${CMAKE_CURRENT_SOURCE_DIR}
+${VISIT_COMMON_INCLUDES}
+${VISIT_SOURCE_DIR}/avt/Math
+${VTK_INCLUDE_DIRS}
+)
+
+# Add link directories
+LINK_DIRECTORIES(${LIBRARY_OUTPUT_DIRECTORY} )
+
+ADD_LIBRARY(avtshapelets ${AVTSHAPELETS_SOURCES})
+TARGET_LINK_LIBRARIES(avtshapelets visitcommon avtmath vtkCommonCore vtkFiltersCore)
+
+VISIT_INSTALL_TARGETS(avtshapelets)

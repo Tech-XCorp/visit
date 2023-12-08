@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:baa11d6adbbe1c7023be3ada0e9e6c78eece3437198c28df9a05d79cc3c05985
-size 339
+###############################################################################
+# Program: pyavt/src/__init__.py
+#
+# Purpose: Module init for the pyavt module.
+#
+# Programmer: Cyrus Harrison
+# Creation: Tue Mar 10 13:33:13 PDT 2009
+#
+###############################################################################
+
+from . import filters
+
+

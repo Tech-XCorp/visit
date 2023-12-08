@@ -1,3 +1,62 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ac0e2dfe285c0e6051253719464f1c5ceca3850bc68a857a6d0d6ba4fcf00c7e
-size 2112
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                              avtDefaultRenderer.h                         //
+// ************************************************************************* //
+
+#ifndef AVT_DEFAULT_RENDERER_H
+#define AVT_DEFAULT_RENDERER_H
+
+#include <avtVolumeRendererImplementation.h>
+#include <VolumeAttributes.h>
+
+#include <vtkVolume.h>
+#include <vtkSmartVolumeMapper.h>
+#include <vtkColorTransferFunction.h>
+#include <vtkPiecewiseFunction.h>
+
+// ****************************************************************************
+//  Class: avtDefaultRenderer
+//
+//  Purpose:
+//      A default volume renderer using vtkSmartVolumeMapper. The mapper checks
+//      for hardware compatability and rendering parameters to choose which 
+//      rendering method to use. 
+//
+//  Programmer: Alister Maguire
+//  Creation:   April  3, 2017
+//
+//  Modifications:
+//  
+//    Alister Maguire, Tue Dec 11 10:18:31 PST 2018
+//    Changed pointers to standard instead of smart. 
+//    Added transfer function and opacity. 
+//
+// ****************************************************************************
+
+class avtDefaultRenderer : public avtVolumeRendererImplementation
+{
+  public:
+                               avtDefaultRenderer();
+    virtual                   ~avtDefaultRenderer();
+
+  protected:
+    virtual void               Render(const RenderProperties &props,
+                                      const VolumeData &volume);
+
+    vtkColorTransferFunction  *transFunc;
+    vtkPiecewiseFunction      *opacity;
+    vtkVolume                 *curVolume;
+    vtkImageData              *imageToRender;
+    vtkVolumeProperty         *volumeProp;
+    vtkSmartVolumeMapper      *mapper;
+
+    VolumeAttributes           oldAtts;
+
+    bool                       resetColorMap;
+    bool                       useInterpolation;
+};
+
+#endif 

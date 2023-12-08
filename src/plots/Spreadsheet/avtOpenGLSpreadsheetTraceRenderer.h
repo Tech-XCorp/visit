@@ -1,3 +1,48 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8ad801b17adaf8fc40250bb500d6efdd3a1913f45b764d0b0fd9bd9d7e8435aa
-size 1667
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef AVT_OPEN_GL_SPREADSHEET_TRACER_RENDERER_H
+#define AVT_OPEN_GL_SPREADSHEET_TRACER_RENDERER_H
+#include <avtSpreadsheetTraceRenderer.h>
+
+class vtkDataArray;
+class vtkDataSet;
+class vtkRectilinearGrid;
+class vtkStructuredGrid;
+class vtkCell;
+
+// ****************************************************************************
+// Class: avtOpenGLSpreadsheetTraceRenderer
+//
+// Purpose:
+//   OpenGL version of the spreadsheet highlight renderer.
+//
+// Notes:      
+//
+// Programmer: Brad Whitlock
+// Creation:   Wed Feb 21 09:17:47 PDT 2007
+//
+// Modifications:
+//   
+// ****************************************************************************
+
+class avtOpenGLSpreadsheetTraceRenderer : public avtSpreadsheetTraceRenderer
+{
+public:
+    avtOpenGLSpreadsheetTraceRenderer();
+    virtual ~avtOpenGLSpreadsheetTraceRenderer();
+
+    virtual void Render(vtkDataSet *, vtkDataArray *, 
+                        const SpreadsheetAttributes &, const double *);
+private:
+    void DrawRectilinearGrid(vtkRectilinearGrid *, vtkDataArray *, 
+                             const SpreadsheetAttributes &, const double *);
+    void DrawStructuredGrid(vtkStructuredGrid *, vtkDataArray *, 
+                            const SpreadsheetAttributes &, const double *);
+    void DrawBoundingBox(vtkDataArray *bounds, const double *);
+    void Draw2DCell(vtkCell *cell, const double *fgColor);
+    void Draw3DCell(vtkCell *cell, const double *fgColor);
+};
+
+#endif

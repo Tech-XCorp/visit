@@ -1,3 +1,66 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b7d8e954e253e9727859612b2bd749cdb7d7cfce962814c83e0fc49fb6de5891
-size 1602
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ----------------------------------------------------------------------------
+// File:  Viewer.h
+//
+// Programmer: Jeremy Meredith
+// Date:       August 11, 2003
+// ----------------------------------------------------------------------------
+
+#ifndef VIEWER_H
+#define VIEWER_H
+
+#include <QGLWidget>
+#include <QMouseEvent>
+
+#include "Vector.h"
+#include "Matrix.h"
+#include "DataSet.h"
+
+class Viewer : public QGLWidget
+{
+    Q_OBJECT
+  public:
+                  Viewer(QWidget *parent=NULL);
+                 ~Viewer();
+
+    void          initializeGL();
+    void          paintGL();
+    void          resizeGL(int w, int h);
+    void          setDataSet(DataSet *ds);
+  protected:
+
+    virtual void  mouseMoveEvent(QMouseEvent*);
+    virtual void  mousePressEvent(QMouseEvent*);
+    virtual void  mouseReleaseEvent(QMouseEvent*);
+
+    void          setupMatrices();
+
+    int dl;
+
+    bool       mousedown;
+    int        lastx, lasty;
+
+    // Matrices
+    Matrix     P;  // Projection matrix
+    Matrix     V;  // View matrix
+    Matrix     M;  // Model->world matrix
+    Matrix     R;  // Accumulated trackball rotations
+    Matrix     A;  // Accumulated angle-change rotations
+
+    // Dataset
+    DataSet   *data;
+    float      ds_size;
+
+    Vector from;
+    Vector at;
+    Vector up;
+    float  fov;
+    float  aspect;
+    float  nearplane;
+    float  farplane;
+};
+
+#endif

@@ -1,3 +1,39 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:51a0875c0e9da6c1493dd91c0f0af905eef87b6045da7cdec29bda1eef2a190b
-size 1265
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                      avtActualDataNumZonesQuery.h                         //
+// ************************************************************************* //
+
+#ifndef AVT_ACTUALDATA_NUMZONES_QUERY_H
+#define AVT_ACTUALDATA_NUMZONES_QUERY_H
+#include <query_exports.h>
+
+#include <avtNumZonesQuery.h>
+
+
+// ****************************************************************************
+//  Class: avtActualDataNumZonesQuery
+//
+//  Purpose:
+//      This is a dataset query that returns the number of zones.
+//
+//  Programmer: Kathleen Bonnell 
+//  Creation:   February 18, 2004 
+//
+//  Modifications:
+//
+// ****************************************************************************
+
+class QUERY_API avtActualDataNumZonesQuery : public avtNumZonesQuery
+{
+  public:
+                              avtActualDataNumZonesQuery();
+    virtual                  ~avtActualDataNumZonesQuery(); 
+
+    virtual bool             OriginalData(void) { return false; };
+};
+
+#endif
+

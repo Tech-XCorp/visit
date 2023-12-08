@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:81478b1289d65e1442c1e60ed67bb051ea193e9369745364bc0181534b475260
-size 28
+The expected value is 0.001.

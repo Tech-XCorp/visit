@@ -1,3 +1,44 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a2308d71b82c3772c60b0b2a7d37880d1488bebbf014637bfdaf95e12086e9c2
-size 1149
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// NOTE - This code incomplete and requires underlined portions
+// to be replaced with code to read values from your file format.
+
+void
+avtXXXFileFormat::GetCycles(std::vector<int> &cycles)
+{
+    int ncycles, *vals = 0;
+    ncycles = OPEN FILE AND READ THE NUMBER OF CYCLES;
+    READ ncycles INTEGER VALUES INTO THE vals ARRAY;
+
+    // Store the cycles in the vector.
+    for(int i = 0; i < ncycles; ++i)
+        cycles.push_back(vals[i]);
+
+    delete [] vals;
+}
+
+void
+avtXXXFileFormat::GetTime(std::vector<double> &times)
+{
+    int ntimes;
+    double *vals = 0;
+    ntimes = OPEN FILE AND READ THE NUMBER OF TIMES;
+    READ ntimes DOUBLE VALUES INTO THE vals ARRAY;
+
+    // Store the times in the vector.
+    for(int i = 0; i < ntimes; ++i)
+        times.push_back(vals[i]);
+
+    delete [] vals;
+}
+
+int
+avtXXXXFileFormat::GetNTimesteps(void)
+{
+    std::vector<double> times;
+    GetTimes(times);
+
+    return times.size();
+}

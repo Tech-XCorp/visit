@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3902257192fff292ee1faf80e414eaf594b9bf41793f18b0fc19a8e1512452b9
-size 308
+<?xml version="1.0"?>
+  <Plugin name="Spheral" type="database" label="Spheral++ file format reader" version="1.0" dbtype="STMD">
+    <FilePatterns>
+      *.sv
+      *.spheral
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="false" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

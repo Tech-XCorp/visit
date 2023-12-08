@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c8e7b3fc43fb67a7bd0d71f8a1269ce959b30d37f84b58ba7d028521cc46e24b
-size 531
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ****************************************************************************
+//  File: ModelFitViewerPluginInfo.C
+// ****************************************************************************
+
+#include <ModelFitPluginInfo.h>
+#include <ModelFitAtts.h>
+
+VISIT_OPERATOR_PLUGIN_ENTRY_EV(ModelFit,Viewer)
+
+

@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:87c3b9bd22bec6f7fca36c61297233fb84d4fadc4aa32baabeafcf39433d08f7
-size 617
+#include "BoxLibHelper.h"
+#include <BoxLib.H>
+
+// We need to call BoxLib::Initialize without BL_USE_MPI being set to 1 (as done
+// in avtBoxLibFileFormat.C to avoid conflicts between the MPI implementation
+// VisIt uses and BoxLib's serial dummy MPI implementation) as this potentially
+// changes the signature of this function (different types for MPI communicator).
+
+void BoxLibHelper::InitializeBoxLib()
+{
+    int dummyArgC = 1;
+    char dummyArgVisit[] = "visit";
+    char *dummyArgV[] = { dummyArgVisit };
+    char **argv = dummyArgV; // Avoid implicit type conversion
+    BoxLib::Initialize(dummyArgC, argv);
+}

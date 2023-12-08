@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3ddb45833fc4fb52c35b54f8cca8237cd5cbfe06b1574e6bbdab8e18e14044eb
-size 126
+Pseudocolor:  ()
+viewer: The 'eval_plane(d,d,[0, 0, 0, 1, 0, 0])' expression failed because The plane has a degenerate normal.

@@ -1,3 +1,26 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:42492f30b8a2632dabd0be3fa18087c06a5240261db44c65453baa7981f7c35b
-size 1125
+<?xml version="1.0"?>
+  <Plugin name="Smooth" type="operator" label="Smooth" version="1.0" enabled="true" mdspecificcode="false" onlyengine="false" noengine="false" category="Geometry">
+    <Attribute name="SmoothOperatorAttributes" purpose="Attributes for the Smooth Operator" persistent="true" exportAPI="" exportInclude="">
+      <Field name="numIterations" label="Maximum Number of Iterations" type="int">
+        20
+      </Field>
+      <Field name="relaxationFactor" label="Relaxation Factor" type="double">
+        0.010000
+      </Field>
+      <Field name="convergence" label="Convergence" type="double">
+        0.000000
+      </Field>
+      <Field name="maintainFeatures" label="Maintain Features" type="bool">
+        true
+      </Field>
+      <Field name="featureAngle" label="Feature Angle" type="double" enabler="maintainFeatures:true">
+        45.000000
+      </Field>
+      <Field name="edgeAngle" label="Max Edge Angle" type="double">
+        15.000000
+      </Field>
+      <Field name="smoothBoundaries" label="Smooth Along Boundaries" type="bool">
+        false
+      </Field>
+    </Attribute>
+  </Plugin>

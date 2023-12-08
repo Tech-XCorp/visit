@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:046a031dbd53d6eb8a36895fc31678caf46e0f72583606a3f3665e8911ae214c
-size 124
+
+B:  emptydomains.silo
+mesh domain 2 
+Point: <4, 0, 2>
+Node:  100
+Incident Zones:  69  36  70  37  
+density:  <nodal> = 10
+

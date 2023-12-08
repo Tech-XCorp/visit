@@ -1,3 +1,54 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0e2a4446cfbe7bb615c8d6e75549194c4dd4b2726a424830703a81f8c58bb73b
-size 2098
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                       avtStrainRateExpression.h                           //
+// ************************************************************************* //
+
+#ifndef AVT_STRAIN_RATE_FILTER_H
+#define AVT_STRAIN_RATE_FILTER_H
+
+
+#include <avtStrainTensorExpression.h>
+
+
+// ****************************************************************************
+//  Class: avtStrainRateExpression
+//
+//  Purpose:
+//      Calculates the Rate based strain tensor.
+//
+//  Programmer: Thomas R. Treadway
+//  Creation:   Wed Nov 15 12:57:36 PST 2006
+//
+// ****************************************************************************
+
+class EXPRESSION_API avtStrainRateExpression
+    : public avtStrainTensorExpression
+{
+  public:
+                               avtStrainRateExpression();
+    virtual                   ~avtStrainRateExpression();
+
+    virtual const char       *GetType(void)  
+                               { return "avtStrainRateExpression"; };
+    virtual const char       *GetDescription(void)
+                               {return "Calculating Rate based strain tensor";};
+    virtual int               NumVariableArguments() { return 2; }
+
+  protected:
+    virtual vtkDataArray     *DeriveVariable(vtkDataSet *in, int currentDomainsIndex);
+    virtual avtVarType        GetVariableType(void) { return AVT_TENSOR_VAR; };
+    virtual int               GetNumberOfComponentsInOutput(int ncompsIn1,
+                                                            int ncompsIn2)
+                                         { return (ncompsIn1 > ncompsIn2
+                                                    ? ncompsIn1
+                                                    : ncompsIn2);
+                                         };
+    virtual int               GetVariableDimension(void);
+};
+
+#endif
+
+

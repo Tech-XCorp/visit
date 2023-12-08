@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:96e9134a8cd82ef92a877391f1b1ec50b7a23ad2e7ad80677a61a8071cf0601b
-size 29
+Centroid = (0.5, 0.762782, 0)

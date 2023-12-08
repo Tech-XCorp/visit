@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4d35e80965c0b05c96f074ac603b13fcebd6f092f7c244cca47f873518b7fdcc
-size 413
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <ANSYSPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(ANSYS,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void ANSYSMDServerPluginInfo::dummy()
+{
+}
+

@@ -1,3 +1,38 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e9595e3ab970e21f65e79901b47b17bf6157822a28c6fe50c93d17dbce25fa97
-size 1020
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef AVT_HERMITE_POLYNOMIAL_H
+#define AVT_HERMITE_POLYNOMIAL_H
+#include <math_exports.h>
+#include "avtPolynomial.h"
+
+
+// ****************************************************************************
+//  Class:  avtHermitePolynomial
+//
+//  Purpose:
+//    Encapsualtes a hermite polynomial.
+//    The constructor generates the polynomial using the recurrence relation:
+//       H(x|n+1) = 2x*H(x|n) - 2n*H(x|n-1)
+//    Where:
+//       H(x|0) = 1
+//       H(x|1) = 2x
+//
+//  Programmer:  Cyrus Harrison
+//  Creation:    December 6, 2007
+//
+//  Modifications:
+//
+// ****************************************************************************
+
+class MATH_API avtHermitePolynomial : public avtPolynomial
+{
+  public:
+    avtHermitePolynomial(int n);
+    virtual ~avtHermitePolynomial();
+};
+
+
+
+#endif

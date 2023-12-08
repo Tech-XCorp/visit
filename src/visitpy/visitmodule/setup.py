@@ -1,3 +1,33 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:88d07c97523f535b431ab44c85485b75846ad959d65157e46d060b3cc80c40f0
-size 919
+# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+# Project developers.  See the top-level LICENSE file for dates and other
+# details.  No copyright assignment is required to contribute to VisIt.
+
+###############################################################################
+# file: setup.py
+# Purpose: disutils setup for the visit module.
+#
+# Programmer: Cyrus Harrison
+# Creation: Tue Apr  3 13:40:18 PDT
+#
+#
+# Modifications:
+#
+#
+###############################################################################
+
+import sys
+from distutils.core import setup
+from distutils.command.install_egg_info import install_egg_info
+
+# disable install_egg_info
+class SkipEggInfo(install_egg_info):
+    def run(self):
+        pass
+
+setup (name = 'visit',
+       description = 'visit',
+       package_dir = {'visit':'py_src'},
+       packages=['visit'],
+       cmdclass={'install_egg_info': SkipEggInfo})
+
+

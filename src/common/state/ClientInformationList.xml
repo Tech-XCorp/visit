@@ -1,3 +1,5 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5616fe4917b0586ea8de48a2b51ea669c9e0c36eb7f61f9d359e4274e4a1ef93
-size 316
+<?xml version="1.0"?>
+  <Attribute name="ClientInformationList" purpose="Contains the information for all connected clients." persistent="false" exportAPI="STATE_API" exportInclude="state_exports.h">
+    <Field name="clients" label="Clients" type="attVector" subtype="ClientInformation">
+    </Field>
+  </Attribute>

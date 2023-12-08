@@ -1,3 +1,3 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:168f3ab6a986f3b6736168d3748bae64f9cd93c1c914d1e4333a9015ae5e7983
-size 119
+Simulation executable "multiblock" exists.
+Simulation "multiblock" started.
+VisIt connected to simulation "multiblock".

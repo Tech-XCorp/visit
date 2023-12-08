@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6b1040b2916c5e6217301e2e50944ea548fb449626fb3cda6f81ba129fd903b0
-size 541
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ****************************************************************************
+//  File: PseudocolorEnginePluginInfo.C
+// ****************************************************************************
+
+#include <PseudocolorPluginInfo.h>
+#include <avtPseudocolorPlot.h>
+
+VISIT_PLOT_PLUGIN_ENTRY_EV(Pseudocolor,Engine)
+

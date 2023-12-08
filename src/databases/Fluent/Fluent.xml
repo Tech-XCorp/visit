@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5cd448990257cccbdbc182e70521545ee1deb1d53f15df3cf6a8895a76e4b5e0
-size 380
+<?xml version="1.0"?>
+  <Plugin name="Fluent" type="database" label="Fluent" version="1.0" enabled="true" mdspecificcode="false" onlyengine="false" noengine="false" dbtype="STMD" haswriter="false" hasoptions="false">
+    <FilePatterns>
+      *.cas
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

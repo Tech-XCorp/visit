@@ -1,3 +1,34 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1b9e09471a76145c83071ca56738b6970a3a544b6fb67555b158f6317586ad6a
-size 952
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef GET_SIL_RPC_EXECUTOR_H
+#define GET_SIL_RPC_EXECUTOR_H
+#include <Observer.h>
+
+class MDServerConnection;
+
+// *******************************************************************
+// Class: GetSILRPCExecutor
+//
+// Purpose:
+//   This class handles the RPC request for getting the SIL
+//   for a file (which may be in the CWD if no path is specified).
+//
+// Programmer: Hank Childs
+// Creation:   March 29, 2001
+//
+// *******************************************************************
+
+class GetSILRPCExecutor : public Observer
+{
+public:
+    GetSILRPCExecutor(MDServerConnection *parent_, Subject *s);
+    virtual ~GetSILRPCExecutor();
+
+    virtual void Update(Subject *s);
+private:
+    MDServerConnection *parent;
+};
+
+#endif

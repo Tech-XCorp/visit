@@ -1,3 +1,47 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:bad45cbf818774a67d0fe492eb8d299080561858e644b3c05cdec103a388dc70
-size 1561
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                      avtDataObjectToSamplePointsFilter.C                  //
+// ************************************************************************* //
+
+#include <avtDataObjectToSamplePointsFilter.h>
+
+
+// ****************************************************************************
+//  Method: avtDataObjectToSamplePointsFilter constructor
+//
+//  Purpose:
+//      Defines the constructor.  Note: this should not be inlined in the
+//      header because it causes problems for certain compilers.
+//
+//  Programmer: Hank Childs
+//  Creation:   February 5, 2004
+//
+// ****************************************************************************
+
+avtDataObjectToSamplePointsFilter::avtDataObjectToSamplePointsFilter()
+{
+    ;
+}
+
+
+// ****************************************************************************
+//  Method: avtDataObjectToSamplePointsFilter destructor
+//
+//  Purpose:
+//      Defines the destructor.  Note: this should not be inlined in the header
+//      because it causes problems for certain compilers.
+//
+//  Programmer: Hank Childs
+//  Creation:   February 5, 2004
+//
+// ****************************************************************************
+
+avtDataObjectToSamplePointsFilter::~avtDataObjectToSamplePointsFilter()
+{
+    ;
+}
+
+

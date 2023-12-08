@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7b91103a505a1b384b87ae8947687ad8b74afdc6137d98a26691f96fd17447de
-size 190
+Time values:
+The time is 0.0260356.
+The time is 0.0501342.
+The time is 0.075049.
+The time is 0.100329.
+The time is 0.12537.
+The time is 0.150093.
+The time is 0.175198.
+The time is 0.200242.

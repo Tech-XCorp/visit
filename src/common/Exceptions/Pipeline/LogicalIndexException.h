@@ -1,3 +1,40 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0ffc735d0c450282c4b1c2f9c81e7e4d094b117b8df935c6ef2a088dbdb55f78
-size 1293
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                           LogicalIndexException.h                         //
+// ************************************************************************* //
+
+#ifndef LOGICAL_INDEX_EXCEPTION_H
+#define LOGICAL_INDEX_EXCEPTION_H
+#include <avtexception_exports.h>
+
+
+#include <PipelineException.h>
+
+
+// ****************************************************************************
+//  Class: LogicalIndexException
+//
+//  Purpose:
+//      The exception that should be called when a logical index of 2 or
+//      3 components is expected, but only 1 component was given.
+//
+//  Programmer: Kathleen Bonnell 
+//  Creation:   August 12, 2002 
+//
+// ****************************************************************************
+
+class AVTEXCEPTION_API LogicalIndexException : public PipelineException
+{
+  public:
+                    LogicalIndexException();
+                    LogicalIndexException(const char *);
+    virtual        ~LogicalIndexException() VISIT_THROW_NOTHING {;};
+};
+
+
+#endif
+
+

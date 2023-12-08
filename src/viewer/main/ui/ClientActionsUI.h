@@ -1,3 +1,43 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:77dea78db14ea912b2b48435b898aa17c6e14f1642f3af7800961d71fa139cc0
-size 1183
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef CLIENT_ACTIONS_UI_H
+#define CLIENT_ACTIONS_UI_H
+#include <ViewerActionUISingle.h>
+
+class OpenGUIClientActionUI : public ViewerActionUISingle
+{
+public:
+    OpenGUIClientActionUI(ViewerActionLogic *L) : ViewerActionUISingle(L)
+    {
+        SetAllText(tr("Open GUI"));
+    }
+    virtual ~OpenGUIClientActionUI() { }
+    virtual bool AllowInToolbar() const { return false; }
+};
+
+class OpenCLIClientActionUI : public ViewerActionUISingle
+{
+public:
+    OpenCLIClientActionUI(ViewerActionLogic *L) : ViewerActionUISingle(L)
+    {
+        SetAllText(tr("Open CLI"));
+    }
+    virtual ~OpenCLIClientActionUI() { }
+    virtual bool AllowInToolbar() const { return false; }
+};
+
+class MenuQuitActionUI : public ViewerActionUISingle
+{
+public:
+    MenuQuitActionUI(ViewerActionLogic *L) : ViewerActionUISingle(L)
+    {
+        SetAllText(tr("Quit"));
+    }
+    virtual ~MenuQuitActionUI() { }
+
+    virtual bool AllowInToolbar() const { return false; }
+};
+
+#endif

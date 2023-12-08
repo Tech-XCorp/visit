@@ -1,3 +1,30 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:46f9eb7cb8d588ae9b4cc6de4bb312181ed7ecef4b9a1f7cd93ccb5747313119
-size 1143
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef AVTPYTHON_FILTERS_EXPORTS_H
+#define AVTPYTHON_FILTERS_EXPORTS_H
+
+#if defined(_WIN32)
+#if defined(AVTPYTHONFILTERS_EXPORTS) || defined(avtpythonfilters_ser_EXPORTS) || defined(avtpythonfilters_par_EXPORTS) 
+#define AVTPYTHON_FILTERS_API __declspec(dllexport)
+#else
+#define AVTPYTHON_FILTERS_API __declspec(dllimport)
+#endif
+#if defined(_MSC_VER)
+// Turn off warning about lack of DLL interface
+#pragma warning(disable:4251)
+// Turn off warning non-dll class is base for dll-interface class.
+#pragma warning(disable:4275)
+// Turn off warning about identifier truncation
+#pragma warning(disable:4786)
+#endif
+#else
+# if __GNUC__ >= 4 && (defined(AVTPYTHONFILTERS_EXPORTS) || defined(avtpythonfilters_ser_EXPORTS) || defined(avtpythonfilters_par_EXPORTS))
+#   define AVTPYTHON_FILTERS_API __attribute__ ((visibility("default")))
+# else
+#   define AVTPYTHON_FILTERS_API /* hidden by default */
+# endif
+#endif
+
+#endif

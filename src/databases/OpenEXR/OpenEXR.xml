@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d73585e0b2ddd87a039d5182a8ea59a38f23b8173f30795d560b8f7e9d276950
-size 585
+<?xml version="1.0"?>
+  <Plugin name="OpenEXR" type="database" label="OpenEXR" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STSD" haswriter="false" hasoptions="false">
+    <CXXFLAGS>
+      ${OPENEXR_INCLUDE_DIR}
+    </CXXFLAGS>
+    <LDFLAGS>
+      ${OPENEXR_LIBRARY_DIR}
+    </LDFLAGS>
+    <LIBS>
+      ${OPENEXR_LIB}
+    </LIBS>
+    <FilePatterns>
+      *.exr
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="false" keyframe="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

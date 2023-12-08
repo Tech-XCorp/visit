@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e5ec29edfab32f5a8de89a4d47da148c08cf58060fce981306decbca4a97c055
-size 596
+<?xml version="1.0"?>
+  <Plugin name="UNIC" type="database" label="UNIC" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STMD" haswriter="false" hasoptions="false" filePatternsStrict="false">
+    <CXXFLAGS>
+      ${HDF5_INCLUDE_DIR}
+    </CXXFLAGS>
+    <LDFLAGS>
+      ${HDF5_LIBRARY_DIR}
+    </LDFLAGS>
+    <LIBS>
+      ${HDF5_LIB}
+    </LIBS>
+    <FilePatterns>
+      *.h5
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="false" keyframe="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

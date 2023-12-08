@@ -1,3 +1,32 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:91091f7c83d9b9d59f8e5fb5071f64e33d958edb8f0900aa2d11975be3dd94a7
-size 929
+<?xml version="1.0"?>
+  <Plugin name="Boxlib2D" type="database" label="Boxlib2D" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STMD" haswriter="false" hasoptions="false" filePatternsStrict="true">
+    <CXXFLAGS>
+      ${BOXLIB_INCLUDE_DIR}
+    </CXXFLAGS>
+    <DEFINES>
+      -DBL_SPACEDIM=2
+    </DEFINES>
+    <WIN32DEFINES>
+      ${BOXLIB_WIN32_DEFINES}
+    </WIN32DEFINES>
+    <LDFLAGS>
+      ${BOXLIB_LIBRARY_DIR}
+    </LDFLAGS>
+    <LIBS>
+      ${BOXLIB_2D_LIB}
+    </LIBS>
+    <FilePatterns>
+      *.boxlib2d
+      Header
+    </FilePatterns>
+    <Files components="M">
+      avtBoxlibFileFormat.C
+      BoxLibHelper.C
+    </Files>
+    <Files components="E">
+      avtBoxlibFileFormat.C
+      BoxLibHelper.C
+    </Files>
+    <Attribute name="" purpose="" persistent="false" keyframe="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

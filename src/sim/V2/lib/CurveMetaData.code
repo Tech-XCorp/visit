@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2546567119592583bb4c69c0efdb116f3177a05dce150c49cd1db03d9f7ec0a6
-size 501
+Target: xml2sim
+Function: simv2_CurveMetaData_check
+Declaration: SIMV2_API int simv2_CurveMetaData_check(visit_handle);
+Definition:
+int
+simv2_CurveMetaData_check(visit_handle h)
+{
+    VisIt_CurveMetaData *obj = GetObject(h, "simv2_CurveMetaData_check");
+    int retval = VISIT_ERROR;
+    if(obj != NULL)
+    {
+        if(obj->name == "")
+        {
+            VisItError("CurveMetaData needs a name");
+            return VISIT_ERROR;
+        }
+        retval = VISIT_OKAY;
+    }
+    return retval;
+}
+

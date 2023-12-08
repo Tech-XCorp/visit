@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8d088890d7c5fe8aa3fcd13dd988fa3aaf0010fa06a310bc664b32ff629defa1
-size 146
+#include "rcstuff.h"
+
+#define APPNAME "PSFTP"
+#define APPDESC "Command-line interactive SFTP client"
+
+200 ICON "pscp.ico"
+
+#include "version.rc2"

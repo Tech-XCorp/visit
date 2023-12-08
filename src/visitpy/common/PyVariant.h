@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2d0fa8b4ecfa2d5f836d5a17c9d43d8735492c035053135ddd94d80c3a427bd1
-size 429
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef PY_VARIANT_H
+#define PY_VARIANT_H
+#include <Python.h>
+#include <Variant.h>
+//
+// Helper to convert a VisIt variant to a builtin python type.
+//
+
+PyObject *PyVariant_Wrap(const Variant &);
+
+#endif
+

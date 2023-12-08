@@ -1,3 +1,53 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8859a0474cfb69ff8697a089e5362b345b80cb8bf25b51b1db35f202468c2c0e
-size 1618
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                              avtCycleQuery.h                              //
+// ************************************************************************* //
+
+#ifndef AVT_CYCLE_QUERY_H
+#define AVT_CYCLE_QUERY_H
+
+#include <query_exports.h>
+
+#include <avtGeneralQuery.h>
+
+#include <string>
+
+// ****************************************************************************
+//  Class: avtCycleQuery
+//
+//  Purpose:
+//      Gets the cycle for the current dataset.
+//
+//  Programmer: Hank Childs
+//  Creation:   October 4, 2003
+//
+//  Modifications:
+//
+//    Hank Childs, Thu Feb  5 17:11:06 PST 2004
+//    Moved inlined constructor and destructor definitions to .C files
+//    because certain compilers have problems with them.
+//
+//
+// ****************************************************************************
+
+class QUERY_API avtCycleQuery : public avtGeneralQuery
+{
+  public:
+                               avtCycleQuery();
+    virtual                   ~avtCycleQuery();
+
+    virtual const char        *GetType(void) { return "avtCycleQuery"; };
+    virtual const char        *GetDescription(void) 
+                                             { return "Getting the cycle"; };
+
+    virtual void               PerformQuery(QueryAttributes *);
+    virtual std::string        GetResultMessage(void);
+};
+
+
+#endif
+
+

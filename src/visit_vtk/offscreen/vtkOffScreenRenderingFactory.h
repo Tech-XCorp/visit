@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:51dba14f38a0a265e1819eeb7712c0ace4b4e128de33bf0d3d273ecadafc173b
-size 860
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef __VTK_OFFSCREEN_RENDERING_FACTORY_H
+#define __VTK_OFFSCREEN_RENDERING_FACTORY_H
+
+#include <vtkObjectFactory.h>
+#include <vtkVersion.h>
+#include <vtkObjectFactoryCollection.h>
+#include "visit_vtk_offscreen_exports.h"
+
+class VISIT_VTK_OFFSCREEN_API vtkOffScreenRenderingFactory : public vtkObjectFactory
+{
+public:
+  vtkOffScreenRenderingFactory();
+  static void ForceOffScreen();
+  static vtkOffScreenRenderingFactory* New() { return new vtkOffScreenRenderingFactory;}
+  virtual const char* GetVTKSourceVersion() { return VTK_SOURCE_VERSION; }
+  const char* GetDescription() { return "vtkOffScreenRenderingFactory"; }
+};
+
+#endif
+

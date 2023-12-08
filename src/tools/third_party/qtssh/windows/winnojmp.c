@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:14f317016d748f1bf50c17cac3d4523441ccadfa9858a8ed8d19cd64d5cf94bf
-size 270
+/*
+ * winnojmp.c: stub jump list functions for Windows executables that
+ * don't update the jump list.
+ */
+
+void add_session_to_jumplist(const char * const sessionname) {}
+void remove_session_from_jumplist(const char * const sessionname) {}
+void clear_jumplist(void) {}

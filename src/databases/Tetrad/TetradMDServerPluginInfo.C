@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:57ddff02683b8d15889dbed345d35ddf11fff3f6eae618f36654d010baf22d57
-size 416
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <TetradPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(Tetrad,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void TetradMDServerPluginInfo::dummy()
+{
+}
+

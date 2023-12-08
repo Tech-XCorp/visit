@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9483ba89c82563c7a083073363acad090b0c5edbd902d7a72955b69209769f9b
-size 620
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef PY_TEXT2DOBJECT_H
+#define PY_TEXT2DOBJECT_H
+#include <Python.h>
+#include <AnnotationObject.h>
+
+//
+// Functions exposed to the VisIt module.
+//
+bool              PyText2DObject_Check(PyObject *obj);
+AnnotationObject *PyText2DObject_FromPyObject(PyObject *obj);
+PyObject         *PyText2DObject_NewPyObject();
+PyObject         *PyText2DObject_WrapPyObject(AnnotationObject *attr);
+
+#endif
+

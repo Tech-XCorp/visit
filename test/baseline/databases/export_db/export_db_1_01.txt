@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4ddaafa6458b15fe2977291e7086a6f7bcc7c28055bf6c97c68b8a3e3675b70a
-size 430
+The binary_VTK.0.vtk file is binary.
+
+!NBLOCKS 13
+ binary_VTK/binary_VTK.0.vtk
+ binary_VTK/binary_VTK.1.vtk
+ binary_VTK/binary_VTK.2.vtk
+ binary_VTK/binary_VTK.3.vtk
+ binary_VTK/binary_VTK.4.vtk
+ binary_VTK/binary_VTK.5.vtk
+ binary_VTK/binary_VTK.6.vtk
+ binary_VTK/binary_VTK.7.vtk
+ binary_VTK/binary_VTK.8.vtk
+ binary_VTK/binary_VTK.9.vtk
+ binary_VTK/binary_VTK.10.vtk
+ binary_VTK/binary_VTK.11.vtk
+ binary_VTK/binary_VTK.12.vtk

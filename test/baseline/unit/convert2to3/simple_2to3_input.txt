@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8b663d3d240b0854f808fe0376137528bd71a0f40310f4aa5fd29fd4da676140
-size 25
+print 'Old Style Print!'

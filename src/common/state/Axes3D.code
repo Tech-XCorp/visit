@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:62560c09e18ee96c40a924366d5025023d9c347575fcfa39b372bdde459285a6
-size 192
+Initialization: xAxis
+    xAxis.GetTitle().SetTitle("X-Axis");
+
+Initialization: yAxis
+    yAxis.GetTitle().SetTitle("Y-Axis");
+
+Initialization: zAxis
+    zAxis.GetTitle().SetTitle("Z-Axis");
+

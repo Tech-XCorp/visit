@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e53a578d0e320da64e153692f8bad6b754f5d993225ea5e3cb2a58136e84774b
-size 452
+#include <DebugStream.h>
+#include <avtMemory.h>
+
+#include <statm.h>
+
+void OutputMemoryInfo( const char* str )
+{
+#if 0
+  int totsize,rss,share,text,lib,data,dt;
+  getstatm_( &totsize, &rss, &share, &text, &lib, &data, &dt);
+  debug1 << str << " TOT(" << totsize << ")  RSS(" << rss << ").\n";
+#else
+  unsigned long size, rss2;
+  avtMemory::GetMemorySize(size, rss2);
+  debug1 << str << " [VISIT] SIZE(" << size << ")  RSS(" << rss2 << ").\n";
+#endif
+}
+

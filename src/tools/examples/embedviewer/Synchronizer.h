@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:63667ef035526fd81fefdfb64fb841d6ce353922e15221bd44f54b7795faeb3f
-size 437
+#ifndef SYNCHRONIZER_H
+#define SYNCHRONIZER_H
+#include <QObject>
+#include <Observer.h>
+#include <SyncAttributes.h>
+
+class Synchronizer : public QObject, public Observer
+{
+   Q_OBJECT
+public:
+   Synchronizer(Subject *s, Subject *ds);
+   virtual ~Synchronizer();
+
+   void PostSynchronize();
+
+signals:
+   void synchronized();
+private:
+   virtual void Update(Subject *s);
+
+   int syncCount;
+   SyncAttributes *sync, *delayedSync;
+};
+
+#endif

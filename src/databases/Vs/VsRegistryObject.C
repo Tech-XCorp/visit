@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:055ca36f4fdf75d2700eedc76e592ff84e9cb3fa363f8fb70dc97d6d50afb037
-size 322
+/*
+ * VsRegistryObject.C
+ *
+ *  Created on: Apr 30, 2010
+ *      Author: mdurant
+ */
+
+#include "VsRegistryObject.h"
+#include "VsRegistry.h"
+
+VsRegistryObject::VsRegistryObject(VsRegistry* r) {
+  registry = r;
+}
+
+VsRegistry* VsRegistryObject::getRegistry() {
+  return registry;
+}
+
+VsRegistryObject::~VsRegistryObject() {
+}

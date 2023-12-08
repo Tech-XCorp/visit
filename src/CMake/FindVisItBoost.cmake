@@ -1,3 +1,28 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0b5342719fb0e2224c1b63009195672349936d299efef8d800b45b24e7af4c8b
-size 699
+# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+# Project developers.  See the top-level LICENSE file for dates and other
+# details.  No copyright assignment is required to contribute to VisIt.
+
+# Use the BOOST_DIR hint from the config-site .cmake file 
+
+INCLUDE(${VISIT_SOURCE_DIR}/CMake/SetUpThirdParty.cmake)
+
+SET(BOOST_LIBS NO_LIBS)
+
+IF(NEKTAR++_FOUND)
+  SET(BOOST_LIBS
+   boost_chrono
+   boost_iostreams
+   boost_thread
+   boost_date_time
+   boost_filesystem
+   boost_regex
+   boost_system
+   boost_timer
+   boost_program_options)
+ENDIF()
+
+SET_UP_THIRD_PARTY(BOOST lib include ${BOOST_LIBS} )
+
+if(BOOST_FOUND)
+    set(HAVE_BOOST true CACHE BOOL "Have boost ")
+endif()

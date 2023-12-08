@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:db9fa50a6a166646d4ea3875d936b13a83dcee5a41e43948abd84b75f290b8af
-size 674
+# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+# Project developers.  See the top-level LICENSE file for dates and other
+# details.  No copyright assignment is required to contribute to VisIt.
+
+#****************************************************************************
+# Modifications:
+#
+#****************************************************************************
+
+PYTHON_ADD_DISTUTILS_SETUP(visit_flow_vpe_py_setup
+                           site-packages
+                           setup.py
+                           src/__init__.py
+                           src/visit_flow_exec.vpe
+                           src/visit_flow_vpe.py)
+
+
+
+
+

@@ -1,3 +1,40 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:dad5ec6d737ce402d91d64cf60cb38611374a10431a1f78ace8452652a1905ba
-size 974
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+package llnl.visit;
+
+// ****************************************************************************
+// Class: MapNodePair
+//
+// Purpose:
+//   This class is just for storage inside of MapNode.
+//
+// Notes:
+//
+// Programmer: Brad Whitlock
+// Creation:   Thu Feb  2 11:52:44 PST 2012
+//
+// Modifications:
+//
+// ****************************************************************************
+
+public class MapNodePair extends java.lang.Object
+{
+    public MapNodePair()
+    {
+        super();
+        key = new String();
+        value = new MapNode();
+    }
+
+    public MapNodePair(MapNodePair obj)
+    {
+        super();
+        key = new String(obj.key);
+        value = new MapNode(obj.value);
+    }
+
+    public String  key;
+    public MapNode value;
+}

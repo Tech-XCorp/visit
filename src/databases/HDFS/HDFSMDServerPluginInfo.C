@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d9c7fbc893b04704c0285fb95ab045c274eb2535c31ce36be2bb223dd12ab683
-size 410
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <HDFSPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(HDFS,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void HDFSMDServerPluginInfo::dummy()
+{
+}
+

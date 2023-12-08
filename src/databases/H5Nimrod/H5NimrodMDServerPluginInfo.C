@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8ad94abe4568db645188bba50acbb1ff78456c78887946ae17e62de8b474357b
-size 422
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <H5NimrodPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(H5Nimrod,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void H5NimrodMDServerPluginInfo::dummy()
+{
+}
+

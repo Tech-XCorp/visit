@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:32e161324a8481a20cf184478fb98f6ac5a6015363e3f908928cbc1af8b604bf
-size 419
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <EnSightPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(EnSight,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void EnSightMDServerPluginInfo::dummy()
+{
+}
+

@@ -1,3 +1,3 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:59d2dc18a78ff41151f023a3d6fecd8ab170ad1e2a903f7b56414affa1dbbeb1
-size 133
+The hohlraum flux query over 3 energy groups was written to hf0.ult.
+Sum is 0.786939.
+Energy group values are:  0.393469, 0.393469, 0

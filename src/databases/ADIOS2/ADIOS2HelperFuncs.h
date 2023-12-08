@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6e5c6dd571061215f9dd01e706f1587ec5619dd061d5658b84cc7428ad87d0ba
-size 355
+#ifndef ADIOS2_HELPER_FUNCS_H
+#define ADIOS2_HELPER_FUNCS_H
+
+#include <string>
+
+std::string ADIOS2Helper_GetEngineName(const std::string &fname);
+std::string ADIOS2Helper_GetFileName(const std::string &fname);
+bool        ADIOS2Helper_IsStagingEngine(const std::string &engineName);
+
+bool ADIOS2Helper_FileIsDirectory(const std::string& inName);
+
+
+#endif

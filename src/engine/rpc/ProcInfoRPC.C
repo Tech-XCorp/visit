@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:057cb23bb159c357bb4f716c041d21651f94040b450e886d19b1cecf31d1820d
-size 647
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include "ProcInfoRPC.h" 
+
+
+// ****************************************************************************
+//  Method: ProcInfoRPC
+//
+//  Purpose: 
+//    This is the RPC's constructor
+//
+//  Programmer: Mark C. Miller 
+//  Creation:   November 15, 2004
+//
+// ****************************************************************************
+
+ProcInfoRPC::ProcInfoRPC() : NonBlockingRPC("a", &returnAtts)
+{
+  // nothing here;
+}

@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e49d128771b0ccf6e552c510205160c4870da77d8495e07411e0be2c025fa32b
-size 229
+
+#ifndef GET_STATM_H
+#define GET_STATM_H
+
+#ifdef __cplusplus 
+extern "C" {
+#endif
+void getstatm_(int *totsize, int *rss, int* share, int *text, int *lib, 
+               int *data, int* dt );
+#ifdef __cplusplus 
+}
+#endif
+
+#endif

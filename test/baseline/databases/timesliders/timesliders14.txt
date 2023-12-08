@@ -1,3 +1,5 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:37250962e65d1d1f767444e093e5b962737da2afd646c1b933d0bc70202b4c7f
-size 283
+activeSource = "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbB00.pdb"
+activeTimeSlider = 0
+timeSliders = ("A_and_B", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbA00.pdb", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbB00.pdb")
+timeSliderCurrentStates = (5, 5, 5)
+animationMode = 2

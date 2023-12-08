@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2b58b2a98967c04a0328bfb8ad13e01e5fab30babd3b7c502d04c0ab3f34bdbc
-size 752
+<?xml version="1.0"?>
+  <Plugin name="Pixie" type="database" label="Pixie" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="MTSD" haswriter="false" hasoptions="true" filePatternsStrict="false" opensWholeDirectory="false">
+    <CXXFLAGS>
+      ${HDF5_INCLUDE_DIR}
+    </CXXFLAGS>
+    <LDFLAGS>
+      ${HDF5_LIBRARY_DIR}
+    </LDFLAGS>
+    <LIBS>
+      ${HDF5_LIB}
+    </LIBS>
+    <FilePatterns>
+      *.h5
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="" codefile="Pixie.code">
+      <Function name="PixieCommonPluginInfo::SetupDatabase" user="false" member="true">
+      </Function>
+    </Attribute>
+  </Plugin>

@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:126ad6b4716ac6203c1166489cefb8e8a736f57bce0d4fb87d240925117242d8
-size 117
+Revolved surface area:  viewer: The input is not queryable.  Can only revolve 2D data sets.  This data is already 3D.

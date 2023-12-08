@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ff9a58cb0c3142febaf0978e0505c3ffeb9933447f9117c7cf05ca88db2605d9
-size 416
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <ADIOS2PluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(ADIOS2,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void ADIOS2MDServerPluginInfo::dummy()
+{
+}
+

@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1264cb88f2c3d6d39c7e3d5646ecea7bec6b0ac8dedaa2549cd0d52d49194b06
-size 796
+<?xml version="1.0"?>
+  <Attribute name="avtDefaultPlotMetaData" purpose="Contains default plot metadata attributes" persistent="false" keyframe="true" exportAPI="DBATTS_API" exportInclude="dbatts_exports.h" codefile="avtDefaultPlotMetaData.code">
+    <Field name="pluginID" label="Plugin ID" type="string" access="public">
+    </Field>
+    <Field name="plotVar" label="Plot variable" type="string" access="public">
+      var
+    </Field>
+    <Field name="plotAttributes" label="Plot attributes" type="stringVector" access="public">
+    </Field>
+    <Function name="avtDefaultPlotMetaData2" user="true" member="true">
+    </Function>
+    <Function name="AddAttribute" user="true" member="true">
+    </Function>
+    <Function name="Print" user="true" member="true">
+    </Function>
+  </Attribute>

@@ -1,3 +1,47 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:06df3f4c1f083bef818dc3285894fd116e14f8b2feffd00f1d3713ff5efdb595
-size 1439
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                         avtImageToDataObjectFilter.h                      //
+// ************************************************************************* //
+
+#ifndef AVT_IMAGE_TO_DATA_OBJECT_FILTER_H
+#define AVT_IMAGE_TO_DATA_OBJECT_FILTER_H
+
+#include <pipeline_exports.h>
+
+#include <avtFilter.h>
+#include <avtImageSink.h>
+
+
+// ****************************************************************************
+//  Class: avtImageToDataObjectFilter
+//
+//  Purpose:
+//      A filter that takes in an image as input and has a data object as
+//      output.
+//
+//  Programmer: Hank Childs
+//  Creation:   May 31, 2001
+//
+//  Modifications:
+//
+//    Hank Childs, Thu Feb  5 17:11:06 PST 2004
+//    Moved inlined constructor and destructor definitions to .C files
+//    because certain compilers have problems with them.
+//
+// ****************************************************************************
+
+class PIPELINE_API avtImageToDataObjectFilter
+    : virtual public avtFilter, virtual public avtImageSink
+{
+  public:
+                       avtImageToDataObjectFilter();
+    virtual           ~avtImageToDataObjectFilter();
+};
+
+
+#endif
+
+

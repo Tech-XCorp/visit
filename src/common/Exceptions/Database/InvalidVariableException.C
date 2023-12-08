@@ -1,3 +1,36 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:40a41568e3d523a66e4a09016f4a0f17e6fbd3b25344e3e16ba92d4529727d46
-size 1118
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                          InvalidVariableException.C                       //
+// ************************************************************************* //
+
+#include <string>
+
+#include <InvalidVariableException.h>
+
+
+using namespace std;
+
+
+// ****************************************************************************
+//  Method: InvalidVariableException constructor
+//
+//  Arguments:
+//      varname   The name of the invalid variable.
+//
+//  Programmer: Hank Childs
+//  Creation:   August 14, 2000
+//
+// ****************************************************************************
+
+InvalidVariableException::InvalidVariableException(string varname)
+{
+    if (varname == "")
+        msg = "There was no variable specified.";
+    else
+        msg = "An invalid variable (" + varname + ") was specified.";
+}
+
+

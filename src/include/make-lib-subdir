@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4947fe3cb459c45eb9b20513963dcc1502a86b7e5258f3a4a042983aa9e17fb3
-size 357
+# This is the makefile for a subdirectory of a library which is built
+# from source files split across multiple subdirectories
+#
+# Modified:
+#    Jeremy Meredith, Wed Jul  3 14:05:25 PDT 2002
+#    Made it use braces for the PWD environment variable, helping portability.
+#
+
+DIR=`basename ${PWD}`
+
+all:
+	(cd .. && $(MAKE) $(DIR)_obj)
+	(cd .. && $(MAKE) all)

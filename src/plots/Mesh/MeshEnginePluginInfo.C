@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:88ae33cb47bc3f94766cfb5350b4b20cc2978d0715ad6d4d7881dc75e2422f5c
-size 513
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ****************************************************************************
+//  File: MeshEnginePluginInfo.C
+// ****************************************************************************
+
+#include <MeshPluginInfo.h>
+#include <avtMeshPlot.h>
+
+VISIT_PLOT_PLUGIN_ENTRY_EV(Mesh,Engine)
+

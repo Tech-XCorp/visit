@@ -1,3 +1,39 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d566711cd90bde8820c43e9abed091809751285a86abcceec31e0ee21565fd92
-size 1362
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef ISOVOLUME_CELL_RECONSTRUCTOR_H
+#define ISOVOLUME_CELL_RECONSTRUCTOR_H
+
+#include "CellReconstructor.h"
+
+// ****************************************************************************
+//  Class:  IsovolumeCellReconstructor
+//
+//  Purpose:
+//    This is a cell reconstructor that uses the zoo-based clipping methods
+//    to create an interface reconstruction based solely on an isosurface
+//    of the volume fractions.
+//
+//  Programmer:  Jeremy Meredith
+//  Creation:    August 18, 2005
+//
+//  Modifications:
+//    Jeremy Meredith, Fri Feb 13 11:05:06 EST 2009
+//    Added calculation of output vf's per material, if requested.
+//
+//    Jeremy Meredith, Tue Jun 18 11:56:22 EDT 2013
+//    Output actual volumes/areas, not VF's, and return total vol/area.
+//
+// ****************************************************************************
+
+class IsovolumeCellReconstructor : public CellReconstructor
+{
+  public:
+    IsovolumeCellReconstructor(vtkDataSet*, avtMaterial*, ResampledMat&,
+                               int, int, MIRConnectivity&, ZooMIR&);
+
+    double ReconstructCell(int, int, int, vtkIdType*, double*);
+};
+
+#endif

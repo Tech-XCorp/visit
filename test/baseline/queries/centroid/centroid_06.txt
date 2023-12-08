@@ -1,3 +1,4 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8b4e7ec90038d24204201c433ac7bf2f43c77d4aabd15c8ca592741164b80347
-size 139
+Moment of inertia tensor = 
+(-6.90648e-12,	4.7784e-13,	0.0082863)
+(4.7784e-13,	1.98952e-12,	-0.212945)
+(0.0082863,	-0.212945,	2.39453e-12)

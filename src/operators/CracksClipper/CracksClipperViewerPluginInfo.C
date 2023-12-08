@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5616b364eec8e2d4e70b2742ef5937c4d7894b03e66060db38d1ca110082e01d
-size 557
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ****************************************************************************
+//  File: CracksClipperViewerPluginInfo.C
+// ****************************************************************************
+
+#include <CracksClipperPluginInfo.h>
+#include <CracksClipperAttributes.h>
+
+VISIT_OPERATOR_PLUGIN_ENTRY_EV(CracksClipper,Viewer)
+
+

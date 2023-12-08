@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f42b30c17dba125ae6edcf080a81a226e6773598f82b7af714b2a9923176dbb5
-size 44
+The kurtosis of the distribution is 8.99968.

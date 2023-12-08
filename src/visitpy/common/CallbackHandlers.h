@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:655b71efb01c3a010257d045d45e17f05d34519531a26254e5fb69b296532b39
-size 654
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef CALLBACK_HANDLERS_H
+#define CALLBACK_HANDLERS_H
+#include <CallbackManager.h>
+#include <ViewerProxy.h>
+#include <ViewerRPCCallbacks.h>
+
+//
+// This function registers callback handlers for the supported state objects.
+//
+void RegisterCallbackHandlers(CallbackManager *cb, ViewerProxy *viewer, ViewerRPCCallbacks *rpcCB);
+PyObject *GetPyObjectPluginAttributes(AttributeSubject *subj, bool useCurrent, ViewerProxy *);
+
+#endif

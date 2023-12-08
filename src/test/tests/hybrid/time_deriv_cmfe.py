@@ -1,3 +1,34 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a4abacd7e669aecc6d1832c06d33bd0d33db67fa56773fad47e035a52351e2e0
-size 763
+# ----------------------------------------------------------------------------
+#  CLASSES: nightly
+#
+#  Test Case:  time_deriv_cmfe.py
+#
+#  Defect ID:  '2715, '6897
+#
+#  Programmer: Hank Childs
+#  Date:       January 12, 2006
+#
+#  Modifications:
+#
+#    Mark C. Miller, Wed Jan 20 07:37:11 PST 2010
+#    Added ability to swtich between Silo's HDF5 and PDB data.
+# ----------------------------------------------------------------------------
+
+
+
+OpenDatabase(silo_data_path("wave.visit"))
+
+
+
+# Test general capability.
+AddPlot("Pseudocolor", "time_derivative/conn_based/pressure")
+DrawPlots()
+Test("time_deriv_cmfe_01")
+
+TimeSliderSetState(50)
+Test("time_deriv_cmfe_02")
+
+ChangeActivePlotsVar("time_derivative/pos_based/pressure")
+Test("time_deriv_cmfe_03")
+
+Exit()

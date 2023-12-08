@@ -1,3 +1,10 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ee54e82ef8a946901ba233e2599a1262b2340afb38f83456164372ac896039e4
-size 518
+-- Table for storing basic rendering data.
+CREATE TABLE rendering (
+    n_proc INTEGER,          -- number of processors used during render.
+    icet INTEGER,            -- IceTNMgr (1) or NMgr (0)?
+    transparency INTEGER,    -- multipass rendering, thus transparent geometry
+    n_gpus INTEGER,          -- number of GPUs used during rendering.
+    n_cells INTEGER,         -- number of cells rendered
+    n_pixels INTEGER,        -- number of pixels rendered
+    r_time REAL              -- overall render time
+);

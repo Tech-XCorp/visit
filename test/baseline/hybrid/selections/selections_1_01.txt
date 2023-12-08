@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3bcb82aa26591b89e537c0390e822982d602f46d1292b35264beb1d8c964055c
-size 565
+name = "matvf_selection"
+source = "Plot0003"
+selectionType = BasicSelection  # BasicSelection, CumulativeQuerySelection
+idVariableType = UseZoneIDForID  # UseZoneIDForID, UseGlobalZoneIDForID, UseVariableForID
+idVariable = ""
+variables = ()
+variableMins = ()
+variableMaxs = ()
+minTimeState = 0
+maxTimeState = -1
+timeStateStride = 1
+combineRule = CombineOr  # CombineAnd, CombineOr
+histogramType = HistogramTime  # HistogramTime, HistogramMatches, HistogramID, HistogramVariable
+histogramNumBins = 10
+histogramStartBin = 0
+histogramEndBin = 9
+histogramVariable = ""

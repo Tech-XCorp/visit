@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8dfe1f7e67b1d147ab8fe463417df93ecb48d0e068d16a51b8ac9efa03a49b1a
-size 736
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include "simV2_PyObject.h"
+
+// --------------------------------------------------------------------------
+void simV2_PyObject::Assign(PyObject *rval)
+{
+    PyObject *tmp = Object;
+    Object = rval;
+    if (Object) { Py_INCREF(Object); }
+    if (tmp) { Py_DECREF(tmp); }
+}
+
+// --------------------------------------------------------------------------
+simV2_PyObject &simV2_PyObject::operator=(const simV2_PyObject &other)
+{
+    if (this != &other)
+    {
+        Assign(other.Object);
+    }
+    return *this;
+}

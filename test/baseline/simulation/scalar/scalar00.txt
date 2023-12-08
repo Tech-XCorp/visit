@@ -1,3 +1,3 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5824c5deba2512d640c622ec928e8951a23c41956989bf8537ad238969214ba3
-size 107
+Simulation executable "scalar" exists.
+Simulation "scalar" started.
+VisIt connected to simulation "scalar".

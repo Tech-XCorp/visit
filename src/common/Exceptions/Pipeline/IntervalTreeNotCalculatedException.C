@@ -1,3 +1,26 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:840d07f3cacbc5fe60f3d8a05dab5ae22d6440d089cf0db463efd4bce8c84c36
-size 979
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                   IntervalTreeNotCalculatedException.C                    //
+// ************************************************************************* //
+
+#include <IntervalTreeNotCalculatedException.h>
+
+
+// ****************************************************************************
+//  Method: IntervalTreeNotCalculatedException constructor
+//
+//  Programmer: Hank Childs
+//  Creation:   August 8, 2000
+//
+// ****************************************************************************
+
+IntervalTreeNotCalculatedException::IntervalTreeNotCalculatedException()
+{
+    msg = "The interval tree was accessed even though it has not yet been"
+          " calculated";
+}
+
+

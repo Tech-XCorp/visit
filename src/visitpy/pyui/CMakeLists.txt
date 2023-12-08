@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6c87be10281af8722cff8b278aa7cfba3101694a00aa4402126401680463f02f
-size 627
+# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+# Project developers.  See the top-level LICENSE file for dates and other
+# details.  No copyright assignment is required to contribute to VisIt.
+
+#****************************************************************************
+# Modifications:
+#
+#****************************************************************************
+
+IF(HAVE_LIBPYSIDE OR HAVE_LIBPYQT)
+    ADD_SUBDIRECTORY(common)
+ENDIF()
+
+IF(HAVE_LIBPYSIDE)
+    ADD_SUBDIRECTORY(pyside)
+ENDIF()
+
+IF(HAVE_LIBPYQT AND VISIT_SIP_DIR)
+    ADD_SUBDIRECTORY(pyqt)
+ENDIF(HAVE_LIBPYQT AND VISIT_SIP_DIR)

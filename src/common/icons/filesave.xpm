@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6cdd4741634eadc6ec4e3324c2307d531a637c6eb64d9d16d94c005c126dfdbb
-size 397
+/* XPM */
+static const char *filesave_xpm[] = {
+"    14    14        4            1",
+". c #040404",
+"# c #808304",
+"a c #bfc2bf",
+"b c None",
+"..............",
+".#.aaaaaaaa.a.",
+".#.aaaaaaaa...",
+".#.aaaaaaaa.#.",
+".#.aaaaaaaa.#.",
+".#.aaaaaaaa.#.",
+".#.aaaaaaaa.#.",
+".##........##.",
+".############.",
+".##.........#.",
+".##......aa.#.",
+".##......aa.#.",
+".##......aa.#.",
+"b............."
+};

@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:dd1c6d74b26614d00681cd0bcdd06b63235e3ea4144f8b819484236e138c21c2
-size 370
+#include "putty.h"
+#ifndef NO_GSSAPI
+
+/* For platforms not supporting GSSAPI */
+
+struct ssh_gss_liblist *ssh_gss_setup(Conf *conf)
+{
+    struct ssh_gss_liblist *list = snew(struct ssh_gss_liblist *);
+    list->libraries = NULL;
+    list->nlibraries = 0;
+    return list;
+}
+
+void ssh_gss_cleanup(struct ssh_gss_liblist *list)
+{
+    sfree(list);
+}
+
+#endif /* NO_GSSAPI */

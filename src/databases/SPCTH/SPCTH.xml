@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8ea79a42570b602f32ef6f1ff803aca934c36ea097c5bfafbe3a8fc24a89333b
-size 730
+<?xml version="1.0"?>
+  <Plugin name="SPCTH" type="database" label="CTH simulation files" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="MTMD" haswriter="false" hasoptions="false" filePatternsStrict="false" opensWholeDirectory="false">
+    <Files components="M,E">
+       avtSPCTHFileFormat.C
+       SpyFile.C
+    </Files>
+    <FilePatterns>
+      *.spcth
+      *spcth
+      *.cth
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="" codefile="SPCTH.code">
+      <Function name="SPCTHCommonPluginInfo::SetupDatabase" user="false" member="true">
+      </Function>
+    </Attribute>
+  </Plugin>

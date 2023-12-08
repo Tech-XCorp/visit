@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:523b1a663e2eb1d6de0bdadd0fc96f3a4fccd045b91fe27e01346aa38b1de4bb
-size 524
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <avtToolInterface.h>
+#include <AttributeSubject.h>
+
+avtToolInterfaceCallback avtToolInterface::callback = 0;
+
+avtToolInterface::avtToolInterface(const VisWindow *v)
+{
+    visWindow = v;
+    atts = NULL;
+}
+
+avtToolInterface::~avtToolInterface()
+{
+    if(atts != NULL)
+        delete atts;
+}
+

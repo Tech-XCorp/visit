@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e9464146e865ea34dbb152c7fb980d5caa55be11ca5ba26505afa5d4a9292bc2
-size 416
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <UintahPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(Uintah,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void UintahMDServerPluginInfo::dummy()
+{
+}
+

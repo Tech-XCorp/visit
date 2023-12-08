@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:bc46d087e20eb3133779929fca38ce31877eb64ae2dc652671047ba4fcfac6e0
-size 276
+<?xml version="1.0"?>
+  <Plugin name="HDFS" type="database" label="HDFS" version="1.0" dbtype="MTMD">
+    <FilePatterns>
+        states.txt.gz
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="false" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

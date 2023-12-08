@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:31f7544f365fe83f3f450511de238c4305981261946ab0b3342b3c6fc848bf7d
-size 459
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <avtPluginStructuredChunkDataTreeIterator.h>
+
+avtPluginStructuredChunkDataTreeIterator::avtPluginStructuredChunkDataTreeIterator()
+{
+}
+
+avtPluginStructuredChunkDataTreeIterator::~avtPluginStructuredChunkDataTreeIterator()
+{
+}

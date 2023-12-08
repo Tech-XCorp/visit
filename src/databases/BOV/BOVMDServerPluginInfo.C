@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1a53e917bd2836dc053df6026bad41c89c7cedbb74bef5b73bc3bc6b85710b78
-size 407
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <BOVPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(BOV,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void BOVMDServerPluginInfo::dummy()
+{
+}
+

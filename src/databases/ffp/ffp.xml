@@ -1,3 +1,11 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7a2c40a828759d480b1aff94bd7986447384893db1269c6f7c1d4adedce27e69
-size 511
+<?xml version="1.0"?>
+  <Plugin name="ffp" type="database" label="ffp" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STSD" haswriter="false" hasoptions="false" filePatternsStrict="false" opensWholeDirectory="false">
+    <FilePatterns>
+      *.rcs
+      *.rcs.gz
+      *.ffp
+      *.ffp.gz
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

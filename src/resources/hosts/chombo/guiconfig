@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:04eb1fc4a64d4fccc53d339eaaea1fbee2ab9e227239363158830d92c23566f0
-size 489
+<?xml version="1.0"?>
+<Object name="VisIt">
+    <Field name="Version" type="string">1.8.0</Field>
+    <Object name="GUI">
+        <Object name="Compute engines">
+            <Field name="visible" type="bool">false</Field>
+            <Field name="posted" type="bool">true</Field>
+        </Object>
+        <Object name="Macros">
+            <Field name="visible" type="bool">false</Field>
+            <Field name="posted" type="bool">true</Field>
+        </Object>
+    </Object>
+</Object>

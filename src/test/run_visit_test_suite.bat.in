@@ -1,3 +1,7 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:cb1a18488541e9740e9cb66978de1e16e010647b064b8f416e90b818902f895d
-size 312
+@PYTHON_EXECUTABLE@ @CMAKE_BINARY_DIR@/test/visit_test_suite.py ^
+   --lessverbose --no-timings ^
+   -d @CMAKE_BINARY_DIR@/testdata ^
+   -b @VISIT_WINDOWS_DIR@/testing_baselines ^
+   -t @VISIT_SOURCE_DIR@/test/tests ^
+   -o testing_output ^
+   -e @CMAKE_RUNTIME_OUTPUT_DIRECTORY@/@CMAKE_BUILD_TYPE@/visit.exe %*

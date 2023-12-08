@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:20deb358565af5ae54d603b638d8529c2e98f3813113a2f8605f2761004ad696
-size 410
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <SAMIPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(SAMI,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void SAMIMDServerPluginInfo::dummy()
+{
+}
+

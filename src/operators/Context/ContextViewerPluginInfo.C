@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7f769618df98d30228e26fdd5f2e48734fbba882e606478a35d0adfa3b86b190
-size 533
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ****************************************************************************
+//  File: ContextViewerPluginInfo.C
+// ****************************************************************************
+
+#include <ContextPluginInfo.h>
+#include <ContextAttributes.h>
+
+VISIT_OPERATOR_PLUGIN_ENTRY_EV(Context,Viewer)
+
+

@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4aa86f3a8afadfbb101baac34d433eee03c900d6cb49462b58213116c91ffeee
-size 420
+/* XPM */
+static const char *fileopen_xpm[] = {
+"    16    13        5            1",
+". c #040404",
+"# c #808304",
+"a c None",
+"b c #f3f704",
+"c c #f3f7f3",
+"aaaaaaaaa...aaaa",
+"aaaaaaaa.aaa.a.a",
+"aaaaaaaaaaaaa..a",
+"a...aaaaaaaa...a",
+".bcb.......aaaaa",
+".cbcbcbcbc.aaaaa",
+".bcbcbcbcb.aaaaa",
+".cbcb...........",
+".bcb.#########.a",
+".cb.#########.aa",
+".b.#########.aaa",
+"..#########.aaaa",
+"...........aaaaa"
+};

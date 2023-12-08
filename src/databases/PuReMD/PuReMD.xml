@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ad3a806bde21987022ea42b5c082d319e17a435033027056cfafdf85f012a600
-size 476
+<?xml version="1.0"?>
+  <Plugin name="PuReMD" type="database" label="PuReMD" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="MTSD" haswriter="false" hasoptions="false" filePatternsStrict="false" opensWholeDirectory="false">
+    <FilePatterns>
+      *.trj
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="false" keyframe="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

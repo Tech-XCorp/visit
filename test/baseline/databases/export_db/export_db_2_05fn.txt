@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f4c885692875a9b3a0dae9665db1e5144c4ac00f74664e288c019a841c2799a2
-size 34
+wg_Tecplot.1.tec
+wg_Tecplot.2.tec

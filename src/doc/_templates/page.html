@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:80307a01b45a7916f53f329fcf80d9c29e5096ef9075089fd71163639aa9aa49
-size 430
+{% extends "!page.html" %}
+
+{% block footer %}
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".collapsible > *").hide();
+        $(".collapsible .header").show();
+        $(".collapsible .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+{% endblock %}

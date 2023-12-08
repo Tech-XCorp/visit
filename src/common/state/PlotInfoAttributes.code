@@ -1,3 +1,33 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f98821315e83fdf58fe61c48527a287cdd7dd398a71ed2f0663bf0c59693f8ae
-size 505
+Function: PrintSelf
+Declaration: void PrintSelf(ostream &os);
+Definition:
+void
+PlotInfoAttributes::PrintSelf(ostream &os)
+{
+    os << "Data:\n" ;
+    os << data.ToXML();
+}
+
+
+Function: Reset
+Declaration: void Reset();
+Definition:
+void
+PlotInfoAttributes::Reset()
+{
+    data.Reset();
+    SelectData();
+}
+
+
+Function: Merge
+Declaration: void Merge(const PlotInfoAttributes &obj);
+Definition:
+void
+PlotInfoAttributes::Merge(const PlotInfoAttributes &obj)
+{
+    data.Merge(obj.GetData());
+    SelectData();
+}
+
+

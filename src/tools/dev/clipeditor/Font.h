@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6612847d01d9b0787cc21c358412d733c955ee7513de6df1bea188ae79cc0192
-size 739
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ----------------------------------------------------------------------------
+// File:  Font.h
+//
+// Programmer: Jeremy Meredith
+// Date:       August 11, 2003
+// ----------------------------------------------------------------------------
+
+#ifndef FONT_H
+#define FONT_H
+
+#include "Vector.h"
+
+void
+DrawCharacters(int nstr, char *str[],
+               float scale, Vector origin, Vector up, Vector right);
+
+void
+DrawCharacter(char letter,
+              float scale, Vector origin, Vector up, Vector right);
+#endif

@@ -1,3 +1,34 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:77e115e9ed91c65d53de6191e4638105e84eb09ce305e6e52b173b7294d6495f
-size 523
+/*
+ * Linking module for PuTTYtel: list the available backends not
+ * including ssh.
+ */
+
+#include <stdio.h>
+#include "putty.h"
+
+const int be_default_protocol = PROT_TELNET;
+
+const char *const appname = "PuTTYtel";
+
+Backend *backends[] = {
+    &telnet_backend,
+    &rlogin_backend,
+    &raw_backend,
+    &serial_backend,
+    NULL
+};
+
+/*
+ * Stub implementations of functions not used in non-ssh versions.
+ */
+void random_save_seed(void)
+{
+}
+
+void random_destroy_seed(void)
+{
+}
+
+void noise_ultralight(unsigned long data)
+{
+}

@@ -1,3 +1,31 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:01d30ce1e437e439082c1e7664ac4f3e6c1e0d01bb43aff510150c38b65f9cd1
-size 1326
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef PY_PDFATTRIBUTES_H
+#define PY_PDFATTRIBUTES_H
+#include <Python.h>
+#include <Py2and3Support.h>
+#include <PDFAttributes.h>
+
+//
+// Functions exposed to the VisIt module.
+//
+#define PDFATTRIBUTES_NMETH 56
+void           PyPDFAttributes_StartUp(PDFAttributes *subj, void *data);
+void           PyPDFAttributes_CloseDown();
+PyMethodDef *  PyPDFAttributes_GetMethodTable(int *nMethods);
+bool           PyPDFAttributes_Check(PyObject *obj);
+PDFAttributes *  PyPDFAttributes_FromPyObject(PyObject *obj);
+PyObject *     PyPDFAttributes_New();
+PyObject *     PyPDFAttributes_Wrap(const PDFAttributes *attr);
+void           PyPDFAttributes_SetParent(PyObject *obj, PyObject *parent);
+void           PyPDFAttributes_SetDefaults(const PDFAttributes *atts);
+std::string    PyPDFAttributes_GetLogString();
+std::string    PyPDFAttributes_ToString(const PDFAttributes *, const char *);
+PyObject *     PyPDFAttributes_getattr(PyObject *self, char *name);
+int            PyPDFAttributes_setattr(PyObject *self, char *name, PyObject *args);
+extern PyMethodDef PyPDFAttributes_methods[PDFATTRIBUTES_NMETH];
+
+#endif
+

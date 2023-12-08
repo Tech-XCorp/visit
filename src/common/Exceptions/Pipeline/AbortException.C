@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:de2e768f4e3baf1abfb62cf95fee5dc3a02622a134ad9c2b5591bf62ce39a602
-size 846
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                              AbortException.C                             //
+// ************************************************************************* //
+
+#include <AbortException.h>
+
+
+// ****************************************************************************
+//  Method: AbortException constructor
+//
+//  Programmer: Hank Childs
+//  Creation:   June 20, 2001
+//
+// ****************************************************************************
+
+AbortException::AbortException()
+{
+    msg = "The pipeline was ordered to abort.";
+}
+
+

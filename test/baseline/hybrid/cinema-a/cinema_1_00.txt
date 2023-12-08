@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:dbe43c718c64299509e2ad5463f64bfcaeeb9593639d91b47b0c8f54a9da3fd4
-size 149
+-specification
+A
+-scriptfile
+test1.py
+-output
+VISIT_TOP_DIR/test/test1.cdb
+-format
+png
+-geometry
+300x300
+-camera
+phi-theta
+-phi
+6
+-theta
+5
+-stride
+3

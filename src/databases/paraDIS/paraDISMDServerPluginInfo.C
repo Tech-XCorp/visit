@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:71d3564d5244484bba71317022166daad4c92df52fc82eadabe8cd5fd548aaf4
-size 419
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <paraDISPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(paraDIS,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void paraDISMDServerPluginInfo::dummy()
+{
+}
+

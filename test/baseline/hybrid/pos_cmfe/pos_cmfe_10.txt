@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:85cb5291cdfdcecc0c908c9588b9505c9c1e06161db58855d174186f699ad5a8
-size 84
+Pseudocolor:  (ExpressionException)
+viewer: An invalid variable (xyz) was specified.

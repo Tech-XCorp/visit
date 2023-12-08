@@ -1,3 +1,10 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7b9350c06f53fc3a1eeb81f9ed2c8efd3a69f8ec8bbf51ff0dc05612c575a4a5
-size 553
+<?xml version="1.0"?>
+  <Attribute name="avtSymmetricTensorMetaData" purpose="Contains symmetricTensor metadata attributes" persistent="false" keyframe="true" exportAPI="DBATTS_API" exportInclude="dbatts_exports.h" codefile="avtSymmetricTensorMetaData.code" baseClass="avtVarMetaData">
+    <Field name="dim" label="Dimensions" type="int" access="public">
+      0
+    </Field>
+    <Function name="avtSymmetricTensorMetaData2" user="true" member="true">
+    </Function>
+    <Function name="Print" user="true" member="true">
+    </Function>
+  </Attribute>

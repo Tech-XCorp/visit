@@ -1,3 +1,30 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6d9d23dcc2ffe5a2e72403a3a81d10c466472c2e901f09c93dc5907ccaf4d311
-size 914
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef NEK5000_EXPORTS_H
+#define NEK5000_EXPORTS_H
+
+#if defined(_WIN32)
+#if defined(nek5000_interp_EXPORTS)
+#define NEK5000_API __declspec(dllexport)
+#else
+#define NEK5000_API __declspec(dllimport)
+#endif
+#if defined(_MSC_VER)
+// Turn off warning about lack of DLL interface
+#pragma warning(disable:4251)
+// Turn off warning non-dll class is base for dll-interface class.
+#pragma warning(disable:4275)
+// Turn off warning about identifier truncation
+#pragma warning(disable:4786)
+#endif
+#else
+# if __GNUC__ >= 4 && (defined(nek5000_interp_EXPORTS))
+#   define NEK5000_API __attribute__ ((visibility("default")))
+# else
+#   define NEK5000_API /* hidden by default */
+# endif
+#endif
+
+#endif

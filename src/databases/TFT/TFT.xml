@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4258b24b71abe909885c5352fc511c8555cc7ca6efb3962b1c06b1c6921e6b13
-size 260
+<?xml version="1.0"?>
+  <Plugin name="TFT" type="database" label="TFT" version="1.0" enabled="true" dbtype="STSD" haswriter="false">
+    <FilePatterns>
+      *.dat
+      *.tft
+    </FilePatterns>
+    <Attribute persistent="false">
+    </Attribute>
+  </Plugin>

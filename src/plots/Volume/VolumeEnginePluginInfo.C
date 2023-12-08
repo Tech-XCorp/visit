@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0bb5908fafc8e45338242110baa56a992e4fce0860d0ba59cb42ed5b0ea0dcbf
-size 521
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ****************************************************************************
+//  File: VolumeEnginePluginInfo.C
+// ****************************************************************************
+
+#include <VolumePluginInfo.h>
+#include <avtVolumePlot.h>
+
+VISIT_PLOT_PLUGIN_ENTRY_EV(Volume,Engine)
+

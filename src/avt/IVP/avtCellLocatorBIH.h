@@ -1,3 +1,49 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5e2422f5926bdd361ce376fa3c1029c321ee42f1c9b203faa73adacbaf9b5153
-size 1349
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                            avtCellTreeLocator.h                           //
+// ************************************************************************* //
+
+#ifndef AVT_CELL_LOCATOR_BIH
+#define AVT_CELL_LOCATOR_BIH
+
+#include <avtCellLocator.h>
+
+class celltree;
+class vtkIdTypeArray;
+class vtkCellArray;
+
+class IVP_API avtCellLocatorBIH : public avtCellLocator
+{
+public:
+
+    avtCellLocatorBIH( vtkDataSet* ds );
+    ~avtCellLocatorBIH();
+
+    vtkIdType FindCell( const double pos[3], 
+                        avtInterpolationWeights* iw,
+                        bool ignoreGhostCells ) const;
+
+protected:
+
+    void FindCellRecursive( const double pos[3], 
+                            avtInterpolationWeights* weights,
+                            unsigned int node,
+                            vtkIdType& cell,
+                            bool ignoreGhostCells ) const;
+
+    void Build();
+    void Free();
+
+    int MaxCellsPerLeaf;
+    int NumberOfBuckets;
+
+    celltree* Tree;
+
+    vtkIdType* CellArray;
+    vtkIdType* Locations;
+};
+
+#endif

@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:dca931fc689531f6d2fe5b5e827c4a529184c167ed9ccb19ece5c10898a047ad
-size 631
+<?xml version="1.0"?>
+  <Plugin name="volimage" type="database" label="WPP Volume Image" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STMD" haswriter="false" hasoptions="false" specifiedFilenames="false">
+    <FilePatterns>
+      *3D.ux
+      *3D.uy
+      *3D.uz
+      *3D.rho
+      *3D.p
+      *3D.s
+      *3D.div
+      *3D.curl
+      *3D.mag
+      *3D.veldiv
+      *3D.velcurl
+      *3D.velmag
+      *3D.z
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

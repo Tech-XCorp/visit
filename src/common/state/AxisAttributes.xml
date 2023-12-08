@@ -1,3 +1,12 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4f7921d2a692ab41441e4fb8be92dd8c821e6f8c999df20a79d54cfe3744655f
-size 555
+<?xml version="1.0"?>
+  <Attribute name="AxisAttributes" purpose="Contains the properties for one axis." persistent="true" keyframe="true" exportAPI="STATE_API" exportInclude="state_exports.h">
+    <Field name="title" label="Title" type="att" subtype="AxisTitles">
+    </Field>
+    <Field name="label" label="Label" type="att" subtype="AxisLabels">
+    </Field>
+    <Field name="tickMarks" label="Tick marks" type="att" subtype="AxisTickMarks">
+    </Field>
+    <Field name="grid" label="Grid visible" type="bool">
+      false
+    </Field>
+  </Attribute>

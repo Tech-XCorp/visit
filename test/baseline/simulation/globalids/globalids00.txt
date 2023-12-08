@@ -1,3 +1,3 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:01ead4f00373a6ed8efedcc8ffb167b255506cc769d9bfa2370d7c8689e4395a
-size 116
+Simulation executable "globalids" exists.
+Simulation "globalids" started.
+VisIt connected to simulation "globalids".

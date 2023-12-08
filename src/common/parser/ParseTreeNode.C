@@ -1,3 +1,39 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:df30f7d5867e45d3af2d32e81ec498fabd857b90b81069d4c76ef997122c5d67
-size 1199
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                              ParseTreeNode.C                              //
+// ************************************************************************* //
+
+#include <ParseTreeNode.h>
+
+
+// ****************************************************************************
+//  Method: ParseTreeNode::Print
+//
+//  Purpose:
+//      The print method for a grammar node.
+//
+//  Programmer: Jeremy Meredith
+//  Creation:   November 11, 2004
+//
+//  Modifications:
+//    Jeremy Meredith, Wed Jul 23 13:15:15 EDT 2008
+//    Separate the parent printout from this one if necessary.
+//    
+// ****************************************************************************
+
+void 
+ParseTreeNode::Print(ostream &o, std::string s)
+{
+    static int indent = 0;
+    for (int i=0; i<indent; i++)
+        o << "  ";
+    if (!s.empty())
+        o << s.c_str() << ": "; 
+    indent++;
+    PrintNode(o);
+    indent--;
+}
+

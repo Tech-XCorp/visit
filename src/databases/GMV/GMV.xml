@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:09830465e2576071a7d10727e7017654065273000ed3f5901bdc49618cc005cb
-size 742
+<?xml version="1.0"?>
+  <Plugin name="GMV" type="database" label="GMV" version="1.0" enabled="true" mdspecificcode="true" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STMD" haswriter="false" hasoptions="false" filePatternsStrict="false" opensWholeDirectory="false">
+    <CXXFLAGS>
+      ${VISIT_INCLUDE_DIR}/databases/PDB
+    </CXXFLAGS>
+    <FilePatterns>
+      *.gmv
+      *.gmvG
+    </FilePatterns>
+    <Files components="M">
+      avtGMVFileFormat.C
+      gmvread.c
+    </Files>
+    <Files components="E">
+      avtGMVFileFormat.C
+      gmvMaterialEncoder.C
+      gmvread.c
+    </Files>
+    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

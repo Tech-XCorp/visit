@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a6c1bc67fba241eea01a16ffa2e3833b3d810eb06ae86aa5379a16c3e33ba648
-size 510
+# ----------------------------------------------------------------------------
+#  CLASSES: nightly
+#
+#  Test Case:  default_methods.py
+#
+#  Tests:      Tests default method interface of the visit module
+#
+#  Cyrus Harrison, Mon Jul 20 11:32:42 PDT 2020
+# ----------------------------------------------------------------------------
+
+#
+# Simply Call These
+#
+print(GetDebugLevel())
+print(GetLastError())
+print(Version())
+print(LocalNameSpace())
+print(LongFileName("myfile.txt"))
+print(apropos("subset"))
+
+Exit()

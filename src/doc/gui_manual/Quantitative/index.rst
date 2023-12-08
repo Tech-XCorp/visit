@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a77685fa8ca22205ae264dc981c93066114696456ea131abd729639ad20453f6
-size 689
+.. _Quantitative:
+
+Quantitative Analysis
+=====================
+
+Simulation data must often be compared to experimental data so VisIt provides
+a number of features that allow quantitative information to be extracted from
+simulation databases. This chapter explains how to visualize derived variables
+created with expressions and query information about a database. This chapter
+also explains VisIt's Pick, Query and Lineout capabilities which allow users
+to compute highly sophisticated quantitative, as opposed to visual, results.
+
+.. toctree::
+    :maxdepth: 2
+
+    Expressions
+    Query
+    Pick
+    Lineout
+    LineSampler
+    Data Level Comparisons Wizard <DataLevelComparisonsWizard>

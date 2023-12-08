@@ -1,3 +1,27 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:13304ff99ea38322851ea3f16570a4e739778e9ab542242b86cdd1ba8559b76b
-size 507
+/*
+ * wincapi.c: implementation of wincapi.h.
+ */
+
+#include "putty.h"
+
+#if !defined NO_SECURITY
+
+#define WINCAPI_GLOBAL
+#include "wincapi.h"
+
+int got_crypt(void)
+{
+    static int attempted = FALSE;
+    static int successful;
+    static HMODULE crypt;
+
+    if (!attempted) {
+        attempted = TRUE;
+        crypt = load_system32_dll("crypt32.dll");
+        successful = crypt &&
+            GET_WINDOWS_FUNCTION(crypt, CryptProtectMemory);
+    }
+    return successful;
+}
+
+#endif /* !defined NO_SECURITY */

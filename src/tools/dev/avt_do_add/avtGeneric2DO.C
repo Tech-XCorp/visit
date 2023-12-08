@@ -1,3 +1,47 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:998a5c147d1f89c9dbcd36c389beb8dfd329c96e4b956e6e2277097712a598f0
-size 1589
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                     avtDataObjectToDO_REPL_STRINGFilter.C                 //
+// ************************************************************************* //
+
+#include <avtDataObjectToDO_REPL_STRINGFilter.h>
+
+
+// ****************************************************************************
+//  Method: avtDataObjectToDO_REPL_STRINGFilter constructor
+//
+//  Purpose:
+//      Defines the constructor.  Note: this should not be inlined in the
+//      header because it causes problems for certain compilers.
+//
+//  Programmer: AUTHOR_REPL_STRING
+//  Creation:   DATE_REPL_STRING
+//
+// ****************************************************************************
+
+avtDataObjectToDO_REPL_STRINGFilter::avtDataObjectToDO_REPL_STRINGFilter()
+{
+    ;
+}
+
+
+// ****************************************************************************
+//  Method: avtDataObjectToDO_REPL_STRINGFilter destructor
+//
+//  Purpose:
+//      Defines the destructor.  Note: this should not be inlined in the header
+//      because it causes problems for certain compilers.
+//
+//  Programmer: AUTHOR_REPL_STRING
+//  Creation:   DATE_REPL_STRING
+//
+// ****************************************************************************
+
+avtDataObjectToDO_REPL_STRINGFilter::~avtDataObjectToDO_REPL_STRINGFilter()
+{
+    ;
+}
+
+

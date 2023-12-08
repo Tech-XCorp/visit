@@ -1,3 +1,11 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8f081002bd4408d784ebe17f34e1793ecbe0265831af75321272aa9dfbee0b15
-size 164
+Time values:
+Time=0.0011
+Time=0.00121
+Time=0.001331
+Time=0.00136993
+Time=0.00141275
+Time=0.00145986
+Time=0.00151167
+Time=0.00156867
+Time=0.00163136
+Time=0.00170033

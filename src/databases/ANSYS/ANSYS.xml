@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6c5f0817f050ba6f45fae063f6a785a6db2545a8b5ef5fc56dceaa15f29502a4
-size 361
+<?xml version="1.0"?>
+  <Plugin name="ANSYS" type="database" label="ANSYS" version="1.0" enabled="true" mdspecificcode="true" onlyengine="false" noengine="false" dbtype="STSD" haswriter="false" hasoptions="false">
+    <FilePatterns>
+      *.inp 
+      *.cdb
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="false">
+    </Attribute>
+  </Plugin>

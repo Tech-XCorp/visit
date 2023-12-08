@@ -1,3 +1,36 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8d38e0628eb7d9ac4ac3496cb88e66117521fed397e64eb8787f489aa09b0508
-size 1025
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef VISIT_POINT_TOOL_INTERFACE_H
+#define VISIT_POINT_TOOL_INTERFACE_H
+#include <viswindow_exports.h>
+#include <avtToolInterface.h>
+
+// ****************************************************************************
+// Class: avtPointToolInterface
+//
+// Purpose:
+//   This class contains the information passed to users of the point tool.
+//
+// Notes:      
+//
+// Programmer: Akira Haddox 
+// Creation:   Mon Jun  9 09:37:49 PDT 2003
+//
+// Modifications:
+//
+// ****************************************************************************
+
+class VISWINDOW_API avtPointToolInterface : public avtToolInterface
+{
+   public:
+     avtPointToolInterface(const VisWindow *v);
+     virtual ~avtPointToolInterface();
+
+     void SetPoint(double, double, double);
+
+     const double *GetPoint() const;
+};
+
+#endif

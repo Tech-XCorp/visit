@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2a2aae3acd07364ae90750e1868276ba4c9cd58755eb63efc00fa9eca3310588
-size 532
+<?xml version="1.0"?>
+  <Plugin name="Xolotl" type="database" label="Xolotl" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="MTSD" haswriter="false" hasoptions="true" filePatternsStrict="false" opensWholeDirectory="false">
+    <CXXFLAGS>
+      ${HDF5_INCLUDE_DIR}
+    </CXXFLAGS>
+    <LDFLAGS>
+      ${HDF5_LIBRARY_DIR}
+    </LDFLAGS>
+    <LIBS>
+      ${HDF5_LIB}
+      ${ZLIB_LIB}
+    </LIBS>
+    <FilePatterns>
+      *.xolotl
+    </FilePatterns>
+  </Plugin>

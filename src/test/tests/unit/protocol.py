@@ -1,3 +1,18 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:09bca1657e1b1eac0ac530f10cce3fc2124385dd25f5e9f8db714f1f5e08cf9c
-size 462
+# ----------------------------------------------------------------------------
+#  CLASSES: nightly
+#
+#  Test Case:  protocolo.py
+#
+#  Tests:      vistprotocol unit test
+#
+#  Mark C. Miller, Tue Jan 11 10:19:23 PST 2011
+# ----------------------------------------------------------------------------
+import os
+
+tapp = visit_bin_path("visitprotocol")
+res = sexe(tapp,ret_output=True)
+if res["return_code"] == 0:
+    excode = 111
+else:
+    excode = 113
+Exit(excode)

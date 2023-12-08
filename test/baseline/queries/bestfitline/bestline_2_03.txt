@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a950685633f6fbd9a5c843ab4c0d4f96232b6a025c6816ddb4d84856131d4873
-size 76
+The best fit line is: Y = 0.33333X + 10 with a correlation coefficient of: 1

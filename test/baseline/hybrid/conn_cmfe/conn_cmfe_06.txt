@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:eb68ebf4db2006135ceb9f8c0a09c4b839244b4027c6f42fb7a3acbd71216886
-size 84
+Pseudocolor:  (ExpressionException)
+viewer: The file "bad_file.silo" does not exist.

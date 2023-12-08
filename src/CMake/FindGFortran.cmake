@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0162224a8aa35eb6f604ae6836ff312480fef685663228e567dfb11d519be034
-size 409
+# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+# Project developers.  See the top-level LICENSE file for dates and other
+# details.  No copyright assignment is required to contribute to VisIt.
+
+# Use the GFORTRAN_DIR hint from the config-site .cmake file 
+
+INCLUDE(${VISIT_SOURCE_DIR}/CMake/SetUpThirdParty.cmake)
+
+SET_UP_THIRD_PARTY(GFORTRAN lib include gfortran quadmath gcc_s.1)

@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:977bb4349f0a6832a77b45c5d4dec7bb2d6dc092146e8e88965f7df9fbbf3662
-size 675
+Target: xml2info
+Function: FieldViewXDBCommonPluginInfo::GetLicense
+Declaration: virtual std::string FieldViewXDBCommonPluginInfo::GetLicense() const;
+Definition:
+// ****************************************************************************
+//  Method: FieldViewXDBCommonPluginInfo::GetLicense
+//
+//  Purpose: Get the copyright for the library.
+//
+//  Programmer: Brad Whitlock
+//  Creation:   Tue Apr  8 16:07:39 PDT 2014
+//
+// ****************************************************************************
+#include <avtFieldViewXDBWriterInternal.h>
+
+std::string
+FieldViewXDBCommonPluginInfo::GetLicense() const
+{
+    return avtFieldViewXDBWriterInternal::GetCopyright();
+}

@@ -1,3 +1,15 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:73f689d82ed5e436d99db3bf283cac13131d8c7c4692a4adfb3dd46de690b1b2
-size 474
+.. _MakingItPretty:
+
+Making it pretty
+================
+
+Now that you know how to visualize databases, it is time to learn how to make presentation quality visualizations. This chapter explains what options are available for making professional looking visualizations and introduces new windows that allow you to control annotations, colors, lighting, and the view.
+
+.. toctree::
+    :maxdepth: 2
+
+    Annotations
+    Color_tables
+    Lighting
+    Rendering_Options
+    View

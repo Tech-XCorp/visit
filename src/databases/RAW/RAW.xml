@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:927737613ea438a011c9b33006ed2fe2fe931dae9c99d61974d4dc474bfb2d18
-size 427
+<?xml version="1.0"?>
+  <Plugin name="RAW" type="database" label="RAW" version="1.0" enabled="true" mdspecificcode="true" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STMD" haswriter="true" hasoptions="false">
+    <FilePatterns>
+      *.raw
+      *.raw.gz
+    </FilePatterns>
+    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

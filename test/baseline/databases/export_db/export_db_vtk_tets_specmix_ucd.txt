@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:93416873acfbf50f89e8cca75d53e4ae004c0cd1562a58726614bf5bc2baa839
-size 45
+Ratio of exported zone count to original is 2

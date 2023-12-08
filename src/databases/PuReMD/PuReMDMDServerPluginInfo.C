@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9bc6e09be4c8832f9d901bb0c9ff837bd6b3994942f9ad86a981495e04742f19
-size 416
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <PuReMDPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(PuReMD,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void PuReMDMDServerPluginInfo::dummy()
+{
+}
+

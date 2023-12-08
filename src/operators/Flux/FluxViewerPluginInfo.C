@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:141011587e4830a2fe9b795474c77380281e8bb4f280c72fa66b67192c0ce65b
-size 521
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ****************************************************************************
+//  File: FluxViewerPluginInfo.C
+// ****************************************************************************
+
+#include <FluxPluginInfo.h>
+#include <FluxAttributes.h>
+
+VISIT_OPERATOR_PLUGIN_ENTRY_EV(Flux,Viewer)
+
+

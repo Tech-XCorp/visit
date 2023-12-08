@@ -1,3 +1,19 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7cfdfcf68b61e34d295e7d18710f13d9e630fe36dcfe1de3032751fb367231d5
-size 733
+.. _File Information Window:
+
+File Information Window
+-----------------------
+
+This **File Information Window**, shown in :numref:`Figure %s<fiw_image>`, 
+displays information about the currently open file. The **File Information 
+Window** is opened by choosing the **Files information** option from the 
+**Main Window's File** menu. The window displays the names and properties of 
+the open file's meshes, scalar variables, vector variables, and materials. 
+The window updates each time the active file changes such as when switching 
+between plots in the **Active plot list** or opening a new file using the 
+controls in the **File panel**.
+
+.. _fiw_image:
+
+.. figure:: images/fileinformationwindow.png
+
+   File Information Window

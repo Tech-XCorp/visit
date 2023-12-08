@@ -1,3 +1,7 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:80cba3d5e93590b511676a37a0ddfd3afcd12c3b4b99cb52635e5c49fe5f5515
-size 401
+<?xml version="1.0"?>
+  <Attribute name="VisualCueList" purpose="container object for shipping vectors of visual cues" persistent="false" exportAPI="STATE_API" exportInclude="state_exports.h" codefile="VisualCueList.code">
+    <Field name="cues" label="cues" type="attVector" subtype="VisualCueInfo">
+    </Field>
+    <Function name="SetFrom" user="true" member="true">
+    </Function>
+  </Attribute>

@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:73c613450bc4b7186935c32de1fe2ce5b80e290ceadefa05ae4bb9ca23b4ef15
-size 159
+files.vtm:    Groups:      Blocks: right_ball, left_ball, top, bottom
+files_grouped.vtm:    Groups: balls, walls    Blocks: right_ball, left_ball, top, bottom

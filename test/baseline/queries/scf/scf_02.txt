@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1a53432aaf1825d1dd405a9747b80aaeaa0f687adaf4acca23a07f6f3a53ddf6
-size 145
+Spherical Compactness Factor = 0.70171.  Using centroid for sphere origin.  Centroid used was (0.5, 2.75224e-10, 6.57806e-12)  Radius was 0.98689

@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:97bd746c532257cc2489f3192a7a5d5e1e2a92a6b4320b9240c024c30b40c92d
-size 843
+<?xml version="1.0"?>
+  <Plugin name="PLOT3D" type="database" label="PLOT3D" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="MTMD" haswriter="false" hasoptions="true" filePatternsStrict="false" opensWholeDirectory="false">
+    <FilePatterns>
+      *.q
+      *.x
+      *.vp3d
+    </FilePatterns>
+    <Files components="M">
+      avtPLOT3DFileFormat.C
+      avtPLOT3DOptions.C
+      vtkPLOT3DReaderInternals.C
+      vtkPLOT3DReader.C
+      PLOT3DFunctions.C
+    </Files>
+    <Files components="E">
+      avtPLOT3DFileFormat.C
+      avtPLOT3DOptions.C
+      vtkPLOT3DReaderInternals.C
+      vtkPLOT3DReader.C
+      PLOT3DFunctions.C
+    </Files>
+    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

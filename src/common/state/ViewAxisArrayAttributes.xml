@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:077674bb13865d81b0534fcd256127d19511296a8c3edc57a145aa111a797cc2
-size 626
+<?xml version="1.0"?>
+  <Attribute name="ViewAxisArrayAttributes" purpose="This class contains the axis array view attributes." persistent="true" exportAPI="STATE_API" exportInclude="state_exports.h">
+    <Field name="domainCoords" label="domainCoords" type="doubleArray" length="2">
+      0.000000
+      1.000000
+    </Field>
+    <Field name="rangeCoords" label="rangeCoords" type="doubleArray" length="2">
+      0.000000
+      1.000000
+    </Field>
+    <Field name="viewportCoords" label="viewportCoords" type="doubleArray" length="4">
+      0.150000
+      0.900000
+      0.100000
+      0.850000
+    </Field>
+  </Attribute>

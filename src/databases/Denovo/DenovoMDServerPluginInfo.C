@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ce58f65eff6cdee242ddee42d0e23be31e5482a7295d3c1e55c0af4e57859f81
-size 416
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <DenovoPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(Denovo,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void DenovoMDServerPluginInfo::dummy()
+{
+}
+

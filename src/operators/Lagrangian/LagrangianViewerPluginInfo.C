@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4dd875cbd67cbea361996ca1c00e649e414003a30d9909e48b6417c82ec295e7
-size 545
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ****************************************************************************
+//  File: LagrangianViewerPluginInfo.C
+// ****************************************************************************
+
+#include <LagrangianPluginInfo.h>
+#include <LagrangianAttributes.h>
+
+VISIT_OPERATOR_PLUGIN_ENTRY_EV(Lagrangian,Viewer)
+
+

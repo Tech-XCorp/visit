@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c65e9dfb050a67f1dab89cec1b4d4051298191f83d3742336c8481a299014812
-size 389
+ABC_Stretch has 30 states
+activeSource = "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbC00.pdb"
+activeTimeSlider = 1
+timeSliders = ("ABC_Index", "ABC_Stretch", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbA00.pdb", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbB00.pdb", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbC00.pdb")
+timeSliderCurrentStates = (29, 5, 2, 3, 5)
+animationMode = 2

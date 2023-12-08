@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9a1639a73ec60f6a2f15780f5a3bb96f6df5b7c38814142bf366b6bd2e13af84
-size 43
+The maximum relative difference is 0.988058

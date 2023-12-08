@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a1d476219267ad5831c9dc28bb0e4676aa1bf6fc244e3e8e66246dd770017de2
-size 581
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ****************************************************************************
+//  File: ConnectedComponentsViewerPluginInfo.C
+// ****************************************************************************
+
+#include <ConnectedComponentsPluginInfo.h>
+#include <ConnectedComponentsAttributes.h>
+
+VISIT_OPERATOR_PLUGIN_ENTRY_EV(ConnectedComponents,Viewer)
+
+

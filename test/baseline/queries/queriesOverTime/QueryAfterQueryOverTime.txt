@@ -1,3 +1,4 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b4d6db87dbeb41f1a9f836e27887025e9036f600de93ba2048f390b4fcc64ae4
-size 126
+The total Volume is 25
+transient -- Max = 6.57646 (node 16761 at coord <9.6, 0.0146542, 5>)
+
+The total Surface Area is 115.066

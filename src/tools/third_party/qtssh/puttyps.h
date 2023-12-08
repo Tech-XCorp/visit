@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7cec988d93013943bc45727421353aeac850ea3b65b29eeab631e9a501dd4fdb
-size 235
+/*
+ * Find the platform-specific header for this platform.
+ */
+
+#ifndef PUTTY_PUTTYPS_H
+#define PUTTY_PUTTYPS_H
+
+#ifdef _WINDOWS
+
+#include "winstuff.h"
+
+#elif defined(MACOSX)
+
+#include "osx.h"
+
+#else
+
+#include "unix.h"
+
+#endif
+
+#endif

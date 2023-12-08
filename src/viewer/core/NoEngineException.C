@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6c3c7ca7314cbff22bcfa4dbc5b72ca04c5327de97ec0d636af33435c171cb04
-size 383
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <NoEngineException.h>
+
+NoEngineException::NoEngineException() : VisItException()
+{
+}
+
+NoEngineException::~NoEngineException() VISIT_THROW_NOTHING
+{
+}

@@ -1,3 +1,17 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:463d2ca7b7e712762ce83928c35602432e81dad07e1101517ba6755e2b35ecf9
-size 803
+<?xml version="1.0"?>
+  <Attribute name="SelectionVariableSummary" purpose="Contains a summary of a variable used in a selection" persistent="false" keyframe="false" exportAPI="STATE_API" exportInclude="state_exports.h" codefile="SelectionVariableSummary.code">
+    <Field name="name" label="Variable name" type="string">
+    </Field>
+    <Field name="minimum" label="Variable minimum" type="double">
+      0.000000
+    </Field>
+    <Field name="maximum" label="Variable maximum" type="double">
+      0.000000
+    </Field>
+    <Field name="histogram" label="Histogram" type="doubleArray" length="256" init="true">
+    </Field>
+    <Function name="SetHistogram" user="true" member="true">
+    </Function>
+    <Function name="NormalizedHistogram" user="true" member="true">
+    </Function>
+  </Attribute>

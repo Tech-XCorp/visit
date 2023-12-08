@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:2b63fc86feda04d3471e63caeb1a9168d7fc0e199c7b8d6beeab3f4502f7499a
-size 410
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <XmdvPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(Xmdv,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void XmdvMDServerPluginInfo::dummy()
+{
+}
+

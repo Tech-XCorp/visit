@@ -1,3 +1,10 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:56a6542a0acb93238219858b6f6137075bd6e360f01bc916822d0cfb0628bf1e
-size 358
+.. _Merge operator:
+
+Merge operator
+~~~~~~~~~~~~~~
+
+VisIt's Merge operator merges all geometry that may exist on separate
+processors into a single geometry dataset on a single processor. The
+Merge operator can be useful when applying other operators like the
+Decimate operator or when creating Streamline plots. The Merge operator
+is not enabled by default.

@@ -1,3 +1,83 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d9ed113d00ee314ddbcc9d21341889580b80f46d996ec1ae61ab92b8fc0f2fbe
-size 1823
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <avtPlaneToolInterface.h>
+#include <PlaneAttributes.h>
+
+avtPlaneToolInterface::avtPlaneToolInterface(const VisWindow *v) :
+    avtToolInterface(v)
+{
+    atts = new PlaneAttributes;
+}
+
+avtPlaneToolInterface::~avtPlaneToolInterface()
+{
+    // nothing
+}
+
+void
+avtPlaneToolInterface::SetOrigin(double x, double y, double z)
+{
+    PlaneAttributes *p = (PlaneAttributes *)atts;
+    double d[3] = {x, y, z};
+    p->SetOrigin(d);
+}
+
+void
+avtPlaneToolInterface::SetNormal(double x, double y, double z)
+{
+    PlaneAttributes *p = (PlaneAttributes *)atts;
+    double d[3] = {x, y, z};
+    p->SetNormal(d);
+}
+
+void
+avtPlaneToolInterface::SetUpAxis(double x, double y, double z)
+{
+    PlaneAttributes *p = (PlaneAttributes *)atts;
+    double d[3] = {x, y, z};
+    p->SetUpAxis(d);
+}
+
+void
+avtPlaneToolInterface::SetRadius(const double radius)
+{
+    PlaneAttributes *p = (PlaneAttributes *)atts;
+    p->SetRadius(radius);
+}
+
+const double *
+avtPlaneToolInterface::GetOrigin() const
+{
+    PlaneAttributes *p = (PlaneAttributes *)atts;
+    return p->GetOrigin();
+}
+
+const double *
+avtPlaneToolInterface::GetNormal() const
+{
+    PlaneAttributes *p = (PlaneAttributes *)atts;
+    return p->GetNormal();
+}
+
+const double *
+avtPlaneToolInterface::GetUpAxis() const
+{
+    PlaneAttributes *p = (PlaneAttributes *)atts;
+    return p->GetUpAxis();
+}
+
+double
+avtPlaneToolInterface::GetRadius() const
+{
+    PlaneAttributes *p = (PlaneAttributes *)atts;
+    return p->GetRadius();
+}
+
+bool
+avtPlaneToolInterface::GetHaveRadius() const
+{
+    PlaneAttributes *p = (PlaneAttributes *)atts;
+    return p->GetHaveRadius();
+}

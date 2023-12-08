@@ -1,3 +1,3 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:fa62443aee369b52a94dbae44922100a3438d820013560566c0975da2cde1b7e
-size 104
+Simulation executable "curve" exists.
+Simulation "curve" started.
+VisIt connected to simulation "curve".

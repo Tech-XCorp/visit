@@ -1,3 +1,38 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1f6f086956391f36d08c969cc9d404c0d499d939415dc32e7d65aca831a189a8
-size 1849
+<?xml version="1.0"?>
+  <Plugin name="PersistentParticles" type="operator" label="PersistentParticles" version="2.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" iconFile="PersistentParticles.xpm" category="Analysis">
+    <Attribute name="PersistentParticlesAttributes" purpose="This class contains attributes for the PersistentParticles operator." persistent="true" keyframe="true" exportAPI="" exportInclude="">
+      <Enum name="PathTypeEnum">
+        Absolute
+        Relative
+      </Enum>
+      <Field name="startIndex" label="Index of first time slice" type="int">
+        0
+      </Field>
+      <Field name="stopIndex" label="Index of last time slice" type="int">
+        1
+      </Field>
+      <Field name="stride" label="Skip rate between time slices" type="int">
+        1
+      </Field>
+      <Field name="startPathType" label="Type of Path" type="enum" subtype="PathTypeEnum">
+        Absolute
+      </Field>
+      <Field name="stopPathType" label="Type of Path" type="enum" subtype="PathTypeEnum">
+        Absolute
+      </Field>
+      <Field name="traceVariableX" label="X-Coordinate" type="variablename" vartypes="01000000000">
+      </Field>
+      <Field name="traceVariableY" label="Y-Coordinate" type="variablename" vartypes="01000000000">
+      </Field>
+      <Field name="traceVariableZ" label="Z-Coordinate" type="variablename" vartypes="01000000000">
+      </Field>
+      <Field name="connectParticles" label="Connect Particles" type="bool">
+        false
+      </Field>
+      <Field name="showPoints" label="Show points" type="bool" enabler="connectParticles:true">
+        false
+      </Field>
+      <Field name="indexVariable" label="Index Variable" type="variablename" enabler="connectParticles:true" vartypes="01000000000">
+      </Field>
+    </Attribute>
+  </Plugin>

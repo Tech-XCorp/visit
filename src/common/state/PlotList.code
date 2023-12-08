@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8270d97593ec3b0216b86312b85ac4da5f5062a1967b875ca1013b5826ebf2ae
-size 580
+Function: PlotList2
+Declaration: void AddPlot(const Plot &p, int id);
+Definition:
+void
+PlotList::AddPlot(const Plot &p, int id)
+{
+    Plot *newPlot = new Plot(p);
+    newPlot->SetId(id);
+    plots.push_back(newPlot);
+
+    // Indicate that things have changed by selecting the plot list.
+    Select(0, (void *)&plots);
+}
+
+Function: FirstSelectedIndex
+Declaration: int FirstSelectedIndex() const;
+Definition:
+int
+PlotList::FirstSelectedIndex() const
+{
+    for(int i = 0; i < GetNumPlots(); ++i)
+        if(this->operator[](i).GetActiveFlag())
+            return i;
+    return -1;
+}

@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8fcf8f9ac0f920253f0e271571696b34045a8003056a4d82a41d5f1df0063ce8
-size 298
+acbauer, Andy Bauer, DAAC DoD
+allen, Allen Sanderson, U of Utah SCI
+biagas, Kathleen Biagas, LLNL
+BradWhitlock, Brad Whitlock, Intelligent Light
+brugger, Eric Brugger, LLNL
+cyrush, Cyrus Harrison, LLNL
+griffin28, Kevin Griffin, LLNL
+spetruzza, Steve Petruzza, U of Utah SCI
+rusu1, Eddie Rusu, LLNL

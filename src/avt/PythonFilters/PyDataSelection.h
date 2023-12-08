@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:01cf284f400f4344c94e51957d5bab275203433fd6af962799abc7ca29153fde
-size 682
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef PY_DATASELECTION_H
+#define PY_DATASELECTION_H
+
+#include <avtDataSelection.h>
+
+// Forward Declare PyObject*
+#ifndef PyObject_HEAD
+struct _object;
+typedef _object PyObject;
+#endif
+
+//
+// Functions used to interface with Python Filter environment.
+//
+
+bool                 PyDataSelection_Check(PyObject *obj);
+avtDataSelection_p   PyDataSelection_FromPyObject(PyObject *obj);
+PyObject            *PyDataSelection_Wrap(avtDataSelection_p sel);
+
+
+#endif

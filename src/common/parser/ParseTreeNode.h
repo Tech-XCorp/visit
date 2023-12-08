@@ -1,3 +1,45 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d37036250f245bc43c3ba4ca681156c20e03bf929d7a9bd6eceffbeb47c7c9ef
-size 1372
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                              ParseTreeNode.h                              //
+// ************************************************************************* //
+
+#ifndef PARSETREENODE_H
+#define PARSETREENODE_H
+
+#include <parser_exports.h>
+#include <Pos.h>
+
+class Identifier;
+
+// ****************************************************************************
+//  Class:  ParseTreeNode
+//
+//  Purpose:
+//    Base class for all grammar nodes in parse trees.
+//
+//  Programmer:  Jeremy Meredith
+//  Creation:    November 11, 2004
+//
+//  Modifications:
+//
+// ****************************************************************************
+class PARSER_API2 ParseTreeNode
+{
+  public:
+    ParseTreeNode() { }
+    ParseTreeNode(const Pos &p) : pos(p) { }
+    virtual ~ParseTreeNode() { }
+    const Pos &GetPos() const {return pos;}
+    Pos       &GetPos()       {return pos;}
+    virtual const std::string GetTypeName() {return "ParseTreeNode";}
+    virtual void Print(ostream &o, std::string s="");
+    virtual void PrintNode(ostream &o) = 0;
+  protected:
+    Pos pos;
+};
+
+
+#endif

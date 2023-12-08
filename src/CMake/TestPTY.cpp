@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4214c088cdc4115cfc3548bdd1bd4cb2f2f0bab4030e57ce403d9c847dd1d9bc
-size 87
+#include <stdlib.h>
+
+int
+main(int argc, char *arg[])
+{
+    grantpt(0);
+    return 0;
+}

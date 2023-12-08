@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c2fa11bff6437b8d82eae47514f67c94a2be26ca8b59f44beb4547c8a558a189
-size 84
+Input Vars:
+ d(found=True)
+ p(found=True)
+Input Arguments:
+ test
+ 0.0
+ [1, 2.0, 3]
+

@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:011ff5b58c8c7b500b344ba87881325094e789350d4f520649ff629ebddcbe77
-size 68
+The x ray image query results were written to the file output00.png

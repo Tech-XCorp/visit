@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3117675f2873c4dcbbea7c00eefa69a12fbb2072e8e03d00a2991738b04aa8dc
-size 378
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef ENUM_TYPES_H
+#define ENUM_TYPES_H
+
+// Some enum typedefs.
+typedef enum { LINEAR,
+               LOG
+             } ScaleMode;
+           
+
+#endif

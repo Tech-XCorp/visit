@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d6a722c48b075eaeb71039dfe05c5bb26ddd23e695b6d9318bb3b7b8ffe70045
-size 232
+#!/bin/bash
+@PYTHON_EXECUTABLE@ @CMAKE_CURRENT_SOURCE_DIR@/visit_test_suite.py \
+   -d @CMAKE_BINARY_DIR@/testdata/  \
+   -b @CMAKE_CURRENT_SOURCE_DIR@/../../test/baseline/   \
+   -o output \
+   -e @CMAKE_BINARY_DIR@/bin/visit "$@"

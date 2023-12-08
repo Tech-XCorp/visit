@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:503d7f4396c581533d3565b330a150a571bba2e7be2ced68f43ec380ce5d0e5a
-size 70
+The actual number of zones is 6600.
+The number of ghost zones is 1728.

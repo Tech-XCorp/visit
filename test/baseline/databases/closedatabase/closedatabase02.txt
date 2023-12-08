@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a4c18399f9c9dce705d0c378af671267b9dab7638ce20321ce2c5b72a4cf5905
-size 145
+VisIt could not close "localhost:VISIT_TOP_DIR/data/silo_hdf5_test_data/wave*.silo database" because it is still being used by one or more plots.

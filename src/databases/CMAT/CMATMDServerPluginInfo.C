@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:153404e10b44d020e80306b114d3818a11414bd16955fa9d9d786d2521af48a2
-size 410
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <CMATPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(CMAT,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void CMATMDServerPluginInfo::dummy()
+{
+}
+

@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6aed19ea5f8aea3bd13d6ffd0293b6541fd32b8c69198da374582e8e867119c1
-size 265
+localhost:VISIT_TOP_DIR/test/wave*.silo database has 10 states
+activeSource = "localhost:VISIT_TOP_DIR/test/wave*.silo database"
+activeTimeSlider = 0
+timeSliders = ("localhost:VISIT_TOP_DIR/test/wave*.silo database")
+timeSliderCurrentStates = (0)
+animationMode = 2

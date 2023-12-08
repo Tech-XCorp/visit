@@ -1,3 +1,44 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7a917647dc92adcd529d50d73d6d1fb01b21f71a1a02e2e42077217c47d53178
-size 1085
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef SUBJECT_H
+#define SUBJECT_H
+#include <state_exports.h>
+#include <vector>
+
+// Forward declaration
+class SimpleObserver;
+
+// *******************************************************************
+// Class: Subject
+//
+// Purpose:
+//   Subject base class for Subject-Observer model. The subject is the
+//   object that is watched by the observers. When the subject changes,
+//   all of its obsevers are notified.
+//
+// Notes:
+//
+// Programmer: Brad Whitlock
+// Creation:   Wed Aug 9 15:59:45 PST 2000
+//
+// Modifications:
+//
+// *******************************************************************
+
+class STATE_API Subject
+{
+public:
+    virtual ~Subject();
+
+    virtual void Attach(SimpleObserver *);
+    virtual void Detach(SimpleObserver *);
+    virtual void Notify();
+protected:
+    Subject();
+private:
+    std::vector<SimpleObserver *> observers;
+};
+
+#endif

@@ -1,3 +1,12 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:23dff98d367c320706e1268d9a2be94bd40a89bff7f63cc053fe6721bfbd92e3
-size 525
+# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+# Project developers.  See the top-level LICENSE file for dates and other
+# details.  No copyright assignment is required to contribute to VisIt.
+
+#****************************************************************************
+# Modifications:
+#
+#****************************************************************************
+
+IF(VISIT_PYTHON_SCRIPTING AND NOT VISIT_STATIC)
+    ADD_SUBDIRECTORY(python)
+ENDIF(VISIT_PYTHON_SCRIPTING AND NOT VISIT_STATIC)

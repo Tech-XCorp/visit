@@ -1,3 +1,48 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:eff7dd5d3a53cf5c3afcba2d4f6a1f61c502c66c413e2efce9bf11893de4f540
-size 1079
+# ----------------------------------------------------------------------------
+#  CLASSES: nightly
+#
+#  Test Case:  kurtosis.py
+#  Tests:      queries     - kurtosis and skewness
+#
+#  Defect ID:  VisIt00006466, '6269.
+#
+#  Programmer: Hank Childs
+#  Date:       August 5, 2005
+#
+# ----------------------------------------------------------------------------
+
+TurnOnAllAnnotations()
+OpenDatabase(data_path("curve_test_data/distribution.ultra"))
+
+AddPlot("Curve", "Laplace Distribution")
+DrawPlots()
+
+Query("Kurtosis")
+text = GetQueryOutputString()
+TestText("kurtosis_01", text)
+
+Query("Skewness")
+text = GetQueryOutputString()
+TestText("kurtosis_02", text)
+
+ChangeActivePlotsVar("Log Normal Distribution")
+Query("Kurtosis")
+text = GetQueryOutputString()
+TestText("kurtosis_03", text)
+
+Query("Skewness")
+text = GetQueryOutputString()
+TestText("kurtosis_04", text)
+
+ChangeActivePlotsVar("Exponential Distribution")
+Query("Kurtosis")
+text = GetQueryOutputString()
+TestText("kurtosis_05", text)
+
+Query("Skewness")
+text = GetQueryOutputString()
+TestText("kurtosis_06", text)
+
+
+
+Exit()

@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:39c8d06fd1e2bbd5befa56bf948ebafecccc28ad86785d690390470213b86512
-size 35
+The actual number of zones is 6600.

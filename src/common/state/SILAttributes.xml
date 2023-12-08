@@ -1,3 +1,29 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1910f5bcb492aed12902333de699d16d6b9837fd577c9b497c5352d3fa623070
-size 1210
+<?xml version="1.0"?>
+  <Attribute name="SILAttributes" purpose="This class contains the information needed to represent a SIL." persistent="true" keyframe="true" exportAPI="STATE_API" exportInclude="state_exports.h">
+    <Field name="nSets" label="nSets" type="int">
+      0
+    </Field>
+    <Field name="setNames" label="setNames" type="stringVector">
+    </Field>
+    <Field name="setIds" label="setIds" type="intVector">
+    </Field>
+    <Field name="wholeList" label="wholeList" type="intVector">
+    </Field>
+    <Field name="nCollections" label="nCollections" type="int">
+      0
+    </Field>
+    <Field name="category" label="category" type="stringVector">
+    </Field>
+    <Field name="role" label="role" type="intVector">
+    </Field>
+    <Field name="superset" label="superset" type="intVector">
+    </Field>
+    <Field name="nspace" label="nspace" type="attVector" subtype="NamespaceAttributes">
+    </Field>
+    <Field name="matrices" label="matrices" type="attVector" subtype="SILMatrixAttributes">
+    </Field>
+    <Field name="arrays" label="arrays" type="attVector" subtype="SILArrayAttributes">
+    </Field>
+    <Field name="order" label="order" type="intVector">
+    </Field>
+  </Attribute>

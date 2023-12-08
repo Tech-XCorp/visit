@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8ab2b95552aa7edaf45c2cbf5648107a8433ae2cbf7c1caf7713a707ce69ef70
-size 428
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <ZipWrapperPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(ZipWrapper,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void ZipWrapperMDServerPluginInfo::dummy()
+{
+}
+

@@ -1,3 +1,28 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3a17ca00f60df8b7ce00012b6b1756ac14596a220f709945630929a42d096379
-size 864
+<?xml version="1.0"?>
+  <Plugin name="STAR" type="database" label="STAR" version="1.0" enabled="true" mdspecificcode="true" enginespecificcode="true" onlyengine="false" noengine="false" dbtype="MTMD" haswriter="false" hasoptions="false">
+    <DEFINES>
+      -DSTAR_VISIT
+    </DEFINES>
+    <FilePatterns>
+      *.mrd
+      *.mrm
+    </FilePatterns>
+    <Files components="M">
+      avtSTARFileFormat.C
+      ConfigFileReader.C
+      MultiresFileReader.C
+      MultiresGrid.C
+      MultiresMultifileReader.C
+      ResolutionMap.C
+    </Files>
+    <Files components="E">
+      avtSTARFileFormat.C
+      ConfigFileReader.C
+      MultiresFileReader.C
+      MultiresGrid.C
+      MultiresMultifileReader.C
+      ResolutionMap.C
+    </Files>
+    <Attribute name="" purpose="" persistent="false" keyframe="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7b2809afbed542b5526b31bb8a815d8e081c9d76b2d924b4761318db666649ca
-size 413
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <DDCMDPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(DDCMD,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void DDCMDMDServerPluginInfo::dummy()
+{
+}
+

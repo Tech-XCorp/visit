@@ -1,3 +1,6 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:63935ec3913b9b67e004370bb55980a746d5662e5b6a536828d534ac94fe51e4
-size 405
+MyThreeDatabaseCorrelation has 30 states
+activeSource = "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbA00.pdb"
+activeTimeSlider = 0
+timeSliders = ("MyThreeDatabaseCorrelation", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbA00.pdb", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbB00.pdb", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbC00.pdb")
+timeSliderCurrentStates = (29, 9, 19, 29)
+animationMode = 2

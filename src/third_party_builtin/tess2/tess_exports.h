@@ -1,3 +1,22 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9862467a4cb9d39d337648fc0733d5f6c8a208719c8fcd996047e9e32a20b6b7
-size 631
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#if defined(_WIN32)
+  #if defined(tess2_EXPORTS)
+    #define TESS2_API __declspec(dllexport)
+  #else
+    #define TESS2_API __declspec(dllimport)
+  #endif
+#else
+  #ifdef __cplusplus
+    #if __GNUC__ >= 4 && defined(tess2_EXPORTS)
+    # define TESS2_API  extern "C" __attribute__ ((visibility("default")))
+    #else
+    # define TESS2_API  extern "C"
+    #endif
+  #else
+    #define TESS2_API
+  #endif
+#endif
+

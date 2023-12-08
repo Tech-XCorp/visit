@@ -1,3 +1,21 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d5444cdb18c90ffb75c66e86ba31317e9b3667e7bdac246ed7e797931353ce11
-size 770
+<?xml version="1.0"?>
+  <Plugin name="Dyna3D" type="database" label="Dyna3D input data" version="1.0" enabled="true" mdspecificcode="true" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STSD" haswriter="false" hasoptions="false" filePatternsStrict="false" opensWholeDirectory="false">
+    <DEFINES>
+      -DVISIT_DYNA
+    </DEFINES>
+    <FilePatterns>
+      *.dyn
+    </FilePatterns>
+    <Files components="M">
+      avtDyna3DFileFormat.C
+      Dyna3DFile.cpp
+      MaterialProperties.cpp
+    </Files>
+    <Files components="E">
+      avtDyna3DFileFormat.C
+      Dyna3DFile.cpp
+      MaterialProperties.cpp
+    </Files>
+    <Attribute name="" purpose="" persistent="false" keyframe="true" exportAPI="" exportInclude="">
+    </Attribute>
+  </Plugin>

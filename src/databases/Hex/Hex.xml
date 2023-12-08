@@ -1,3 +1,4 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1144906448d5daa9c6b506a0560db87612f06021e88e35c23e3e1010110967be
-size 153
+<?xml version="1.0"?>
+  <Plugin name="Hex" label="Hex" type="database" dbtype="STMD" version="1.0">
+    <FilePatterns> *.hex </FilePatterns>
+  </Plugin>

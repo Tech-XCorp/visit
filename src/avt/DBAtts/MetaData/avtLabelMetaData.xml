@@ -1,3 +1,5 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c4673695a5de15cf54d0c90736573a1e9ecc496638bcf46edfb6c4be0a0eed18
-size 353
+<?xml version="1.0"?>
+  <Attribute name="avtLabelMetaData" purpose="Contains label metadata attributes" persistent="false" keyframe="true" exportAPI="DBATTS_API" exportInclude="dbatts_exports.h" codefile="avtLabelMetaData.code" baseClass="avtVarMetaData">
+    <Function name="avtLabelMetaData2" user="true" member="true">
+    </Function>
+  </Attribute>

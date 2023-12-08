@@ -1,3 +1,35 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:fc1f3de0abfc0374e34f31424df9070293d2cda382380d1987c18105ccafab3e
-size 1018
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef COLOR_TABLE_OBSERVER_H
+#define COLOR_TABLE_OBSERVER_H
+#include <gui_exports.h>
+#include <Observer.h>
+
+// ****************************************************************************
+// Class: ColorTableObserver
+//
+// Purpose:
+//   This observer watches the color table attributes from the viewer proxy
+//   and uses them to update the list of color tables in the
+//   QvisColorTableButton widget.
+//
+// Notes:      
+//
+// Programmer: Brad Whitlock
+// Creation:   Wed Jun 20 13:27:40 PST 2001
+//
+// Modifications:
+//   
+// ****************************************************************************
+
+class GUI_API ColorTableObserver : public Observer
+{
+public:
+    ColorTableObserver(Subject *subj);
+    virtual ~ColorTableObserver();
+    virtual void Update(Subject *subj);
+};
+
+#endif

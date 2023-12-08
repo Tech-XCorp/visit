@@ -1,3 +1,29 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b42ca0fb70b6ae3c71c96b272c9aac37f3e0dfd08461d4211d4517032be25a99
-size 1069
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <vtkVisItViewNodeFactory.h>
+#include <vtkOSPRayPolyDataMapperNode.h>
+#include <vtkOSPRayVisItAxisActorNode.h>
+#include <vtkOSPRayVisItCubeAxesActorNode.h>
+
+//============================================================================
+vtkViewNode *vtkVisItViewNodeFactory::pd_maker()
+{
+  vtkOSPRayPolyDataMapperNode *vn = vtkOSPRayPolyDataMapperNode::New();
+  return vn;
+}
+
+//-----------------------------------------------------------------------------
+vtkViewNode *vtkVisItViewNodeFactory::cube_axes_act_maker()
+{
+  vtkOSPRayVisItCubeAxesActorNode *vn = vtkOSPRayVisItCubeAxesActorNode::New();
+  return vn;
+}
+
+//-----------------------------------------------------------------------------
+vtkViewNode *vtkVisItViewNodeFactory::axis_act_maker()
+{
+  vtkOSPRayVisItAxisActorNode *vn = vtkOSPRayVisItAxisActorNode::New();
+  return vn;
+}

@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4883e1823739d70817bacec634dbcda5be433c6a28bc0c6315e9d64af40ba993
-size 413
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <ImagePluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(Image,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void ImageMDServerPluginInfo::dummy()
+{
+}
+

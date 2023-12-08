@@ -1,3 +1,41 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:3f3b3a89fffe776acbb6cb4d8f0b79a333d88d78fedfd7cea6fa652668673f0f
-size 1250
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef INVALID_DIMENSIONS_EXCEPTION_H 
+#define INVALID_DIMENSIONS_EXCEPTION_H 
+#include <avtexception_exports.h>
+#include <string>
+#include <PipelineException.h>
+
+// *******************************************************************
+// Class: InvalidDimensionsException
+//
+// Purpose:
+//   The exception that should be thrown when invalid dimensions
+//   for a particular plot type are encounted.
+//
+// Notes:      
+//
+// Programmer: Kathleen Bonnell 
+// Creation:   March 09, 2001 
+//
+// Modifications:
+//   
+// *******************************************************************
+
+class AVTEXCEPTION_API InvalidDimensionsException: public PipelineException 
+{
+public:
+    InvalidDimensionsException(const std::string &plot,
+                               const std::string &dims);
+    virtual ~InvalidDimensionsException() VISIT_THROW_NOTHING {;};
+
+    const std::string &GetPlotName() const;
+    const std::string &GetRequiredDimensions() const;
+private:
+    std::string requiredDims;
+    std::string plotName;
+};
+
+#endif

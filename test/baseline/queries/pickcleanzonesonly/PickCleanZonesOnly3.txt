@@ -1,3 +1,10 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:310e02d02eaec499242b6c21859920909dd961236ebae1559c7019e23e0dff22
-size 156
+
+C:  ucd3d.silo
+ucdmesh3d 
+Point: <3, 2, 19>
+Zone:  1817
+Incident Nodes:  2295  2289  2415  2421  2294  2288  2414  2420  
+mat1:  
+    1 = 0.9
+    4 = 0.1
+

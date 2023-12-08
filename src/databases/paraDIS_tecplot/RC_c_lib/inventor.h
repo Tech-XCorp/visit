@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:09a9b07c04a9bf0942500e7b32b3705417953bb831a9c7bc7383f4427c58aa63
-size 473
+#ifndef INVENTOR_H
+#define INVENTOR_H
+
+int inventor_drawhex(char *filename, double* x, double* y, double *z, float *color); 
+int inventor_drawtet(char *filename, double *x, double *y, double *z, float *color);
+int inventor_drawpolygon(char *filename, double *x, double *y, double *z, int numnodes, float *color) ;
+int inventor_drawXatPoint(char *filename, double x, double y, double z, float size, float *color);
+int inventor_comment(char *filename, char *comment);
+#endif

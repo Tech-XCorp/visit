@@ -1,3 +1,30 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6ae8d55cf7f6645db4ff494f9feed2cfed9ecf5a92273e72d2a88371655898e7
-size 996
+c-----------------------------------------------------------------
+c simulationarguments : The routine handles command line arguments
+c-----------------------------------------------------------------
+      subroutine simulationarguments()
+      implicit none
+      character (len=80) str
+      integer err, i, N, len
+      integer visitsetoptions, visitsetdirectory, visitopentracefile
+      N = iargc()
+      i = 1
+      len = 80
+5     if (i.le.N) then
+          call getarg(i, str)
+          if(str.eq."-dir") then
+              call getarg(i+1, str)
+              err = visitsetdirectory(str, len)
+              i = i + 1
+          elseif(str.eq."-options") then
+              call getarg(i+1, str)
+              err = visitsetoptions(str, len)
+              i = i + 1
+          elseif(str.eq."-trace") then
+              call getarg(i+1, str)
+              err = visitopentracefile(str, len)
+              i = i + 1
+          endif
+          i = i + 1
+          goto 5
+      endif
+      end

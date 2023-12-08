@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0e69a3857f2a154f52e3268271aa20a1e81f16b24dbc3d9dd1312a3c3195056c
-size 209
+The total RevolvedSurfaceArea is 19.5477 cm^2
+This query was calculated by finding the external line segments of the data set and then calculating the surface area of these line segments when revolved into 3D.

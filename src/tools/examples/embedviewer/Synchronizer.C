@@ -1,3 +1,28 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a6b7d0c3527c3ef350f0a3c859903e482d9785752fb35e523cda505ba2bd9480
-size 638
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include "Synchronizer.h"
+
+Synchronizer::Synchronizer(Subject *s, Subject *ds) : QObject(), Observer(s)
+{
+    syncCount = 100;
+    sync = (SyncAttributes *)s;
+    delayedSync = (SyncAttributes *)ds;
+}
+
+Synchronizer::~Synchronizer()
+{
+}
+
+void
+Synchronizer::PostSynchronize()
+{
+    delayedSync->SetSyncTag(syncCount++);
+    delayedSync->Notify();
+}
+
+void Synchronizer::Update(Subject *)
+{
+    emit synchronized();
+}

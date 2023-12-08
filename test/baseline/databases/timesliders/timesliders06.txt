@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:0b73b5db06a39afa5c73f9b6c2ebd6d7dc5fe0aefd09688ef693717e8f715cf0
-size 145
+GetTimeSliders returned:
+ {'localhost:VISIT_TOP_DIR/data/pdb_test_data/dbA00.pdb': 0, 'localhost:VISIT_TOP_DIR/data/pdb_test_data/dbB00.pdb': 10}

@@ -1,3 +1,42 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a724f8179b45e3a58f7677a996d933eb9b2d710422cb9fd2a8db5517ad70f781
-size 1333
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                       avtSamplePointsToImageFilter.h                      //
+// ************************************************************************* //
+
+#ifndef AVT_SAMPLE_POINTS_TO_IMAGE_FILTER_H
+#define AVT_SAMPLE_POINTS_TO_IMAGE_FILTER_H
+#include <pipeline_exports.h>
+
+
+#include <avtSamplePointsToDataObjectFilter.h>
+#include <avtDataObjectToImageFilter.h>
+
+
+// ****************************************************************************
+//  Class: avtSamplePointsToImageFilter
+//
+//  Purpose:
+//      A filter that takes in sample points as input and has an image as 
+//      output.
+//
+//  Programmer: Hank Childs
+//  Creation:   June 4, 2001
+//
+// ****************************************************************************
+
+class PIPELINE_API avtSamplePointsToImageFilter
+    : virtual public avtSamplePointsToDataObjectFilter,
+      virtual public avtDataObjectToImageFilter
+{
+  public:
+                       avtSamplePointsToImageFilter();
+    virtual           ~avtSamplePointsToImageFilter();
+};
+
+
+#endif
+
+

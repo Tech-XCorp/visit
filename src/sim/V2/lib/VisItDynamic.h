@@ -1,3 +1,55 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5bab48c577a5a71db05185faa185425b9ab7f3a6a39519e4046cd105d332e6fd
-size 1603
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef VISIT_DYNAMIC_H
+#define VISIT_DYNAMIC_H
+#include "SimV2Tracing.h"
+
+#ifdef VISIT_STATIC
+    /* Statically linked case */
+#define VISIT_DYNAMIC_EXECUTE(FUNC, FR, FA, INVOKEARGS) \
+    int retval = VISIT_ERROR; \
+    extern FR sim2_##FUNC FA; \
+    LIBSIM_API_ENTER(VisIt_##FUNC);\
+    {\
+        retval = simv2_##FUNC INVOKEARGS; \
+        if(retval == VISIT_ERROR) \
+        { \
+            LIBSIM_MESSAGE("simv2_" #FUNC " returned VISIT_ERROR"); \
+        } \
+        else \
+        { \
+            LIBSIM_MESSAGE("simv2_" #FUNC " returned VISIT_OKAY"); \
+        } \
+    }\
+    LIBSIM_API_LEAVE(VisIt_##FUNC); \
+    return retval;
+
+#else
+    /* Dynamic runtime case */
+#define VISIT_DYNAMIC_EXECUTE(FUNC, FR, FA, INVOKEARGS) \
+    int retval = VISIT_ERROR; \
+    LIBSIM_API_ENTER(VisIt_##FUNC);\
+    {\
+        FR (*cb) FA = (FR (*) FA)visit_get_runtime_function("simv2_"#FUNC);\
+        if(cb != NULL)\
+        { \
+            retval = (*cb) INVOKEARGS;\
+            if(retval == VISIT_ERROR) \
+            { \
+                LIBSIM_MESSAGE("simv2_" #FUNC " returned VISIT_ERROR"); \
+            } \
+            else \
+            { \
+                LIBSIM_MESSAGE("simv2_" #FUNC " returned VISIT_OKAY"); \
+            } \
+        } \
+    }\
+    LIBSIM_API_LEAVE(VisIt_##FUNC); \
+    return retval;
+
+void *visit_get_runtime_function(const char *name);
+#endif
+
+#endif

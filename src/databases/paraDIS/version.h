@@ -1,3 +1,5 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:12361372e4548e0a6df0989d7f49f34daa0f6527278d47cdd8f85b379906bcfe
-size 135
+#ifndef PARADIS_READER_VERSION
+#define PARADIS_READER_VERSION_NUMBER  "2.3.4"
+#define PARADIS_READER_VERSION_DATE "2013-07-17"
+#endif
+

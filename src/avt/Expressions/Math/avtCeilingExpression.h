@@ -1,3 +1,47 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:add4d727c3a3fd784b583a8e7442ddff456f934ad15963a2df98645f9d731ecf
-size 1524
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                            avtCeilingExpression.h                         //
+// ************************************************************************* //
+
+#ifndef AVT_CEILING_FILTER_H
+#define AVT_CEILING_FILTER_H
+
+
+#include <avtUnaryMathExpression.h>
+
+class     vtkDataArray;
+
+
+// ****************************************************************************
+//  Class: avtCeilingExpression
+//
+//  Purpose:
+//      A filter that calculates the ceiling of a floating point quantity.
+//
+//  Programmer: Hank Childs
+//  Creation:   June 30, 2005
+//
+// ****************************************************************************
+
+class EXPRESSION_API avtCeilingExpression : public avtUnaryMathExpression
+{
+  public:
+                              avtCeilingExpression();
+    virtual                  ~avtCeilingExpression();
+
+    virtual const char       *GetType(void)  { return "avtCeilingExpression"; };
+    virtual const char       *GetDescription(void) 
+                                         { return "Calculating the ceiling"; };
+
+  protected:
+    virtual void              DoOperation(vtkDataArray *in, vtkDataArray *out,
+                                          int ncomponents, int ntuples);
+};
+
+
+#endif
+
+

@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e1010a40651699d57260e8bc0b193d457412e080b4f10a95fab9e051d8c34497
-size 192
+Pseudocolor:  (ExpressionException)
+viewer: The 'conn_cmfe' expression failed because The database comparison expression expects two arguments: the database variable and a mesh to sample onto.

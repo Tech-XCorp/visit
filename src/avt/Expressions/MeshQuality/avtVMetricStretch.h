@@ -1,3 +1,33 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:9a05fa773c4d97d600829c55fa211aa273bfb8641b4be6a9d217b0b07026be42
-size 1053
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                          avtVMetricStretch.h                              //
+// ************************************************************************* //
+
+#ifndef AVT_VMETRIC_STRETCH_H
+#define AVT_VMETRIC_STRETCH_H
+#include <expression_exports.h>
+#include <avtVerdictExpression.h>
+
+// ****************************************************************************
+//  Class: avtVMetricStretch
+//
+//  Purpose:
+//    This metric measures aspect ratio.
+//
+//  Programmer: Akira Haddox
+//  Creation:   June 13, 2002
+//
+// ****************************************************************************
+
+class EXPRESSION_API avtVMetricStretch : public avtVerdictExpression
+{
+    public:
+        double Metric(double coords[][3], int type);
+};
+
+#endif
+
+

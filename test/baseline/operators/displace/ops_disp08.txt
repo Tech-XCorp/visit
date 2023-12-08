@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b8b387d56d3214f67bd546a1a0552ef901aa3684bcb73ff4553851805ccc25c2
-size 77
+FilledBoundary:  ()
+viewer: The displace operator requires vector plot data.

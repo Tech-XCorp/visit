@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:f3c4b5d8b1e6549f0d0bd81170bc21f4369210e95c718e1ffab2ab7d1a754286
-size 525
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ****************************************************************************
+//  File: RemapViewerPluginInfo.C
+// ****************************************************************************
+
+#include <RemapPluginInfo.h>
+#include <RemapAttributes.h>
+
+VISIT_OPERATOR_PLUGIN_ENTRY_EV(Remap,Viewer)
+
+

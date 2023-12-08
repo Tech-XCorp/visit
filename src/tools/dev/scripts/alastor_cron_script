@@ -1,3 +1,12 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:34b71e1923dd02a42e7d006f05b46459436741c4eaa8a78ef87ddfd029c1ff72
-size 286
+#!/bin/sh
+
+# Change directories to the working directory.
+cd visit_run_tests
+
+# Get the latest version of the scripts
+rm -rf svn_bin
+svn co svn+ssh://brugger@cori.nersc.gov/project/projectdirs/visit/svn/visit/trunk/src/svn_bin
+cd svn_bin
+
+# Run the test suite.
+./regressiontest_alastor

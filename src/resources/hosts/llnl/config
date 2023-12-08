@@ -1,3 +1,14 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8f636469af06ec413e9705b7eb16796829028f6ab74b11b668a9b6278e2874e0
-size 510
+<?xml version="1.0"?>
+<Object name="VisIt">
+    <Field name="Version" type="string">2.13.0</Field>
+    <Object name="VIEWER">
+        <Object name="DEFAULT_VALUES">
+            <Object name="GlobalAttributes">
+                <Field name="cloneWindowOnFirstRef" type="bool">true</Field>
+            </Object>
+            <Object name="FileOpenOptions">
+                <Field name="preferredIDs" type="stringVector">"PDB_1.1" "Silo_1.0" </Field>
+            </Object>
+        </Object>
+    </Object>
+</Object>

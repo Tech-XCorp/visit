@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:48ccc66f2edc5d174fac593f2b44b882bce587170bbe6549658a58e8708c37bb
-size 410
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <MiliPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(Mili,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void MiliMDServerPluginInfo::dummy()
+{
+}
+

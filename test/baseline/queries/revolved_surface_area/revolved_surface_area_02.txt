@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a46731f013b3fd88fb44e820f275bca25de1b37114c18980c702ea007bd97d28
-size 45
+The total RevolvedSurfaceArea is 4.91838 cm^2

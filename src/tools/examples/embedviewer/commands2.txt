@@ -1,3 +1,23 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:55996d778f24c876b4f917ffec3f5ed5c2e371e59b3ecd5fb12836a3c97d0be8
-size 349
+openFile /usr/gapps/visit/data/noise.silo
+changeVariable shepardglobal
+saveWindow
+changeVariable radial
+saveWindow
+changePlotType 1
+setNContours 3
+saveWindow
+setNContours 4
+saveWindow
+setNContours 5
+saveWindow
+setNContours 6
+saveWindow
+setNContours 7
+saveWindow
+setNContours 8
+saveWindow
+setNContours 9
+saveWindow
+setNContours 10
+saveWindow
+quitApp

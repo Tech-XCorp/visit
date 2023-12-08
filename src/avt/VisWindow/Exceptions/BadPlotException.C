@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e2ab2e25ac5fff2b546b6427892bcbe4e6da9f8eda8e36e959c7c08d38b64ad1
-size 854
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                            BadPlotException.C                             //
+// ************************************************************************* //
+
+#include <BadPlotException.h>
+
+
+// ****************************************************************************
+//  Method: BadPlotException constructor
+//
+//  Programmer: Hank Childs
+//  Creation:   May 17, 2000
+//
+// ****************************************************************************
+
+BadPlotException::BadPlotException()
+{
+    msg  = "Tried to access non-existant plot.";
+}
+
+

@@ -1,3 +1,24 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e314dc6f31035c11ef51070306f2db96350bd47905ad4e9eb627586c64dc50ba
-size 1570
+<?xml version="1.0"?>
+  <Plugin name="FiveFoldTetSubdivision" type="operator" label="Five Fold Tet Subdvision" version="1.0" enabled="false" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" category="Geometry">
+    <Attribute name="FiveFoldTetSubdivisionAttributes" purpose="Attributes for five fold tetrahedral subdivision operator" persistent="true" keyframe="true" exportAPI="" exportInclude="" codefile="FiveFoldTetSubdivisionAttributes.code">
+      <Field name="oddParityHasSixNeighborhood" label="Vertices with odd parity have six neighborhood " type="bool">
+        true
+      </Field>
+      <Field name="addComponentInformation" label="Add component information from contour tree" type="bool">
+        false
+      </Field>
+      <Field name="idVar" label="ID variable" type="variablename" enabler="addComponentInformation:true" vartypes="01000000000">
+      </Field>
+      <Field name="valueVar" label="Value variable" type="variablename" enabler="addComponentInformation:true" vartypes="01000000000">
+      </Field>
+      <Field name="contourTreeFilename" label="Contour Tree Filename" type="string" enabler="addComponentInformation:true">
+      </Field>
+      <Field name="isovalue" label="Isovalue" type="double" enabler="addComponentInformation:true">
+       0.0
+      </Field>
+      <Field name="selectedIds" label="Selected IDs" type="intVector" enabler="addComponentInformation:true">
+      </Field>
+      <Field name="highlightedIds" label="Highlighted IDs" type="intVector">
+      </Field>
+    </Attribute>
+  </Plugin>

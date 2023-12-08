@@ -1,3 +1,38 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:72e7fcd29473bdacb3477da41e22145b1cc056b3128d924fe29d5054bd3a7a9d
-size 1200
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                          InvalidDBTypeException.h                          //
+// ************************************************************************* //
+
+#ifndef INVALID_DB_TYPE_EXCEPTION_H
+#define INVALID_DB_TYPE_EXCEPTION_H
+
+#include <avtexception_exports.h>
+
+#include <DatabaseException.h>
+
+
+// ****************************************************************************
+//  Class: InvalidDBTypeException
+//
+//  Purpose:
+//      The exception thrown when the database type chosen was not correct.
+//
+//  Programmer: Hank Childs
+//  Creation:   October 14, 2002
+//
+// ****************************************************************************
+
+class AVTEXCEPTION_API InvalidDBTypeException : public DatabaseException
+{
+  public:
+                          InvalidDBTypeException(const char *);
+    virtual              ~InvalidDBTypeException() VISIT_THROW_NOTHING {;};
+};
+
+
+#endif
+
+

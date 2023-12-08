@@ -1,3 +1,1 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:45c013c74331e41aaa9f475a9b00f8d5f17e69bfcdf9236a0c0b4879dcdcbefb
-size 21
+The L2Norm is 4.3589.

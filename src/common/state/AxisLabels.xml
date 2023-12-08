@@ -1,3 +1,11 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b0945d066d8f8cfa74a3022545d370b8093155adbf7e0a9a86b43e8ebfad6f67
-size 451
+<?xml version="1.0"?>
+  <Attribute name="AxisLabels" purpose="Contains the label properties for one axis." persistent="true" keyframe="true" exportAPI="STATE_API" exportInclude="state_exports.h">
+    <Field name="visible" label="Visible" type="bool">
+      true
+    </Field>
+    <Field name="font" label="Font" type="att" subtype="FontAttributes">
+    </Field>
+    <Field name="scaling" label="Scaling" type="int">
+      0
+    </Field>
+  </Attribute>

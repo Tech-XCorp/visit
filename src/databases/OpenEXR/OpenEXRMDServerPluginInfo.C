@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:29983749ee3ad8fbf75b0cd9b9b31383b93fb8944b8790f3a203b5a2f8282757
-size 419
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <OpenEXRPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(OpenEXR,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void OpenEXRMDServerPluginInfo::dummy()
+{
+}
+

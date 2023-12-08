@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:e05f77f8689b173ba927f68f8f22923a6041dea0d3244af4f661e667e5a769f8
-size 480
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#ifndef PY_SILRESTRICTION_H
+#define PY_SILRESTRICTION_H
+#include <Python.h>
+
+//
+// Functions exposed to the VisIt module.
+//
+
+PyMethodDef         *PySILRestriction_GetMethodTable(int *nMethods);
+PyObject            *PySILRestriction_NewPyObject();
+
+#endif

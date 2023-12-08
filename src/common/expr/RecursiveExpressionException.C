@@ -1,3 +1,25 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:a5360f6dd62f7997b7a0423790a38f9e7137ca7804d7f56d75065238a50bf2f4
-size 958
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************ //
+//                      RecursiveExpressionException.C                      //
+// ************************************************************************ //
+
+#include <RecursiveExpressionException.h>
+
+using namespace std;
+
+// ****************************************************************************
+//  Method: RecursiveExpressionException constructor
+//
+//  Programmer: Jeremy Meredith
+//  Creation:   August 15, 2003
+//
+// ****************************************************************************
+RecursiveExpressionException::RecursiveExpressionException(string var)
+{
+    msg = "The expression was recursive in variable \"" + var + "\".";
+}
+
+

@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:b1c92854ba78b545df6e54bdfd02d77813be855bb4d7a48c869dfa3cf130eff5
-size 422
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <OpenFOAMPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(OpenFOAM,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void OpenFOAMMDServerPluginInfo::dummy()
+{
+}
+

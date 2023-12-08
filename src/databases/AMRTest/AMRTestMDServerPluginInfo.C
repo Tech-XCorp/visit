@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:5c3838d84fb25e486b056e2bcdc5f23b7dc120e0ffcbbf157706d445c16c3423
-size 419
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <AMRTestPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(AMRTest,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void AMRTestMDServerPluginInfo::dummy()
+{
+}
+

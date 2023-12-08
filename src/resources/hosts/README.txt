@@ -1,3 +1,8 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c7a896d0a72ef9c7925881deea2171d9aaf2789b3a41cf1167ea93ef9de456a6
-size 324
+If you add/remove directories, please edit networks.dat accordingly.
+
+If you add/remove directories or files, please regenerate networks.json
+by running dump_dir_to_networks_jason.py.
+
+Note that if run on Windows, it will create dos-style line endings in
+networks.json.  Convert it to Unix style before committing.
+

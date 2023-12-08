@@ -1,3 +1,20 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:af79b3b204e99c1b36ba2da2a123b08f1c10e024474425c926e8c020433ba1eb
-size 727
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                            avtADIOSFileFormat.h                           //
+// ************************************************************************* //
+
+#ifndef AVT_ADIOS_FILE_FORMAT_H
+#define AVT_ADIOS_FILE_FORMAT_H
+
+class avtFileFormatInterface;
+
+//
+// Prototype for the file format interface factory function.
+//
+avtFileFormatInterface *
+ADIOS2_CreateFileFormatInterface(const char * const *, int, int);
+
+#endif

@@ -1,3 +1,2 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ecc0ed1dd43a1b95a4e43a8898d5dfaebf2c4a8935d9f0989ccd622024c1b49d
-size 91
+Found 1 connected component
+Component 0 [6912 cells] Centroid = (1.27461,0.551184,1.25659)

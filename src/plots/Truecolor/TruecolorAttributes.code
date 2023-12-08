@@ -1,3 +1,9 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1508596f34c12001a3c712e7227222846a1016dce272848d4b40bfc66e5ca335
-size 238
+Function: ChangesRequireRecalculation
+Declaration: bool ChangesRequireRecalculation(const TruecolorAttributes &obj);
+Definition:
+bool
+TruecolorAttributes::ChangesRequireRecalculation(const TruecolorAttributes &obj)
+{
+    return false;
+}
+

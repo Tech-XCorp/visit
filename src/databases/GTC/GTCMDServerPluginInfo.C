@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ba65dd0d147d5e87c1396ecffd24478ad0555c81ce0a755ef076fc61ad6e7ca4
-size 407
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <GTCPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(GTC,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void GTCMDServerPluginInfo::dummy()
+{
+}
+

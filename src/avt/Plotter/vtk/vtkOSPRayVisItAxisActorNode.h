@@ -1,3 +1,36 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c20c3eefe5ded4c1642540564419b8611ec4f122b3334145b516db6877778941
-size 1035
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+/**
+ * @class   vtkOSPRayVisItAxisActorNode
+ * @brief   links vtkVisItAxisActor to OSPRay
+ *
+ * Translates vtkVisItAxisActor state into OSPRay rendering calls
+*/
+
+#ifndef vtkOSPRayVisItAxisActorNode_h
+#define vtkOSPRayVisItAxisActorNode_h
+
+#include <plotter_exports.h>
+#include <vtkOSPRayActorNode.h>
+
+class  PLOTTER_API vtkOSPRayVisItAxisActorNode :
+  public vtkOSPRayActorNode
+{
+public:
+  static vtkOSPRayVisItAxisActorNode* New();
+  vtkTypeMacro(vtkOSPRayVisItAxisActorNode, vtkOSPRayActorNode);
+
+  vtkMTimeType GetMTime() override;
+
+  void Build(bool prepass) override;
+
+protected:
+  vtkOSPRayVisItAxisActorNode();
+  ~vtkOSPRayVisItAxisActorNode();
+
+private:
+  vtkOSPRayVisItAxisActorNode(const vtkOSPRayVisItAxisActorNode&) = delete;
+  void operator=(const vtkOSPRayVisItAxisActorNode&) = delete;
+};
+#endif

@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6cdfe1d6cef6f3207a1fd45f6f069c9f59d61bfbd366f3016c87a437e269394a
-size 407
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <M3DPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(M3D,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void M3DMDServerPluginInfo::dummy()
+{
+}
+

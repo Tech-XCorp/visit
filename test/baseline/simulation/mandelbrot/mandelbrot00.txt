@@ -1,3 +1,3 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1adcc403407aade239c147a1ed97d8a22c2f1d43378d94bf422ea8c732645cae
-size 119
+Simulation executable "mandelbrot" exists.
+Simulation "mandelbrot" started.
+VisIt connected to simulation "mandelbrot".

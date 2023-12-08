@@ -1,3 +1,10 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:cee49eb5cd54cdc51a19ef791f38ad07f5482032374f94a038535a423d94899c
-size 200
+Cycle: 0, Time: 14
+Cycle: 1, Time: 14.5
+Cycle: 2, Time: 15
+Cycle: 3, Time: 15.5
+Cycle: 4, Time: 16
+Cycle: 5, Time: 16.5
+Cycle: 6, Time: 17
+Cycle: 7, Time: 17.5
+Cycle: 8, Time: 18
+Cycle: 9, Time: 18.5

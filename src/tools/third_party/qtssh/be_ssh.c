@@ -1,3 +1,16 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:15cedf720ae3fe54f201ff48dc63e4da44dd34ce17208efba75906aa8f68588f
-size 401
+/*
+ * Linking module for programs that are restricted to only using SSH
+ * (pscp and psftp). These do not support selection of backend, but
+ * must still have a backends[] array mentioning SSH because
+ * settings.c will want to consult it during session load.
+ */
+
+#include <stdio.h>
+#include "putty.h"
+
+const int be_default_protocol = PROT_SSH;
+
+Backend *backends[] = {
+    &ssh_backend,
+    NULL
+};

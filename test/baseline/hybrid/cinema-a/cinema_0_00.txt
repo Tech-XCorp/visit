@@ -1,3 +1,12 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c4a4ba309abe6d371e1069ed9cb44a25fcc559bb289caa9dc9aea620d2424547
-size 120
+-specification
+A
+-scriptfile
+test0.py
+-output
+VISIT_TOP_DIR/test/test0.cdb
+-format
+png
+-geometry
+300x300
+-camera
+static

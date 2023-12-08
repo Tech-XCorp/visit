@@ -1,3 +1,54 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1ebcf01c86d88725182e19fd05867055a2268ecec8caa3cfac58da6e872a5b7b
-size 1575
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+// ************************************************************************* //
+//                           avtActualCoordsQuery.h                          //
+// ************************************************************************* //
+
+#ifndef AVT_ACTUAL_COORDS_QUERY_H
+#define AVT_ACTUAL_COORDS_QUERY_H
+#include <query_exports.h>
+
+#include <avtDatasetQuery.h>
+#include <PickAttributes.h>
+
+
+
+// ****************************************************************************
+//  Class: avtActualCoordsQuery
+//
+//  Purpose:
+//    This is an abstract class for queries that determine the actual 
+//    coordinates of a zone or node.
+//
+//  Programmer: Kathleen Bonnell 
+//  Creation:   May 18, 2004 
+//
+//  Modifications:
+//
+// ****************************************************************************
+
+class QUERY_API avtActualCoordsQuery : public avtDatasetQuery
+{
+  public:
+                             avtActualCoordsQuery();
+    virtual                 ~avtActualCoordsQuery();
+
+    void                     SetPickAtts(const PickAttributes *);
+    const PickAttributes    *GetPickAtts(void);
+
+
+
+  protected:
+    PickAttributes           pickAtts; 
+    int                      actualId;
+    double                   actualCoords[3];
+    virtual void             PreExecute(void);
+    virtual void             PostExecute(void);
+};
+
+
+#endif
+
+

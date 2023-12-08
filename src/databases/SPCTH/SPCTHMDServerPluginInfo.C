@@ -1,3 +1,13 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:435cf0c08c42c2cd9e1d283b127f591a953e3e946c3c12035e27c2d523c08d76
-size 413
+// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
+// Project developers.  See the top-level LICENSE file for dates and other
+// details.  No copyright assignment is required to contribute to VisIt.
+
+#include <SPCTHPluginInfo.h>
+
+VISIT_DATABASE_PLUGIN_ENTRY(SPCTH,MDServer)
+
+// this makes compilers happy... remove if we ever have functions here
+void SPCTHMDServerPluginInfo::dummy()
+{
+}
+
