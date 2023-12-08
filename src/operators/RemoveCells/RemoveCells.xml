@@ -1,9 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="RemoveCells" type="operator" label="RemoveCells" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" iconFile="RemoveCells.xpm" category="Selection">
-    <Attribute name="RemoveCellsAttributes" purpose="This class contains attributes for the RemoveCells operator." persistent="true" keyframe="true" exportAPI="" exportInclude="">
-      <Field name="cellList" label="cellList" type="intVector">
-      </Field>
-      <Field name="domainList" label="domainList" type="intVector">
-      </Field>
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:2f708cab57a003263e0db36b02eaadb21d33d9e8b3bda997cedb7ba315fc2c00
+size 619

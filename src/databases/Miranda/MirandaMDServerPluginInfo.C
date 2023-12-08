@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <MirandaPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Miranda,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void MirandaMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:db8e5f3e28eb4d052e89d89a6b82e52b2129cd2da59ab7d776c08e96c8a05b93
+size 419

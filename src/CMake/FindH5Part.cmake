@@ -1,21 +1,3 @@
-# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-# Project developers.  See the top-level LICENSE file for dates and other
-# details.  No copyright assignment is required to contribute to VisIt.
-
-#****************************************************************************
-# Modifications:
-#   Kathleen Biagas, Wed Oct 19 09:58:16 MST 2011
-#   Remove ${VISIT_MSVC_VERSION} from lib location.
-#
-#****************************************************************************/
-
-# Use the H5PART_DIR hint from the config-site .cmake file 
-
-INCLUDE(${VISIT_SOURCE_DIR}/CMake/SetUpThirdParty.cmake)
-
-IF (WIN32)
-  SET_UP_THIRD_PARTY(H5PART lib include h5partdll)
-ELSE (WIN32)
-  SET_UP_THIRD_PARTY(H5PART lib include H5Part)
-ENDIF (WIN32)
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:d380ba156d0cfe40dad87c98232dd13de6a37e0ddf7f9729f8b29bd41aed9de9
+size 757

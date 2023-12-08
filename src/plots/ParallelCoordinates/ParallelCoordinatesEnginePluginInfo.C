@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: ParallelCoordinatesEnginePluginInfo.C
-// ****************************************************************************
-
-#include <ParallelCoordinatesPluginInfo.h>
-#include <avtParallelCoordinatesPlot.h>
-
-VISIT_PLOT_PLUGIN_ENTRY_EV(ParallelCoordinates,Engine)
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:e492e639b303fe613eb62ade1dbb769d0d4d9e6675d9649833f835b888aed414
+size 573

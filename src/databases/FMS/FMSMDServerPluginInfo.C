@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <FMSPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(FMS,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void FMSMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:324262b4300543218ebe08177b18030a8b0f40cc53aa2c7f1c1da0ea5d6f0ee2
+size 407

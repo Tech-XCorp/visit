@@ -1,5 +1,3 @@
-Grid 0: type=AVT_UNSTRUCTURED_MESH, dims={1093,1200,0}
-=================================================
-Grid 0: type=AVT_UNSTRUCTURED_MESH, dims={1093,1200,0}, extents={-10,10,-10,10,-10,10}
-=================================================
-Grid 0: type=AVT_UNSTRUCTURED_MESH, dims={1093,1200,0}, extents={-10,10,-10,10,-10,10}, ghosttypes=0={}
+version https://git-lfs.github.com/spec/v1
+oid sha256:561ac5714e43a8a0a8a37f6c1a603aafbc0b32ce79617cdfa167a9db79c2dba7
+size 346

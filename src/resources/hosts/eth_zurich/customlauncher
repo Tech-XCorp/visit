@@ -1,28 +1,3 @@
-###############################################################################
-# Class: ETHZurichLauncher
-#
-# Purpose:    Custom launcher for ETHZurich
-#
-# Programmer: Brad Whitlock
-# Date:       Thu May 17 14:22:04 PDT 2012
-#
-# Modifications:
-#
-###############################################################################
-
-class ETHZurichLauncher(MainLauncher):
-    def __init__(self):
-        super(ETHZurichLauncher, self).__init__()
-
-    def Customize(self):
-        # ----
-        # Brutus @ ETH Zurich
-        # ----
-        if self.parallelArgs.parallel and \
-           self.generalArgs.exe_name == "engine" and \
-           self.sectorname() == "brutus":
-            self.generalArgs.host = self.sectorname() + ".hpc-net.ethz.ch"
-
-# Launcher creation function
-def createlauncher():
-    return ETHZurichLauncher()
+version https://git-lfs.github.com/spec/v1
+oid sha256:7435013ff207b3cb6b5fbcc86da03175b1d6266fd9dbf48f6788f04d891e1053
+size 826

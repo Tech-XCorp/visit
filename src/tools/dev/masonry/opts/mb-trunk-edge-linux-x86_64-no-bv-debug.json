@@ -1,8 +1,3 @@
-{"bootstrap_visit":
- {"version": "trunk",
- "build_types": ["debug"],
- "arch":   "linux-x86_64",
- "config_site":"edge83.cmake",
- "make_nthreads": 8, 
- "svn": {"mode":"ssh","nersc_uname":"cyrush"}
-}}
+version https://git-lfs.github.com/spec/v1
+oid sha256:ab4214ae8ffe87bc9e49e68dd39c1a8b84fd638e99bc96cfb92d8767cd6f3c48
+size 198

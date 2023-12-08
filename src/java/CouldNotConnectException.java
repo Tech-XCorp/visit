@@ -1,28 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-package llnl.visit;
-
-// ****************************************************************************
-// Class: CouldNotConnectException
-//
-// Purpose:
-//   This is an exception class that is thrown when the Java interface could
-//   not connect to the viewer.
-//
-// Notes:
-//
-// Programmer: Brad Whitlock
-// Creation:   Thu Aug 8 12:52:57 PDT 2002
-//
-// Modifications:
-//
-// ****************************************************************************
-
-public class CouldNotConnectException extends java.lang.Exception
-{
-    public CouldNotConnectException()
-    {
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:00c46745d84b9ea10ea52b0dfb3152b9708754443038f44696d2ab86a86387c4
+size 797

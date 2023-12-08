@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <PATRANPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(PATRAN,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void PATRANMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:d3a07299fbc7facf9393a0f59450677d4716d931b70f250c83dbc8ab83df130c
+size 416

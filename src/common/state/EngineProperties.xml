@@ -1,17 +1,3 @@
-<?xml version="1.0"?>
-  <Attribute name="EngineProperties" purpose="This class contains properties about running engines." exportAPI="STATE_API" exportInclude="state_exports.h">
-    <Field name="numNodes" type="int">
-      -1
-    </Field>
-    <Field name="numProcessors" type="int">
-      1
-    </Field>
-    <Field name="numProcessorsUsingGPUs" type="int">
-      0
-    </Field>
-    <Field name="dynamicLoadBalancing" type="bool">
-      false
-    </Field>
-    <Field name="loadBalancingScheme" type="string">
-    </Field>
-  </Attribute>
+version https://git-lfs.github.com/spec/v1
+oid sha256:48a9d33522d3ae023950d32bf54bd66df1cadc5f9c3a254604c2cdf73c7e6a91
+size 536

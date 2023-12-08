@@ -1,13 +1,3 @@
-Attribute Reference
-===================
-
-This chapter shows all the attributes that can be set to control the
-behavior of VisIt. The attributes themselves are not documented, but
-their names are usually quite explanatory. When a member of an attribute
-can take values from a given list of options, the default option is printed
-first in italic followed by a comma separated list of the other available
-options.
-
-The listing is ordered in alphabetical ordering of the name of the
-attribute set. For each set the function that will provide you with
-these attributes is printed in italic.
+version https://git-lfs.github.com/spec/v1
+oid sha256:911d396a40eda25416298ffd6edd1e9bcb4364e7ed1a8dca0a70cebbbf4f38ae
+size 586

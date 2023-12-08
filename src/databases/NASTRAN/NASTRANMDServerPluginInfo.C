@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <NASTRANPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(NASTRAN,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void NASTRANMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:7eef4dc91d340894677a9b2921fa9a30337b93f535590defe053b42ad0419e05
+size 419

@@ -1,21 +1,3 @@
-# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-# Project developers.  See the top-level LICENSE file for dates and other
-# details.  No copyright assignment is required to contribute to VisIt.
-
-#****************************************************************************
-# Modifications:
-#
-#****************************************************************************
-
-INCLUDE_DIRECTORIES(
-${SILO_INCLUDE_DIR}
-)
-
-# Add link directories
-LINK_DIRECTORIES(${SILO_LIBRARY_DIR})
-
-#********************************* SERIAL ************************************
-ADD_EXECUTABLE(mrgtree2dot mrgtree2dot.C)
-TARGET_LINK_LIBRARIES(mrgtree2dot ${SILO_LIB} )
-VISIT_INSTALL_TARGETS(mrgtree2dot)
-VISIT_DATA_ADD_FOLDER(mrgtree2dot mrgtree2dot)
+version https://git-lfs.github.com/spec/v1
+oid sha256:f50278f18e0688db54e6c21cd8efa177d10eebc0ec03f4bb3ed64de7af4e3041
+size 754

@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <SiloPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Silo,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void SiloMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:87f0a695454fcf58d109ba57af34a4ef675695536ae7e66edddcf58781c6a477
+size 410

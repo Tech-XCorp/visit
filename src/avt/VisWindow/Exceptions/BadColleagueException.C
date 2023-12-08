@@ -1,26 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ************************************************************************* //
-//                          BadColleagueException.C                          //
-// ************************************************************************* //
-
-
-#include <BadColleagueException.h>
-
-
-// ****************************************************************************
-//  Method: BadColleagueException constructor
-//
-//  Programmer: Hank Childs
-//  Creation:   June 8, 2000
-//
-// ****************************************************************************
-
-BadColleagueException::BadColleagueException()
-{
-    msg = "The VisWindow colleague could not be found.\n";
-}
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:c857bdca985160c2298ba26215ea7bcd1e99d8c8ccaea165e303bb2051b7af82
+size 885

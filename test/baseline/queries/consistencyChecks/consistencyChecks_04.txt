@@ -1,6 +1,3 @@
-PickByZone on Pseudcolor and Boundary plots yielded same point.
-Zone Center query returned same coords as Pick.
-Pick using coord from Zone Center query returned zone: 482, (should be: 482).
-PickByNode on Pseudcolor and Boundary plots yielded same point.
-Node Coords query returned same coords as Pick.
-Pick using coord from Node Coord query returned node: 498, (should be: 498).
+version https://git-lfs.github.com/spec/v1
+oid sha256:bc0af5fe782075c6b0b5de6b3fba997ea5a1aae336d7a22f5af0bc8b7082c9b9
+size 379

@@ -1,26 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="MFEM" type="database" label="MFEM" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STMD" haswriter="false" hasoptions="false" filePatternsStrict="false" opensWholeDirectory="false">
-    <CXXFLAGS>
-      ${MFEM_INCLUDE_DIR}
-      ${VISIT_INCLUDE_DIR}/third_party_builtin
-    </CXXFLAGS>
-    <LDFLAGS>
-      ${MFEM_LIBRARY_DIR}
-    </LDFLAGS>
-    <LIBS>
-      ${MFEM_LIB}
-    </LIBS>
-    <FilePatterns>
-      *.mfem_root
-    </FilePatterns>
-    <Files components="M">
-      avtMFEMFileFormat.C
-      JSONRoot.C
-    </Files>
-    <Files components="E">
-      avtMFEMFileFormat.C
-      JSONRoot.C
-    </Files>
-    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:14b897d2496686f1e48fec3ca8e5f357010750dc6be06748b62a3c7de9533466
+size 843

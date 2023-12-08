@@ -1,8 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#undef QT_NO_STL
-#undef QT_NO_STL_WHAR
-
-#include <pysidegui.h>
+version https://git-lfs.github.com/spec/v1
+oid sha256:ab36ac2716ad3ad2afaf8fe9502ce96cd7a99b5a9129e2bd0138ee38b8ca4f1f
+size 287

@@ -1,8 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="GULP" type="database" label="GULP" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="MTSD" haswriter="false" hasoptions="false" filePatternsStrict="false" opensWholeDirectory="false">
-    <FilePatterns>
-      *.trg
-    </FilePatterns>
-    <Attribute name="" purpose="" persistent="false" keyframe="true" exportAPI="" exportInclude="">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:2f1c5a7d3490b8190929c704eed1696234a979627368df609e2ae7a8f1fa5bde
+size 472

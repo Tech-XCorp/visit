@@ -1,7 +1,3 @@
-Expressions:
-expression 1: var1 = var2 + var3
-expression 2: var4 = var5 * var6
-expression 3: var7 = var8 / var9
-expression 4: vel = {u,v,w}
-expression 5: speed = sqrt(u*u+v*v+w*w)
-expression 6: vel_magnitude = magnitude(<vel>)
+version https://git-lfs.github.com/spec/v1
+oid sha256:68523a3d2c0c536c2cebe2eb4c1169b4995098812225fce9370bc5ff06ea5c17
+size 227

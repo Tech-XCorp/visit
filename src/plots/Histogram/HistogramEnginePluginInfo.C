@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: HistogramEnginePluginInfo.C
-// ****************************************************************************
-
-#include <HistogramPluginInfo.h>
-#include <avtHistogramPlot.h>
-
-VISIT_PLOT_PLUGIN_ENTRY_EV(Histogram,Engine)
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:64ca5b0143d7fdd3c1a5e612f312d867dbbcdc3428da3e9ebee2a768b37dd19a
+size 533

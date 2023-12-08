@@ -1,8 +1,3 @@
-#ifndef _AMRSTITCHCELLTESSELATIONS3D_H_
-#define _AMRSTITCHCELLTESSELATIONS3D_H_
-
-extern int tesselationSubCaseDir3D[256];
-extern int tesselationArray3D[];
-extern int tesselationCaseStart3D[256][4];
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:24530cf247755fa8bc63060660baf36927120f38f7f0aeaea1ce307eaf55a362
+size 206

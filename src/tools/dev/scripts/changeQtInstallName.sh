@@ -1,20 +1,3 @@
-QtBaseDir=$1
-
-QtFrameworks="QtCore QtGui QtNetwork QtOpenGL QtScript QtSvg QtXml"
-for QtFW in $QtFrameworks; do
-    echo $QtFW;
-    filename="$QtBaseDir/lib/${QtFW}.framework/${QtFW}"
-    debugFilename="${filename}_debug"
-    oldSOName=$(otool -D $filename | tail -n -1)
-    oldDebugSOName=$(otool -D $debugFilename | tail -n -1)
-    internalFWPath=$(echo $oldSOName | sed -e 's/.*\.framework\///')
-    internalDebugFWPath=$(echo $oldDebugSOName | sed -e 's/.*\.framework\///')
-    newSOName="@executable_path/../lib/${QtFW}.framework/$internalFWPath"
-    newDebugSOName="@executable_path/../lib/${QtFW}.framework/$internalDebugFWPath"
-    install_name_tool -id $newSOName $filename
-    install_name_tool -id $newDebugSOName $debugFilename
-    for otherQtFW in $QtFrameworks; do
-        install_name_tool -change $oldSOName $newSOName $QtBaseDir/lib/${otherQtFW}.framework/${otherQtFW}
-        install_name_tool -change $oldSOName $newSOName $QtBaseDir/lib/${otherQtFW}.framework/${otherQtFW}_debug
-    done
-done
+version https://git-lfs.github.com/spec/v1
+oid sha256:9f177ad26d69ea8f1f7eba3af8d0b4205bc0d84b7ae706e1cee64f66c85ccb81
+size 1013

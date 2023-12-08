@@ -1,30 +1,3 @@
-.. _DeveloperManual:
-
-VisIt_ Developer Manual
-=======================
-
-.. toctree::
-    :maxdepth: 1
-    :numbered: 
-
-    GitHub
-    StyleGuide
-    pr_create
-    pr_review
-    RCDevelopment
-    test_suite
-    xmltools
-    PrepareRelease
-    CreateRelease
-    MemoryLeaks
-    Docker
-    SiteReliabilityEngineering
-    OpenGL
-    CI
-
-.. Indices and tables
-.. ==================
-
-.. * :ref:`genindex`
-.. * :ref:`search`
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:5f3a5de013893b65717b28a03f3199ed3ca9d9f3d0e2510ded5538037e0cea98
+size 418

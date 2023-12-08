@@ -1,16 +1,3 @@
-# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-# Project developers.  See the top-level LICENSE file for dates and other
-# details.  No copyright assignment is required to contribute to VisIt.
-
-"""
- file: canvas.py
- author: Cyrus Harrison (cyrush@llnl.gov)
- description:
-      Simple PySide / Qt based Text & Image annotation overlay lib.
-
-"""
-
-from . import xinit
-from .canvas import *
-from .items import *
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:b9d4d77be9639277ce9a2d3f268cbad1875d6ac8d25088ab741ea8bd08d112f3
+size 436

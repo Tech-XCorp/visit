@@ -1,14 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: DecimateViewerPluginInfo.C
-// ****************************************************************************
-
-#include <DecimatePluginInfo.h>
-#include <DecimateAttributes.h>
-
-VISIT_OPERATOR_PLUGIN_ENTRY_EV(Decimate,Viewer)
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:8cd7fca6b94ff24e57d56de438cd13afc02f1ad208f92ba0c3ca5294ff4621fb
+size 537

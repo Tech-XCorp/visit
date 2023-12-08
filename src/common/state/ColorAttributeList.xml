@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
-  <Attribute name="ColorAttributeList" purpose="This class contains a list of ColorAttributes." exportAPI="STATE_API" exportInclude="state_exports.h">
-    <Field name="colors" type="attVector" subtype="ColorAttribute"></Field>
-  </Attribute>
+version https://git-lfs.github.com/spec/v1
+oid sha256:d3b7b96cba8fe2f5e0bcba63ee11edb81ca88a0ef7776944a2df5e302787225e
+size 264

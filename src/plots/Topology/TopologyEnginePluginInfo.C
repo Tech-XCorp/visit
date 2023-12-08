@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: TopologyEnginePluginInfo.C
-// ****************************************************************************
-
-#include <TopologyPluginInfo.h>
-#include <avtTopologyPlot.h>
-
-VISIT_PLOT_PLUGIN_ENTRY_EV(Topology,Engine)
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:84b50ff01dccfafd32044458d8a3071024d70a69f7b85ceacae035771046961a
+size 529

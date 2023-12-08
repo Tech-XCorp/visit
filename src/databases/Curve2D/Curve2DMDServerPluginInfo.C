@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <Curve2DPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Curve2D,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void Curve2DMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:f705ecbc9746af3128ea1cbd72fb39c3dee171cdc532deab31735cbfd9078fab
+size 419

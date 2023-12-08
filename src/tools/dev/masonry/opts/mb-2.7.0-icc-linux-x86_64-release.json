@@ -1,31 +1,3 @@
-{"bootstrap_visit":
- {"version": "2.7.0",
- "build_types": ["release"],
- "arch":   "linux-x86_64",
- "branch": "2.7RC", 
- "c_compiler":   "icc",
- "cxx_compiler": "icpc",
- "make_nthreads": 8, 
- "svn": {"mode":"ssh","nersc_uname":"cyrush"},
- "build_visit":  { "cmake_ver": "2.8.10.2",
-                    "args":"--no-thirdparty",
-          "libs":["cmake",
-                 "python",
-                 "vtk",
-                 "qt",
-                 "mesa",
-                 "pyside",
-                 "advio",
-                 "boxlib",
-                 "ccmio",
-                 "cfitsio",
-                 "cgns",
-                 "gdal",
-                 "hdf4",
-                 "h5part",
-                 "hdf5",
-                 "netcdf",
-                 "silo",
-                 "szip",
-                 "xdmf"]}
-}}
+version https://git-lfs.github.com/spec/v1
+oid sha256:914708f476a57c6f5ff25980a9576a05232ebdc4f4c325c5de8f9190772ca680
+size 819

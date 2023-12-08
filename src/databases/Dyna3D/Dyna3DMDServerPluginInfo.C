@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <Dyna3DPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Dyna3D,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void Dyna3DMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:bb8de0b8d458bc1d689e3435e547b78346ce091b26790b16b10f2b4a61230f9d
+size 416

@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <AMRPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(AMR,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void AMRMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:06550ef63c0412abdfd6b54f0479f67533affa736ab38f401bf5c1b05c6788b0
+size 407

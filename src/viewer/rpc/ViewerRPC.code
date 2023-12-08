@@ -1,21 +1,3 @@
-Function: SetWindowArea
-Declaration: void SetWindowArea(int x, int y, int w, int h);
-Definition:
-// ****************************************************************************
-//  Method:  ViewerRPC::SetWindowArea
-//
-//  Purpose:
-//    Sets the window area used by the viewer.
-//
-//  Programmer:  Brad Whitlock
-//  Creation:    Fri Dec 20 14:18:12 PST 2002
-//
-// ****************************************************************************
-void
-ViewerRPC::SetWindowArea(int x, int y, int w, int h)
-{
-    char str[50];
-    snprintf(str, 50, "%dx%d+%d+%d", w, h, x, y);
-    SetWindowArea(str);
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:923242d7c854677b6b7d5437de19df5bd405222d168900f51bcd6c67198fc7a8
+size 596

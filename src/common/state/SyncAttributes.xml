@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
-  <Attribute name="SyncAttributes" purpose="This class contains an integer that can be used to synchronize the viewer and its clients." exportAPI="STATE_API" exportInclude="state_exports.h">
-    <Field name="syncTag" type="int">-1</Field>
-  </Attribute>
+version https://git-lfs.github.com/spec/v1
+oid sha256:1cbe51112ebcfe877b2777423a1500a9c400816e7622fb582ecf98f3119d5eb3
+size 276

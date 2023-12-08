@@ -1,33 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef INCOMPATIBLE_VERSION_EXCEPTION_H
-#define INCOMPATIBLE_VERSION_EXCEPTION_H
-#include <comm_exports.h>
-#include <VisItException.h>
-
-// ****************************************************************************
-// Class: IncompatibleVersionException
-//
-// Purpose:
-//   This exception is used for cases where the two components exchange
-//   version numbers that do not match.
-//
-// Notes:      
-//
-// Programmer: Brad Whitlock
-// Creation:   Wed Apr 25 11:10:29 PDT 2001
-//
-// Modifications:
-//   
-// ****************************************************************************
-
-class COMM_API2 IncompatibleVersionException : public VisItException
-{
-public:
-    IncompatibleVersionException() {;};
-    virtual ~IncompatibleVersionException() VISIT_THROW_NOTHING {;};
-};
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:c593f3ddb61a3d4230fc20f5f5f77398c3f8022db83c48ff04232a50ff4d6f16
+size 1009

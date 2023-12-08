@@ -1,16 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef AVT_VASP_FILE_FORMAT_H
-#define AVT_VASP_FILE_FORMAT_H
-
-class avtFileFormatInterface;
-
-//
-// Prototype for the file format interface factory function.
-//
-avtFileFormatInterface *
-VASP_CreateFileFormatInterface(const char * const *, int, int);
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:6eb82f58395517a2e69b9901e6805f6828b029233d0ea0da8b2ab80657450f77
+size 482

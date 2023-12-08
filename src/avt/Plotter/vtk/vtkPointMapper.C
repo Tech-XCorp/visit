@@ -1,35 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include "vtkPointMapper.h"
-
-#include <vtkObjectFactory.h>
-
-//-----------------------------------------------------------------------------
-vtkAbstractObjectFactoryNewMacro(vtkPointMapper)
-
-//-----------------------------------------------------------------------------
-vtkPointMapper::vtkPointMapper()
-{
-  this->ImposterScaleArray = 0;
-  this->ImposterRadius = 0.3f;
-  this->UseImposters = false;
-  this->InterpolateScalarsBeforeMappingOff();
-}
-
-//-----------------------------------------------------------------------------
-vtkPointMapper::~vtkPointMapper()
-{
-  this->SetImposterScaleArray(0);
-}
-
-//-----------------------------------------------------------------------------
-void vtkPointMapper::PrintSelf(ostream& os, vtkIndent indent)
-{
-  this->Superclass::PrintSelf(os, indent);
-
-  os << indent << "Imposter Scale Array: " 
-     << (this->ImposterScaleArray ? this->ImposterScaleArray : "(none)") << "\n";
-  os << indent << "Imposter Radius: " << this->ImposterRadius << "\n";
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:d07ad871befdcbc39e397dfa312bb8238cfd09299890c975e373086b02ae9c30
+size 1211

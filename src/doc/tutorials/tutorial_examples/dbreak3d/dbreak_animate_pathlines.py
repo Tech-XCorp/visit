@@ -1,17 +1,3 @@
-#
-# file: dbreak_animate_pathlines.py
-# info: Source in VisIt's Commands window with pathlines
-#       from dbreak3d_plot_pathlines.py already created.
-#
-
-def animate_pathlines():
-    iatts = IntegralCurveAttributes(1)
-    iatts.cropValue = iatts.Time
-    iatts.cropEndFlag = 1
-    for ts in range(161):
-        tval = ts * .025
-        iatts.cropEnd = tval
-        SetOperatorOptions(iatts)
-
-animate_pathlines()
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:8288aca2750eeffb5cc0ae40a6f1786cfa425e27c4af828533cb5859b7725e5c
+size 414

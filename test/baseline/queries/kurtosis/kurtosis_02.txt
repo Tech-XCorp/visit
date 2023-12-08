@@ -1,1 +1,3 @@
-The skewness of the distribution is -2.29557e-09.
+version https://git-lfs.github.com/spec/v1
+oid sha256:5d3efd593ecbc44fcba84462d46deee6fbca264ad13e7ea77f61509df9fe6c3e
+size 49

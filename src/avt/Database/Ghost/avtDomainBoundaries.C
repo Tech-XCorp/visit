@@ -1,28 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <avtDomainBoundaries.h>
-
-// ****************************************************************************
-//  Constructor:  avtDomainBoundaries::avtDomainBoundaries
-//
-//  Programmer:  Jeremy Meredith
-//  Creation:    October 25, 2001
-//
-// ****************************************************************************
-avtDomainBoundaries::avtDomainBoundaries()
-{
-}
-
-// ****************************************************************************
-//  Destructor:  avtDomainBoundaries::~avtDomainBoundaries
-//
-//  Programmer:  Jeremy Meredith
-//  Creation:    October 25, 2001
-//
-// ****************************************************************************
-avtDomainBoundaries::~avtDomainBoundaries()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:a901a4a709582e443c143aaf924b68005eaf6d3dd8016e8998498086b109087c
+size 939

@@ -1,4 +1,3 @@
-Moment of inertia tensor = 
-(0.666522,	-0.25,	-0.25)
-(-0.25,	0.666481,	-0.25)
-(-0.25,	-0.25,	0.666522)
+version https://git-lfs.github.com/spec/v1
+oid sha256:9ccf4f2ff65039c62552033d82a7fc92041736bf4346699667bcaaa97bcf1b5e
+size 103

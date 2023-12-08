@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <RAGEPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(RAGE,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void RAGEMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:c5c974c0d7474b41b3fd8d9f9352e141bad5248b37149b72f7b90fcece17ff7c
+size 410

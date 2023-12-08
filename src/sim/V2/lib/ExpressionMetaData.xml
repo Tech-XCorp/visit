@@ -1,24 +1,3 @@
-<?xml version="1.0"?>
-  <Attribute name="ExpressionMetaData" purpose="" persistent="false" keyframe="false" exportAPI="" exportInclude="" codefile="ExpressionMetaData.code">
-    <Enum name="VisIt_VarType">
-      VISIT_VARTYPE_SCALAR
-      VISIT_VARTYPE_VECTOR
-      VISIT_VARTYPE_TENSOR
-      VISIT_VARTYPE_SYMMETRIC_TENSOR
-      VISIT_VARTYPE_MATERIAL
-      VISIT_VARTYPE_MATSPECIES
-      VISIT_VARTYPE_LABEL
-      VISIT_VARTYPE_ARRAY
-      VISIT_VARTYPE_MESH
-      VISIT_VARTYPE_CURVE
-    </Enum>
-    <Field name="name" label="name" type="string">
-    </Field>
-    <Field name="definition" label="Definition" type="string">
-    </Field>
-    <Field name="type" label="Variable type" type="enum" subtype="VisIt_VarType">
-      VISIT_VARTYPE_SCALAR
-    </Field>
-    <Function name="simv2_ExpressionMetaData_check" user="true" member="true">
-    </Function>
-  </Attribute>
+version https://git-lfs.github.com/spec/v1
+oid sha256:4e4561579b882728f9359b3b68bd79e0bdf936861b6786d57441c8d487d56e6f
+size 871

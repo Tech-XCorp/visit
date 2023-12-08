@@ -1,6 +1,3 @@
-<!ELEMENT Object (Field*|Object*)*>
-<!ATTLIST Object name CDATA #REQUIRED>
-<!ELEMENT Field (#PCDATA)>
-<!ATTLIST Field name CDATA #REQUIRED>
-<!ATTLIST Field type CDATA #REQUIRED>
-<!ATTLIST Field length CDATA #IMPLIED>
+version https://git-lfs.github.com/spec/v1
+oid sha256:482fa9204e1d371db3f80c1320058f9cc2e035667e6d842b051d4952706ce946
+size 217

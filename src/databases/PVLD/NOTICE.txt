@@ -1,2 +1,3 @@
-This code was contributed to the VisIt project in June 2014 by
-Corvid Technologies.
+version https://git-lfs.github.com/spec/v1
+oid sha256:993a978b75814898e5132c6362bdff39cb003bcc428f58b59001184faedfe767
+size 84

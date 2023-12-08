@@ -1,14 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: DeferExpressionViewerPluginInfo.C
-// ****************************************************************************
-
-#include <DeferExpressionPluginInfo.h>
-#include <DeferExpressionAttributes.h>
-
-VISIT_OPERATOR_PLUGIN_ENTRY_EV(DeferExpression,Viewer)
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:46c6f5fbd2c261dac8d3f373036717b573caab70ec78230cc084893cd4e73303
+size 565

@@ -1,11 +1,3 @@
-/*
- * Stub definitions of the GSSAPI library list, for Unix pterm and
- * any other application that needs the symbols defined but has no
- * use for them.
- */
-
-#include "putty.h"
-
-const int ngsslibs = 0;
-const char *const gsslibnames[1] = { "dummy" };
-const struct keyvalwhere gsslibkeywords[1] = { { "dummy", 0, -1, -1 } };
+version https://git-lfs.github.com/spec/v1
+oid sha256:82e821e016f0991307bea1b712403859926de4d83b0a8a7d9d360ca83bcc036a
+size 324

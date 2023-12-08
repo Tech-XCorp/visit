@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <ShapefilePluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Shapefile,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void ShapefileMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:5a80ace2b008caf021a771bef4d34386a2ad7c58385fb9dbd4557ecef17f17cc
+size 425

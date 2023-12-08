@@ -1,14 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: MetricThresholdViewerPluginInfo.C
-// ****************************************************************************
-
-#include <MetricThresholdPluginInfo.h>
-#include <MetricThresholdAttributes.h>
-
-VISIT_OPERATOR_PLUGIN_ENTRY_EV(MetricThreshold,Viewer)
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:b514b3995a3646b4d957bda17c5c85925c75e9bdd51801ba09e4f285525f4c3a
+size 565

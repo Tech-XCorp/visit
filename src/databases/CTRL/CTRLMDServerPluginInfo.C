@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <CTRLPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(CTRL,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void CTRLMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:db64b99f2a31a4c1ae8238f0db7568fae2b4a522da984014c54735c2f077fa7c
+size 410

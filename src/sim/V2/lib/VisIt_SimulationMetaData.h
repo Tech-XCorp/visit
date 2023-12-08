@@ -1,35 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef VISIT_SIMULATIONMETADATA_H
-#define VISIT_SIMULATIONMETADATA_H
-#include <VisItInterfaceTypes_V2.h>
-
-/* C-callable implementation of front end functions */
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
-int VisIt_SimulationMetaData_alloc(visit_handle*);
-int VisIt_SimulationMetaData_free(visit_handle);
-
-int VisIt_SimulationMetaData_setMode(visit_handle h, int mode);
-int VisIt_SimulationMetaData_setCycleTime(visit_handle h, int cycle, double time);
-int VisIt_SimulationMetaData_addMesh(visit_handle h, visit_handle obj);
-int VisIt_SimulationMetaData_addVariable(visit_handle h, visit_handle obj);
-int VisIt_SimulationMetaData_addMaterial(visit_handle h, visit_handle obj);
-int VisIt_SimulationMetaData_addCurve(visit_handle h, visit_handle obj);
-int VisIt_SimulationMetaData_addExpression(visit_handle h, visit_handle obj);
-int VisIt_SimulationMetaData_addSpecies(visit_handle h, visit_handle obj);
-int VisIt_SimulationMetaData_addGenericCommand(visit_handle h, visit_handle obj);
-int VisIt_SimulationMetaData_addCustomCommand(visit_handle h, visit_handle obj);
-
-int VisIt_SimulationMetaData_addMessage(visit_handle h, visit_handle obj);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:c4a1bcb59e1d3f51b8d897ca14359b4d2c82924f70cdbaa3a3d931ae8bec7389
+size 1400

@@ -1,1 +1,3 @@
-echo "yes" | /bin/bash build_visit_develop --required --optional --mesagl --mpich --uintah --no-icet --no-moab --no-pidx --no-hdf4 --no-visit --thirdparty-path /home/visit/third-party --makeflags -j4; echo "yes" | /bin/bash build_visit_develop --required --optional --mesagl --mpich --uintah --no-icet --no-moab --no-pidx --no-hdf4 --no-visit --thirdparty-path /home/visit/third-party --makeflags -j4; python build_visit_docker_cleanup.py
+version https://git-lfs.github.com/spec/v1
+oid sha256:0421b9e0e643daa5de73f05d3882aea4c56978885c498eba5db2df0ea32628aa
+size 439

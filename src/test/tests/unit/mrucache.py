@@ -1,23 +1,3 @@
-# ----------------------------------------------------------------------------
-#  CLASSES: nightly
-#
-#  Test Case:  mrucache.py
-#
-#  Tests:      MRUCache_test unit test
-#
-#  Mark C. Miller, Tue Jan 11 10:19:23 PST 2011
-#
-#  Modifications:
-#    Kathleen Biagas, Mon Oct 26, 2020
-#    Retrieve the correct path on Windows.
-#
-# ----------------------------------------------------------------------------
-import os, sys
-
-if sys.platform.startswith("win"):
-    tapp = visit_bin_path("MRUCache_test.exe")
-else:
-    tapp = visit_bin_path("..","exe","MRUCache_test")
-res = sexe(tapp,ret_output=True)
-TestText("mrucache", res["output"])
-Exit()
+version https://git-lfs.github.com/spec/v1
+oid sha256:12cc2ced0210d3783fbc7f1bd92cadb487be6b50dd1ca9a3febc2999d3cffaca
+size 636

@@ -1,11 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="STL" type="database" label="STL" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STSD" haswriter="true" hasoptions="true" filePatternsStrict="false" opensWholeDirectory="false">
-    <FilePatterns>
-      *.stl
-    </FilePatterns>
-    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="">
-    </Attribute>
-    <LIBS>
-      vtkIOGeometry
-    </LIBS>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:b7c627d11daade6bf33302d74f373f67ee2eae51dd7f40c37cb7cf953b388ca3
+size 510

@@ -1,8 +1,3 @@
-
-A:  earth.nc
-mesh1350x675 
-Point: <671, 617>
-Node:  833621
-Incident Zones:  833004  831655  833005  831656  
-population:  <nodal> = 0
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:3636cc5712837dafcf7b267acdba95c792fbf98118710ee488c54ab6dab4fa48
+size 136

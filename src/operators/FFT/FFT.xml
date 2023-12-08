@@ -1,8 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="FFT" type="operator" label="FFT" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false"  category="Transforms">
-    <Attribute name="FFTAttributes" purpose="This class contains attributes for the FFT operator." persistent="true" keyframe="true" exportAPI="" exportInclude="">
-      <Field name="dummy" label="Dummy attribute" type="int">
-        0
-      </Field>
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:1227a51207a4c58b0ecf22c81867eb4d40597c584fd98088d3be1b6579fe14db
+size 487

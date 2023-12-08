@@ -1,5 +1,3 @@
-activeSource = "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbB00.pdb"
-activeTimeSlider = 2
-timeSliders = ("A_and_B", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbA00.pdb", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbB00.pdb")
-timeSliderCurrentStates = (19, 9, 5)
-animationMode = 2
+version https://git-lfs.github.com/spec/v1
+oid sha256:d39a64441767fab1fc57c8b2e97e063468ca9a4d44b1734305c599aea9b07599
+size 284

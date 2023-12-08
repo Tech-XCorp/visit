@@ -1,34 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef XMLDOCUMENT_H
-#define XMLDOCUMENT_H
-
-#include <qstring.h>
-class Plugin;
-class Attribute;
-
-// ****************************************************************************
-//  Class:  XMLDocument
-//
-//  Purpose:
-//    Encapsulates a plugin/attribute XML file.
-//
-//  Programmer:  Jeremy Meredith
-//  Creation:    October 17, 2002
-//
-// ****************************************************************************
-class XMLDocument
-{
-  public:
-    QString     filename;
-    QString     docType;
-    Plugin     *plugin;
-    Attribute  *attribute;
-  public:
-    void open(const QString &file);
-    void save(const QString &file);
-};
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:00bc75a51413d0b6775af39724e22b0b546da3a330f6745546c0d918c9736d85
+size 868

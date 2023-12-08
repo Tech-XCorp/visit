@@ -1,18 +1,3 @@
-# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-# Project developers.  See the top-level LICENSE file for dates and other
-# details.  No copyright assignment is required to contribute to VisIt.
-
-###############################################################################
-# file: __init__.py
-# Purpose: Main init for the pyside_pysideviewer module.
-#
-# Programmer: Cyrus Harrison
-# Creation: Tue Apr  3 13:40:18 PDT
-#
-#
-# Modifications:
-#
-#
-###############################################################################
-
-from pyside_gui import *
+version https://git-lfs.github.com/spec/v1
+oid sha256:4524d2d9e850a03e25f32277a031b810061b3637241c804a24ed147af82b9343
+size 576

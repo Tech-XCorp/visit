@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <HexPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Hex,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void HexMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:9602e4a39e4457ebaaea6edeb67b4d3ba9b53c6db0ee8abddd5993c81106635a
+size 407

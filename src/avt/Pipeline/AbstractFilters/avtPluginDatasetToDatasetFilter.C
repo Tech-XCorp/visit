@@ -1,15 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <avtPluginDatasetToDatasetFilter.h>
-
-avtPluginDatasetToDatasetFilter::avtPluginDatasetToDatasetFilter() : avtDatasetToDatasetFilter(), avtPluginFilter()
-{
-    // Implementation needed for windows.
-}
-
-avtPluginDatasetToDatasetFilter::~avtPluginDatasetToDatasetFilter()
-{
-    // Implementation needed for windows.
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:ba878e4ab4c43a1399c915248ab2e8375b222700fa4fd6e0d613f16a3ec79ed0
+size 547

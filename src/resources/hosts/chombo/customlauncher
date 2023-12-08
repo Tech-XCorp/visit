@@ -1,20 +1,3 @@
-###############################################################################
-# Class: ANAGLauncher
-#
-# Purpose:    Custom launcher for ANAG
-#
-# Programmer: Gunther H. Weber
-# Date:       Wed Dec  5 18:58:17 PST 2012
-#
-# Modifications:
-#
-###############################################################################
-
-class ANAGLauncher(MainLauncher):
-    def __init__(self):
-        super(ANAGLauncher, self).__init__()
-        self.xterm = ["xterm", "-iconic"]
-
-# Launcher creation function
-def createlauncher():
-    return ANAGLauncher()
+version https://git-lfs.github.com/spec/v1
+oid sha256:59125a2937d857d078c6248c072b2f5da510f1e4f59d349cef0b8b214e34d74b
+size 544

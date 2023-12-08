@@ -1,8 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="Decimate" type="operator" label="Decimate" version="1.0" enabled="false" mdspecificcode="false" onlyengine="false" noengine="false" category="Geometry">
-    <Attribute name="DecimateAttributes" purpose="This class contains attributes for the decimate operator." persistent="true">
-      <Field name="target" label="Target Reduction " type="double">
-        0.100000
-      </Field>
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:adc2a566e98e9342a532971abd0f5028bb04f6b195886fc0f8e6850289e0e14e
+size 448

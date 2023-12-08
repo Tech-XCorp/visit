@@ -1,6 +1,3 @@
-localhost:VISIT_TOP_DIR/test/reopen_wave.visit has 42 states
-activeSource = "localhost:VISIT_TOP_DIR/test/reopen_wave.visit"
-activeTimeSlider = 0
-timeSliders = ("localhost:VISIT_TOP_DIR/test/reopen_wave.visit")
-timeSliderCurrentStates = (41)
-animationMode = 2
+version https://git-lfs.github.com/spec/v1
+oid sha256:434595f8f8194240a64c2d723500b260ca717c12412c826d44d73f692f8843b8
+size 260

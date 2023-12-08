@@ -1,29 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ************************************************************************* //
-//                               avtPixelizer.C                              //
-// ************************************************************************* //
-
-#include <avtPixelizer.h>
-
-
-// ****************************************************************************
-//  Method: avtPixelizer destructor
-//
-//  Purpose:
-//      Defines the destructor.  Note: this should not be inlined in the header
-//      because it causes problems for certain compilers.
-//
-//  Programmer: Hank Childs
-//  Creation:   February 5, 2004
-//
-// ****************************************************************************
-
-avtPixelizer::~avtPixelizer()
-{
-    ;
-}
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:8700b945264d5ce4f8ec50d3cb3cf2d8c5c4f00b172bd19ea5641ecff01f8ba6
+size 953

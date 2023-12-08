@@ -1,26 +1,3 @@
-# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-# Project developers.  See the top-level LICENSE file for dates and other
-# details.  No copyright assignment is required to contribute to VisIt.
-
-#****************************************************************************
-# Modifications:
-#   Kathleen Biagas, Tues Oct 1 09:33:47 MST 2013
-#   Removed VISIT_MSVC_VERSION from windows handling.
-#
-#****************************************************************************/
-
-# Use the MDSPLUS_DIR hint from the config-site .cmake file 
-
-INCLUDE(${VISIT_SOURCE_DIR}/CMake/SetUpThirdParty.cmake)
-
-IF (WIN32)
-    SET_UP_THIRD_PARTY(MDSPLUS lib include MdsLib)
-ELSE (WIN32)
-    IF("${VISIT_CMAKE_PLATFORM}" STREQUAL "Linux")
-        # Linux requires librt to resolve "clock_gettime"
-        # add this as a general dep:
-        SET(MDSPLUS_LIBDEP /usr/lib rt "${MDSPLUS_LIBDEP}")
-    ENDIF("${VISIT_CMAKE_PLATFORM}" STREQUAL "Linux")
-    SET_UP_THIRD_PARTY(MDSPLUS lib include MdsLib_client MdsIpShr MdsShr)
-ENDIF (WIN32)
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:6f985f311e41b228c1ca46590889c4e36c21ec8ce6c5e6fcf839cc5d84a84703
+size 1046

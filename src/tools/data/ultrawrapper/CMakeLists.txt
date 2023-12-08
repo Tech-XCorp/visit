@@ -1,10 +1,3 @@
-INSTALL(FILES UltraCurve.py  UltraGrammar.py  ultraparse.py
-    DESTINATION ${VISIT_INSTALLED_VERSION}/ultrawrapper
-    PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ GROUP_WRITE WORLD_READ 
-)
-
-IF (WIN32)
-    FILE(COPY UltraCurve.py UltraGrammar.py ultraparse.py
-         DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/ultrawrapper)
-
-ENDIF (WIN32)
+version https://git-lfs.github.com/spec/v1
+oid sha256:df26d325890ef451f734fe5dac75eba94cf21acd4ad64379b08c3cfd5ff1c753
+size 346

@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <avtDatasetToDO_REPL_STRINGFilter.h>
-
-avtDatasetToDO_REPL_STRINGFilter::avtDatasetToDO_REPL_STRINGFilter()
-{
-}
-
-avtDatasetToDO_REPL_STRINGFilter::~avtDatasetToDO_REPL_STRINGFilter()
-{
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:13a3fe485a94c356d0fafdc958e062c018ffc68054b3787342236655132703bb
+size 419

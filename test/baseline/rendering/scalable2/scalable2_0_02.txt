@@ -1,10 +1,3 @@
-File size for TestNetworkReset0001.png greater than zero.
-File size for TestNetworkReset0002.png greater than zero.
-File size for TestNetworkReset0003.png greater than zero.
-File size for TestNetworkReset0004.png greater than zero.
-File size for TestNetworkReset0005.png greater than zero.
-File size for TestNetworkReset0006.png greater than zero.
-File size for TestNetworkReset0007.png greater than zero.
-File size for TestNetworkReset0008.png greater than zero.
-File size for TestNetworkReset0009.png greater than zero.
-File size for TestNetworkReset0010.png greater than zero.
+version https://git-lfs.github.com/spec/v1
+oid sha256:6644857f7c460ace8aca0985db02daee043721dbe6393478a49c4df49bdcf3d4
+size 580

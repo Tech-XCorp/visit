@@ -1,8 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="CTRL" type="database" label="CTRL" version="1.0" enabled="true" mdspecificcode="false" onlyengine="false" noengine="false" dbtype="STSD" haswriter="false" hasoptions="false">
-    <FilePatterns>
-      *.ctrl
-    </FilePatterns>
-    <Attribute name="" purpose="" persistent="true" exportAPI="" exportInclude="">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:d775287aed6618fdd56fc8ec3b642be270d82988dea2fb993c49ea9aecdd8cec
+size 377

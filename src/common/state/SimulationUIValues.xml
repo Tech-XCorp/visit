@@ -1,17 +1,3 @@
-<?xml version="1.0"?>
-  <Attribute name="SimulationUIValues" purpose="Contains UI values from a simulation." persistent="false" keyframe="true" exportAPI="STATE_API" exportInclude="state_exports.h">
-    <Field name="host" label="host" type="string">
-    </Field>
-    <Field name="sim" label="sim" type="string">
-    </Field>
-    <Field name="name" label="name" type="string">
-    </Field>
-    <Field name="ivalue" label="int value" type="int">
-      0
-    </Field>
-    <Field name="svalue" label="string value" type="string">
-    </Field>
-    <Field name="enabled" label="enabled" type="bool">
-      true
-    </Field>
-  </Attribute>
+version https://git-lfs.github.com/spec/v1
+oid sha256:23937fafa0577c89490fe54a030384386291f22aa6bcb027c36a799b83f250dc
+size 633

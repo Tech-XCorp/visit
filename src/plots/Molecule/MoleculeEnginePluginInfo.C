@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: MoleculeEnginePluginInfo.C
-// ****************************************************************************
-
-#include <MoleculePluginInfo.h>
-#include <avtMoleculePlot.h>
-
-VISIT_PLOT_PLUGIN_ENTRY_EV(Molecule,Engine)
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:9b385f4052ab0e1a16c570dfe1fa60862e95f627bc76f14d59818f23f7c002b9
+size 529

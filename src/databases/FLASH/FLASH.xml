@@ -1,14 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="FLASH" type="database" label="FLASH" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STMD" haswriter="false" hasoptions="true" filePatternsStrict="false">
-    <CXXFLAGS>
-      ${HDF5_INCLUDE_DIR}
-    </CXXFLAGS>
-    <LDFLAGS>
-      ${HDF5_LIBRARY_DIR}
-    </LDFLAGS>
-    <LIBS>
-      ${HDF5_LIB} 
-    </LIBS>
-    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:c7c6cb9d8c5728e98059f0af9a8799ba70c95bb8f5a1e8f0f0a2c8546a2e1571
+size 547

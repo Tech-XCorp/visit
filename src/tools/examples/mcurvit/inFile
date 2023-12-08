@@ -1,4 +1,3 @@
-newplot u
-newplot v
-save format = png filename = "outFrames"
-quit
+version https://git-lfs.github.com/spec/v1
+oid sha256:ff7b0d4a7ea5ff42e94ddac28e155e12437ddf2944cc64fb089e4ee3c517fb63
+size 66

@@ -1,29 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef COLORS_H
-#define COLORS_H
-
-// ****************************************************************************
-//  Purpose:
-//    Some ANSI strings to make pretty colors.
-//
-//  Programmer:  Jeremy Meredith
-//  Creation:    April  2, 2002
-//
-// ****************************************************************************
-
-#define TermReset      "\033[0m"
-#define TermBold       "\033[1m"
-#define TermUnderline  "\033[4m"
-#define TermBlack      "\033[30m"
-#define TermRed        "\033[31m"
-#define TermGreen      "\033[32m"
-#define TermBrown      "\033[33m"
-#define TermBlue       "\033[34m"
-#define TermMagenta    "\033[35m"
-#define TermCyan       "\033[36m"
-#define TermWhite      "\033[37m"
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:4f19152c04ac1cb5bad16b76f01dd1597d27bfb82c79350f5a00cd56cdd85c3e
+size 930

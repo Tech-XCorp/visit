@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: LabelEnginePluginInfo.C
-// ****************************************************************************
-
-#include <LabelPluginInfo.h>
-#include <avtLabelPlot.h>
-
-VISIT_PLOT_PLUGIN_ENTRY_EV(Label,Engine)
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:cc6cc95a1413f83bb1f9043cdc8f5f1a035bf1ad6351a1dc8cf2486ac75d9530
+size 517

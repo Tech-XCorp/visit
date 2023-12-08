@@ -1,16 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <OVERFLOWPluginInfo.h>
-
-#ifdef OVERFLOW
-#undef OVERFLOW
-#endif
-VISIT_DATABASE_PLUGIN_ENTRY(OVERFLOW,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void OVERFLOWMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:f49b4b09164f8d0b2355321955b704e4620ccff716f14df49bf0d30393729a6f
+size 461

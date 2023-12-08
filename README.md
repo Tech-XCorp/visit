@@ -1,29 +1,3 @@
-
-![GitHub commit activity](https://img.shields.io/github/commit-activity/m/visit-dav/visit.svg) ![GitHub contributors](https://img.shields.io/github/contributors-anon/visit-dav/visit.svg)
-
-# VisIt
-
-Source code repository for the VisIt Scientific Visualization and Data Analysis Application
-
-[Project Website](https://visit-dav.github.io/visit-website/) | [Nightly Test Status](https://visit-dav.github.io/dashboard/)
-
-
-##  Documentation
-
-[Users Manuals](https://visit-sphinx-github-user-manual.readthedocs.io/en/develop) [![Documentation Status](https://readthedocs.org/projects/visit-sphinx-github-user-manual/badge/?version=develop)](https://visit-sphinx-github-user-manual.readthedocs.io/en/develop/?badge=develop)
-
-##  Developer Resources
-
-* [Github Development Info](https://visit-sphinx-github-user-manual.readthedocs.io/en/develop/dev_manual/GitHub.html)
-* [Newly Submitted Issues](https://github.com/visit-dav/visit/issues?utf8=✓&q=is%3Aissue+is%3Aopen+-label%3Areviewed)
-
-
-## License
-
-VisIt is distributed under the terms of the [BSD-3 License](LICENSE)
-
-All new contributions must be made under the [BSD-3 License](LICENSE)
-
-See [LICENSE](LICENSE) and [NOTICE](NOTICE) for details.
-
-LLNL-CODE-793424
+version https://git-lfs.github.com/spec/v1
+oid sha256:5d9184b8966871f8b738aeda3c949bc93b18f5c88070b220ec83a760b7103d4b
+size 1212

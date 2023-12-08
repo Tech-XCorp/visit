@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <SpheralPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Spheral,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void SpheralMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:f29cfd40711547305baf523d2ae546d67f06eee72f6e5206fe1a1e235a7459e5
+size 419

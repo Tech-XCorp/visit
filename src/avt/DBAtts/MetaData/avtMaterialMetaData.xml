@@ -1,18 +1,3 @@
-<?xml version="1.0"?>
-  <Attribute name="avtMaterialMetaData" purpose="Contains material metadata attributes" persistent="false" keyframe="true" exportAPI="DBATTS_API" exportInclude="dbatts_exports.h" codefile="avtMaterialMetaData.code" baseClass="avtBaseVarMetaData">
-    <Field name="numMaterials" label="Number of materials" type="int" access="public">
-      0
-    </Field>
-    <Field name="materialNames" label="Material names" type="stringVector" access="public">
-    </Field>
-    <Field name="colorNames" label="Material color names" type="stringVector" access="public">
-    </Field>
-    <Function name="avtMaterialMetaData2" user="true" member="true">
-    </Function>
-    <Function name="avtMaterialMetaData3" user="true" member="true">
-    </Function>
-    <Function name="avtMaterialMetaData4" user="true" member="true">
-    </Function>
-    <Function name="Print" user="true" member="true">
-    </Function>
-  </Attribute>
+version https://git-lfs.github.com/spec/v1
+oid sha256:25bf58ed12497f05e992a7d4af3f91ef59b1282623cf8c9e3264c841b0bc7bf1
+size 930

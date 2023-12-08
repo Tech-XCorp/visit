@@ -1,26 +1,3 @@
-# ----------------------------------------------------------------------------
-#  CLASSES: nightly
-#
-#  Test Case:  utility.py
-#
-#  Tests:      Utility_test unit test
-#
-#  Mark C. Miller, Mon Dec  1 23:55:05 PST 2014
-#
-#  Modifications:
-#    Kathleen Biagas, Mon Oct 26, 2020
-#    Retrieve correct path on Windows.
-#
-# ----------------------------------------------------------------------------
-import os, sys
-
-if sys.platform.startswith("win"):
-    tapp = visit_bin_path("Utility_test.exe")
-else:
-    tapp = visit_bin_path("..","exe","Utility_test")
-res = sexe(tapp,ret_output=True)
-if res["return_code"] == 0:
-    excode = 111
-else:
-    excode = 113
-Exit(excode)
+version https://git-lfs.github.com/spec/v1
+oid sha256:dbc971af59c950e719e3987c88a2c545758cf616e561f399a2f6e02c7f13cf4a
+size 666

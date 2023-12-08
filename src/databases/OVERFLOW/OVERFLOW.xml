@@ -1,9 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="OVERFLOW" type="database" label="OVERFLOW" version="1.0" enabled="true" mdspecificcode="false" dbtype="STMD" haswriter="false">
-    <FilePatterns>
-      *.dat
-      *.save
-    </FilePatterns>
-    <Attribute name="" purpose="" persistent="false" exportAPI="" exportInclude="">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:d5ef6d182b71582ca9265ec62351a09b0a5e382def11d0cd4b024af6d8e148c3
+size 343

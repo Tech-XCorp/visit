@@ -1,20 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="KullLite" label="KullLite" type="database" dbtype="STMD" version="1.0">
-    <FilePatterns>
-       *.pdb
-       *.mkf
-    </FilePatterns>
-    <CXXFLAGS>
-       ${PDB_INCLUDE_DIR}
-    </CXXFLAGS>
-    <LDFLAGS> 
-       ${PDB_LIBRARY_DIR}
-    </LDFLAGS>
-    <LIBS>
-       ${PDB_LIB}
-    </LIBS>
-    <Attribute name="" purpose="" persistent="true" exportAPI="" exportInclude="" codefile="KullLite.code">
-      <Function name="KullLiteCommonPluginInfo::SetupDatabase" user="false" member="true">
-      </Function>
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:ea7001c773171ef6e9a80086fce2ceec9a289a25bc95d773e1067c565a6d5a8b
+size 575

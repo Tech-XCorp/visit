@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <Vis5DPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Vis5D,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void Vis5DMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:cc4b7e00627a2a953df15defb11b432419d97de84379c207a2cbcc32345f37c0
+size 413

@@ -1,18 +1,3 @@
-Function: SetFrom
-Declaration: void SetFrom(const std::vector<const VisualCueInfo*>& cues);
-Definition:
-// ****************************************************************************
-// Method: VisualCueList::SetFrom
-//
-// Purpose: Build the VisualCueList AttributeGroupVector directly from
-//          a vector of VisualCueInfo pointers
-//
-// ****************************************************************************
-void
-VisualCueList::SetFrom(const std::vector<const VisualCueInfo*>& cueVec)
-{
-    ClearCues();
-    for (size_t i = 0; i < cueVec.size(); i++)
-        AddCues(*(cueVec[i]));
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:e78fe279bcb2fe18d0fb85e631fb8208eef725d9fe232a6299a88414fe92d4ee
+size 599

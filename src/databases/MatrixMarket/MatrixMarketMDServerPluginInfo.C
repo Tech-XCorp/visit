@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <MatrixMarketPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(MatrixMarket,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void MatrixMarketMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:428b04c67019d3e83912bd310cd50949260abbbb5583460fef2c71226534ab4b
+size 434

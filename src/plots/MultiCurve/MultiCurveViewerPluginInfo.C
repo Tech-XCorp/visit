@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: MultiCurveViewerPluginInfo.C
-// ****************************************************************************
-
-#include <MultiCurvePluginInfo.h>
-
-VISIT_PLOT_PLUGIN_ENTRY_EV(MultiCurve,Viewer)
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:b1ba457c2659fe732055cb909a36d1d2c0c52e441d096519afd12b282c4def60
+size 507

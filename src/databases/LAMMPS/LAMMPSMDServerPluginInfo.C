@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <LAMMPSPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(LAMMPS,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void LAMMPSMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:1623112a3be6849e111bb8d56cc0bda981c376000d6d8e362959189bee2ec78d
+size 416

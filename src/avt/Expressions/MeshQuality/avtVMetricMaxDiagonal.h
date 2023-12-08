@@ -1,31 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ************************************************************************* //
-//                       avtVMetricMaxDiagonal.h                             //
-// ************************************************************************* //
-
-#ifndef AVT_VMETRIC_MAX_DIAGONAL_H
-#define AVT_VMETRIC_MAX_DIAGONAL_H
-#include <expression_exports.h>
-#include <avtVerdictExpression.h>
-
-// ****************************************************************************
-//  Class: avtVMetricMaxDiagonal
-//
-//  Purpose:
-//    This metric measures max diagonal length.
-//
-//  Programmer: Sean Ahern
-//  Creation:   June 24, 2009
-//
-// ****************************************************************************
-
-class EXPRESSION_API avtVMetricMaxDiagonal : public avtVerdictExpression
-{
-    public:
-        double Metric(double coords[][3], int type);
-};
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:b4894e4645173fec6fda7d679c9be568838ae04e5a9b40d8751eb379924ff014
+size 1074

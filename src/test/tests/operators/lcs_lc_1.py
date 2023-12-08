@@ -1,16 +1,3 @@
-# ----------------------------------------------------------------------------
-#  CLASSES: nightly
-#
-#  Test Case:  lcs_lc_1.py
-#
-#  Tests:      operator   - LCS
-#
-#  Programmer: Allen Sanderson
-#  Date:       August 25, 2015
-# ----------------------------------------------------------------------------
-
-Source(tests_path("operators", "lcs_operator_main"))
-
-LCS_operator("LimitCycle", "ftle_double_gyre_1_domain")
-
-Exit()
+version https://git-lfs.github.com/spec/v1
+oid sha256:244a2f5222a13710345ba2a2312ea0dfeefe83126348f07eac71cf840a36986e
+size 424

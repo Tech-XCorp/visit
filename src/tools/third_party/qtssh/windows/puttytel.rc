@@ -1,11 +1,3 @@
-#include "rcstuff.h"
-
-#define APPNAME "PuTTYtel"
-#define APPDESC "Telnet and Rlogin client"
-
-#include "win_res.rc2"
-
-#ifndef NO_MANIFESTS
-/* FIXME */
-1 RT_MANIFEST "putty.mft"
-#endif /* NO_MANIFESTS */
+version https://git-lfs.github.com/spec/v1
+oid sha256:ab813c9b04738dbd2363398d176fc2eaf43d254029c047e7bb38d8bf55ca64d9
+size 202

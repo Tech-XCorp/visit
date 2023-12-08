@@ -1,29 +1,3 @@
-<?xml version="1.0"?>
-  <Attribute name="AnnotationObjectList" purpose="Contains a list of AnnotationObjectAttributes" codefile="AnnotationObjectList.code" persistent="true" exportAPI="STATE_API" exportInclude="state_exports.h">
-    <Field name="annotation" label="Annotation" type="attVector" subtype="AnnotationObject">
-    </Field>
-    <Function name="ProcessOldVersions" user="true" member="true">
-    </Function>
-    <Function name="RemoveAnnotation2" user="true" member="true">
-    </Function>
-    <Function name="GetNewObjectName" user="true" member="true">
-    </Function>
-    <Function name="IndexForName" user="true" member="true">
-    </Function>
-    <Function name="GetAnnotation2" user="true" member="true">
-    </Function>
-    <Function name="SetTimeSliderOptions" user="true" member="true">
-    </Function>
-    <Function name="SetText2DOptions" user="true" member="true">
-    </Function>
-    <Function name="SetText3DOptions" user="true" member="true">
-    </Function>
-    <Function name="SetLine2DOptions" user="true" member="true">
-    </Function>
-    <Function name="SetLine3DOptions" user="true" member="true">
-    </Function>
-    <Function name="SetImageOptions" user="true" member="true">
-    </Function>
-    <Function name="SetLegendOptions" user="true" member="true">
-    </Function>
-  </Attribute>
+version https://git-lfs.github.com/spec/v1
+oid sha256:e682f60637516d2025220e3d6891bb782a385103a7253a90af3f0177d9ff483a
+size 1322

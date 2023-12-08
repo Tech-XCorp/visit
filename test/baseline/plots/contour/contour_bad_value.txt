@@ -1,2 +1,3 @@
-Plot Completed: True
-Number of compute engines: 1
+version https://git-lfs.github.com/spec/v1
+oid sha256:7d056f6fa2840d7c34502a62a10ea9f98973909404d3648b37e9c36c7c1b45c3
+size 50

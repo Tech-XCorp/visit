@@ -1,23 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef VISIT_COMMANDMETADATA_H
-#define VISIT_COMMANDMETADATA_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-int VisIt_CommandMetaData_alloc(visit_handle *obj);
-int VisIt_CommandMetaData_free(visit_handle obj);
-int VisIt_CommandMetaData_setName(visit_handle h, const char *);
-int VisIt_CommandMetaData_getName(visit_handle h, char **);
-int VisIt_CommandMetaData_setEnabled(visit_handle h, int);
-int VisIt_CommandMetaData_getEnabled(visit_handle h, int*);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:fea2b4ccd531df85fff99d128701c34060d4e15c2e7807cf4391678c6cfae394
+size 712

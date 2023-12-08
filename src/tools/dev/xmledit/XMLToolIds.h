@@ -1,16 +1,3 @@
-#ifndef XMLTOOL_IDS_H
-#define XMLTOOL_IDS_H
-
-enum
-{
-    ID_XML2ATTS = 0,
-    ID_XML2JAVA = 1,
-    ID_XML2PYTHON = 2,
-    ID_XML2WINDOW = 3,
-    ID_XML2CMAKE = 4,
-    ID_XML2INFO = 5,
-    ID_XML2AVT = 6,
-    ID_XML_MAX = 7
-};
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:ae035819d0df4546103d8e857b9f915e9f23a9d1b019af390576352f46c1b983
+size 233

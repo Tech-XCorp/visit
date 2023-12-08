@@ -1,7 +1,3 @@
-my: "data"
-a: 
-  b: 
-    c: "d"
-    e: 64.0
-
-total bytes: 15
+version https://git-lfs.github.com/spec/v1
+oid sha256:5b88ff7acd13f421f9509926774f10f93408b924ef0ea4494a8f7d196a46e389
+size 61

@@ -1,8 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="Xmdv" type="database" label="Xmdv" version="1.0" enabled="true" mdspecificcode="false" onlyengine="false" noengine="false" dbtype="STSD" haswriter="true" hasoptions="true">
-    <FilePatterns>
-      *.okc
-    </FilePatterns>
-    <Attribute name="" purpose="" persistent="false" exportAPI="" exportInclude="">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:2552685b75620e25e17060ee1a1888e7085d0a5c9f3d2176cd4ac398010d0a25
+size 375

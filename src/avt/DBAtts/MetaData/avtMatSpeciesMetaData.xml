@@ -1,13 +1,3 @@
-<?xml version="1.0"?>
-  <Attribute name="avtMatSpeciesMetaData" purpose="Contains material species metadata attributes" persistent="false" keyframe="true" exportAPI="DBATTS_API" exportInclude="dbatts_exports.h" codefile="avtMatSpeciesMetaData.code">
-    <Field name="numSpecies" label="Number of species" type="int" access="public">
-      0
-    </Field>
-    <Field name="speciesNames" label="Species names" type="stringVector" access="public">
-    </Field>
-    <Field name="validVariable" label="Valid variable" type="bool" access="public">
-      true
-    </Field>
-    <Function name="avtMatSpeciesMetaData2" user="true" member="true">
-    </Function>
-  </Attribute>
+version https://git-lfs.github.com/spec/v1
+oid sha256:3b35dade53293312b188a13e6699fff4603b3561e51791485ebcd657d3711729
+size 667

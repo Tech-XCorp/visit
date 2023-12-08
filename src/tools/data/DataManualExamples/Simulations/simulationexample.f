@@ -1,26 +1,3 @@
-c-----------------------------------------------------------------
-c simulationarguments : The routine handles command line arguments
-c-----------------------------------------------------------------
-      subroutine simulationarguments()
-      implicit none
-      character (len=80) str
-      integer err, i, N, len
-      integer visitsetoptions, visitsetdirectory
-      N = iargc()
-      i = 1
-      len = 80
-5     if (i.le.N) then
-          call getarg(i, str)
-          if(str.eq."-dir") then
-              call getarg(i+1, str)
-              err = visitsetdirectory(str, len)
-              i = i + 1
-          elseif(str.eq."-options") then
-              call getarg(i+1, str)
-              err = visitsetoptions(str, len)
-              i = i + 1
-          endif
-          i = i + 1
-          goto 5
-      endif
-      end
+version https://git-lfs.github.com/spec/v1
+oid sha256:24fae9f4cb42b0f3f4d935ad63e4a52915354d47d0e0ec30f04a188004eb623a
+size 828

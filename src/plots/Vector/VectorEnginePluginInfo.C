@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: VectorEnginePluginInfo.C
-// ****************************************************************************
-
-#include <VectorPluginInfo.h>
-#include <avtVectorPlot.h>
-
-VISIT_PLOT_PLUGIN_ENTRY_EV(Vector,Engine)
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:9cbfeb592eaf8724c057315cf80261aab69a54a1bf0082b4c1ec2d8d71b6df48
+size 521

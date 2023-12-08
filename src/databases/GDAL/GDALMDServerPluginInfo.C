@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <GDALPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(GDAL,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void GDALMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:db5fbdc030b17bc71b509fee1b0dde2a73ef2f374f954ab26f7229769d049507
+size 410

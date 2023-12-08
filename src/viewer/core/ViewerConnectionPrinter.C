@@ -1,20 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <ViewerConnectionPrinter.h>
-#include <Connection.h>
-
-ViewerConnectionPrinter::ViewerConnectionPrinter() : conn(NULL)
-{
-}
-
-ViewerConnectionPrinter::~ViewerConnectionPrinter()
-{
-}
-
-void
-ViewerConnectionPrinter::SetConnection(Connection *c)
-{
-    conn = c;
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:1a87d4381c3139800c77dd9d2c7ded57ed6fe1d36073427973a371add0aa099f
+size 489

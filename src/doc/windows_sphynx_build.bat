@@ -1,1 +1,3 @@
-python C:\\A_VisIt\\trunk\\windowsbuild\\msvc2013-x64\\python\\2.7.11\\scripts\\sphinx-build.exe -b html . _build
+version https://git-lfs.github.com/spec/v1
+oid sha256:a6f8d34df600f29c71f9a1d2e66b1c45795c3a9eb5a0df55d4818e7d2a390a67
+size 114

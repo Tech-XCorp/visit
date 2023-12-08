@@ -1,6 +1,3 @@
-localhost:VISIT_TOP_DIR/test/reopen_samrai.visit has 6 states
-activeSource = "localhost:VISIT_TOP_DIR/test/reopen_samrai.visit"
-activeTimeSlider = 0
-timeSliders = ("localhost:VISIT_TOP_DIR/test/reopen_samrai.visit")
-timeSliderCurrentStates = (5)
-animationMode = 2
+version https://git-lfs.github.com/spec/v1
+oid sha256:2f1cdbe8e5bc65c03440143c1495ff106d03df1fb8c16d2c9f5762f83a6f7b76
+size 264

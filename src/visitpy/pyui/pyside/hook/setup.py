@@ -1,34 +1,3 @@
-# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-# Project developers.  See the top-level LICENSE file for dates and other
-# details.  No copyright assignment is required to contribute to VisIt.
-
-###############################################################################
-# file: setup.py
-# Purpose: disutils setup for pyside_hook module.
-#
-# Programmer: Cyrus Harrison
-# Creation: Tue Apr  3 13:40:18 PDT
-#
-#
-# Modifications:
-#
-#
-###############################################################################
-
-import sys
-from distutils.core import setup
-from distutils.command.install_egg_info import install_egg_info
-
-# disable install_egg_info
-class SkipEggInfo(install_egg_info):
-    def run(self):
-        pass
-
-
-setup (name = 'pyside_hook',
-       description = 'pyside_hook',
-       package_dir = {'pyside_hook':'py_src'},
-       packages=['pyside_hook'],
-       cmdclass={'install_egg_info': SkipEggInfo})
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:95efe6ebc006992efcfa143cc86c595080199d7ed86b5d6a973f48d51ae26caa
+size 946

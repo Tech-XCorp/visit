@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: SpreadsheetEnginePluginInfo.C
-// ****************************************************************************
-
-#include <SpreadsheetPluginInfo.h>
-#include <avtSpreadsheetPlot.h>
-
-VISIT_PLOT_PLUGIN_ENTRY_EV(Spreadsheet,Engine)
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:a86ff87052a2dcc99d68360f0ed7aad16bda5f3fc13b3b3cb4e9c3c583d41ab1
+size 541

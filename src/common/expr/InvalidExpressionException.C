@@ -1,25 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ************************************************************************ //
-//                       InvalidExpressionException.C                       //
-// ************************************************************************ //
-
-#include <InvalidExpressionException.h>
-
-using namespace std;
-
-// ****************************************************************************
-//  Method: InvalidExpressionException constructor
-//
-//  Programmer: Jeremy Meredith
-//  Creation:   August 15, 2003
-//
-// ****************************************************************************
-InvalidExpressionException::InvalidExpressionException(string reason)
-{
-    msg = "The expression was invalid: " + reason;
-}
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:1fe82d6a44a03e6f6bffb6f44af1c5ca343450b407ffc986bfcbed0c5667f9ff
+size 933

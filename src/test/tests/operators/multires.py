@@ -1,33 +1,3 @@
-# ----------------------------------------------------------------------------
-#  CLASSES: nightly
-#
-#  Test Case:  multires.py
-#
-#  Programmer: Tom Fogal
-#  Date:       August 6, 2010
-#
-# ----------------------------------------------------------------------------
-
-ds = data_path("Chombo_test_data/chombo.visit")
-OpenDatabase(ds)
-
-AddPlot("Pseudocolor", "Scalar_1")
-AddOperator("MultiresControl")
-
-att = MultiresControlAttributes()
-att.resolution = 0
-SetOperatorOptions(att)
-
-DrawPlots()
-Test("multires_0")
-
-att.resolution = 1
-SetOperatorOptions(att)
-DrawPlots()
-Test("multires_1")
-
-DeleteAllPlots()
-
-CloseDatabase(ds)
-
-Exit()
+version https://git-lfs.github.com/spec/v1
+oid sha256:f97f2429a85a48a57f7ee562d2c7956311c481591a03109def6e06ee8b6549c5
+size 629

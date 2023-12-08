@@ -1,13 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="Delaunay" type="operator" label="Delaunay" version="1.0" enabled="false" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" category="Geometry">
-    <Attribute name="DelaunayAttributes" purpose="Attributes for the Delaunay Operator" persistent="true" keyframe="true" exportAPI="" exportInclude="">
-      <Enum name="Dimension">
-        Automatic
-        Triangulation
-        Tetrahedralization
-      </Enum>
-      <Field name="dimension" label="Dimension" type="enum" subtype="Dimension">
-        Automatic
-      </Field>
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:98c2675cee9de380c315debb88e279e32c1c30fe15e03b52d4a88e87f182c48f
+size 622

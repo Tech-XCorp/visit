@@ -1,1 +1,3 @@
-VisIt was *NOT* able to reopen reopen_globe.silo!
+version https://git-lfs.github.com/spec/v1
+oid sha256:84ebac9db26e3fa6149b30dd765a228442722069cc42ae3aa48a5f542b5bc5d1
+size 49

@@ -1,20 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="SphereSlice" type="operator" label="Spherical Slice" version="1.0" iconFile="SphereSlice.xpm" category="Slicing">
-    <Attribute name="SphereSliceAttributes" purpose="This class contains attributes for the spherical slice." persistent="true" codefile="SphereSliceAttributes.code">
-      <Field name="origin" label="Origin" type="doubleArray" length="3">
-        0.000000
-        0.000000
-        0.000000
-      </Field>
-      <Field name="radius" label="Radius" type="double">
-        1.000000
-      </Field>
-      <Function name="CopyAttributes" user="false" member="true">
-      </Function>
-      <Function name="CreateCompatible" user="false" member="true">
-      </Function>
-      <Include file="source" quoted="false">
-        SphereAttributes.h
-      </Include>
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:778a7df087d572ada4a54d93a9c8d9554d2fd35315e028ebfff69eee9f2ff8fb
+size 835

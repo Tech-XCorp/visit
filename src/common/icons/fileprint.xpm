@@ -1,24 +1,3 @@
-/* XPM */
-static const char *fileprint_xpm[] = {
-"    16    14        6            1",
-". c #000000",
-"# c #848284",
-"a c #c6c3c6",
-"b c #ffff00",
-"c c #ffffff",
-"d c None",
-"ddddd.........dd",
-"dddd.cccccccc.dd",
-"dddd.c.....c.ddd",
-"ddd.cccccccc.ddd",
-"ddd.c.....c....d",
-"dd.cccccccc.a.a.",
-"d..........a.a..",
-".aaaaaaaaaa.a.a.",
-".............aa.",
-".aaaaaa###aa.a.d",
-".aaaaaabbbaa...d",
-".............a.d",
-"d.aaaaaaaaa.a.dd",
-"dd...........ddd"
-};
+version https://git-lfs.github.com/spec/v1
+oid sha256:b3c9e5276c8d4b77a7ebea8dc7fddd331ff47c7e9019715b4e2bb1f58daaca02
+size 456

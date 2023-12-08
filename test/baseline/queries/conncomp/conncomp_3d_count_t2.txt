@@ -1,1 +1,3 @@
-Found 2 connected components
+version https://git-lfs.github.com/spec/v1
+oid sha256:ef99270e1925269e219ddb1969d94a5fbe81ed2e443913049cd18f991cb28a1e
+size 29

@@ -1,6 +1,3 @@
-Reading H5Part data into VisIt:
-
-This database plugins allows the user to read H5Part data into VisIt. To be
-recognized by VisIt the filename needs to have the extension ".h5part". This is
-important, otherwise VisIt will try to open the file with another reader and it
-will fail.
+version https://git-lfs.github.com/spec/v1
+oid sha256:a564ac09461eb35fc2f0d75d938234aed08fe94092a751688a6f26aba7d9a998
+size 280

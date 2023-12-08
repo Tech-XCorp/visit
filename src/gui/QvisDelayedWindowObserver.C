@@ -1,23 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <QvisDelayedWindowObserver.h>
-
-QvisDelayedWindowObserver::QvisDelayedWindowObserver(Subject *subj,
-    const QString &caption) : QvisDelayedWindow(caption), Observer(subj)
-{
-    // nothing here.
-}
-
-QvisDelayedWindowObserver::~QvisDelayedWindowObserver()
-{
-    // nothing here.
-}
-
-void
-QvisDelayedWindowObserver::Update(Subject *)
-{
-    if(isCreated)
-        UpdateWindow(false);
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:b5205a27dd363a1ad4338f9b900c3ba69ebf6f0e98119c05bf7e00649612c87f
+size 614

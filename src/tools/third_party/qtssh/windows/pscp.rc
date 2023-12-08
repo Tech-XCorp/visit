@@ -1,8 +1,3 @@
-#include "rcstuff.h"
-
-#define APPNAME "PSCP"
-#define APPDESC "Command-line SCP/SFTP client"
-
-200 ICON "pscp.ico"
-
-#include "version.rc2"
+version https://git-lfs.github.com/spec/v1
+oid sha256:ed52f564ebd57a5a39e601be07ddc178f031e66088a7db3e15a0ac38e1f98678
+size 137

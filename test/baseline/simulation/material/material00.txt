@@ -1,3 +1,3 @@
-Simulation executable "material" exists.
-Simulation "material" started.
-VisIt connected to simulation "material".
+version https://git-lfs.github.com/spec/v1
+oid sha256:842d81bd9a6b3362020b46771c25d68b820d64ce7b5eaafef65005640f617d63
+size 113

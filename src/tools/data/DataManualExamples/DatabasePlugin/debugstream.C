@@ -1,23 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// NOTE - This code incomplete and is for example purposes only.
-//        Do not try to compile.
-
-// Include this header for debug streams.
-#include <DebugStream.h>
-
-
-vtkDataSet *
-avtXXXXFileFormat::GetMesh(const char *meshname)
-{
-    // Write messages to different levels of the debug logs.
-    debug1 << "Hi from avtXXXXFileFormat::GetMesh" << endl;
-
-    debug4 << "Many database plugins prefer debug4 " << endl;
-
-    debug5 << "Lots of detail from avtXXXXFileFormat::GetMesh" << endl;
-
-    return 0;
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:46d982fc8d13a869b87f6df88c46ebf04893c0a6384287365e92c3f6b1512a2b
+size 730

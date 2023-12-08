@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <Boxlib3DPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Boxlib3D,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void Boxlib3DMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:a279779c64045b60f887d0f150cff961e3dc18fd7f1ee38c619b8ff0f83ce70e
+size 422

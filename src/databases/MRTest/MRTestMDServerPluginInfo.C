@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <MRTestPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(MRTest,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void MRTestMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:3d06ae938598765e9483edf85b2e13b07d484a2ff20173e0d82ddd2fe113c94e
+size 416

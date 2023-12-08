@@ -1,31 +1,3 @@
-# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-# Project developers.  See the top-level LICENSE file for dates and other
-# details.  No copyright assignment is required to contribute to VisIt.
-
-#****************************************************************************
-# Modifications:
-#   Kathleen Biagas, Tues Oct 1 09:33:47 MST 2013
-#   Removed logic handling windows differently than other platforms.
-#
-#   Kathleen Biagas, Thu July 15, 2021
-#   Add NETCDF_WIN32_DEFINES (used by xml2cmake to add preprocessor defines).
-#
-#****************************************************************************/
-
-# Use the H5PART_DIR hint from the config-site .cmake file 
-
-INCLUDE(${VISIT_SOURCE_DIR}/CMake/SetUpThirdParty.cmake)
-
-SET_UP_THIRD_PARTY(NETCDF lib include netcdf)
-
-if (WIN32)
-    if (MSVC_VERSION LESS "1910")
-      set(NETCDF_CXX_DIR ${NETCDF_DIR})
-      SET_UP_THIRD_PARTY(NETCDF_CXX lib include netcdf_c++)
-    endif()
-    set(NETCDF_WIN32_DEFINES "DLL_NETCDF")
-else()
-    set(NETCDF_CXX_DIR ${NETCDF_DIR})
-    SET_UP_THIRD_PARTY(NETCDF_CXX lib include netcdf_c++)
-endif()
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:7eb9fd1897d6c448e4990be3de64a4d5940cb761a2102bb06adf0f01733fc5e7
+size 1114

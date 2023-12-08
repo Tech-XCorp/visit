@@ -1,19 +1,3 @@
-/*
- * winx11.c: fetch local auth data for X forwarding.
- */
-
-#include <ctype.h>
-#include <assert.h>
-#include <stdlib.h>
-
-#include "putty.h"
-#include "ssh.h"
-
-void platform_get_x11_auth(struct X11Display *disp, Conf *conf)
-{
-    char *xauthpath = conf_get_filename(conf, CONF_xauthfile)->path;
-    if (xauthpath[0])
-	x11_get_auth_from_authfile(disp, xauthpath);
-}
-
-const int platform_uses_x11_unix_by_default = FALSE;
+version https://git-lfs.github.com/spec/v1
+oid sha256:36aafd96808fd11c558c139a298cf78a1e2d730667c9818d79991ca378141326
+size 417

@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <ClawPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Claw,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void ClawMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:17bde24f911ece6027d8df74bacd4b0585c15d259b63c7e0ae5b17cc8fc8529e
+size 410

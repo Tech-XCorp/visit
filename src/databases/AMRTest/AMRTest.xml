@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="AMRTest" label="AMRTest" type="database" dbtype="STMD" version="1.0">
-    <FilePatterns> *.amrtest </FilePatterns>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:d1666e7861dc2c772d1d8aec5c0f7779b33b4f8936bfa612540fd5bcf5e8fcd0
+size 165

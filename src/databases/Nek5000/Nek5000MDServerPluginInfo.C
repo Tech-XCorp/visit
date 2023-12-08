@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <Nek5000PluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Nek5000,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void Nek5000MDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:a21d2204c5c790acf56b5c8d8b8aba08408c193c03c9f0855a32d9b35ec4e85b
+size 419

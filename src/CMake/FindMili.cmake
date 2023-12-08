@@ -1,10 +1,3 @@
-# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-# Project developers.  See the top-level LICENSE file for dates and other
-# details.  No copyright assignment is required to contribute to VisIt.
-
-# Use the MILI_DIR hint from the config-site .cmake file 
-
-INCLUDE(${VISIT_SOURCE_DIR}/CMake/SetUpThirdParty.cmake)
-
-SET_UP_THIRD_PARTY(MILI lib include mili)
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:b781b59038cbbacb7e3b2dc775faf23e0e7f34929e35d1fa0ecf3fbb951ad653
+size 381

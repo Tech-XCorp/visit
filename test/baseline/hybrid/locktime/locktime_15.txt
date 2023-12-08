@@ -1,6 +1,3 @@
-localhost:VISIT_TOP_DIR/data/pdb_test_data/dbB00.pdb has 20 states
-activeSource = "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbB00.pdb"
-activeTimeSlider = 0
-timeSliders = ("localhost:VISIT_TOP_DIR/data/pdb_test_data/dbB00.pdb")
-timeSliderCurrentStates = (15)
-animationMode = 2
+version https://git-lfs.github.com/spec/v1
+oid sha256:641f036e579a0843ca9517869b2a38c5f53b6152cec8df6e510be10c8b71513e
+size 278

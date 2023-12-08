@@ -1,17 +1,3 @@
-import visit_writer, math
-
-NPTS = 100
-
-pts = []
-data = []
-for i in range(NPTS):
-    # Make a point
-    t = float(i) / float(NPTS-1)
-    angle = 3.14159 * 10. * t
-    pts = pts + [t * math.cos(angle), t * math.sin(angle), t]
-    # Make a scalar
-    data = data + [t * math.cos(angle)]
-
-# Pass the data to visit_writer
-vars = (("data", 1, 1, pts), ("ptsvec", 3, 1, pts))
-visit_writer.WritePointMesh("vwpoint3d.vtk", 1, pts, vars)
+version https://git-lfs.github.com/spec/v1
+oid sha256:7a75e2d0b63b5c278b995819ba2a6a11c0c586ba8e206886a3a65e6af6110e5f
+size 428

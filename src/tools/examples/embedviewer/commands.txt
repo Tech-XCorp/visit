@@ -1,22 +1,3 @@
-openFile /usr/gapps/visit/data/noise.silo
-changeVariable shepardglobal
-saveWindow
-changeVariable radial
-saveWindow
-changePlotType 1
-setNContours 3
-saveWindow
-setNContours 4
-saveWindow
-setNContours 5
-saveWindow
-setNContours 6
-saveWindow
-setNContours 7
-saveWindow
-setNContours 8
-saveWindow
-setNContours 9
-saveWindow
-setNContours 10
-saveWindow
+version https://git-lfs.github.com/spec/v1
+oid sha256:6a3f9db8a7ab4afb61a48a4a8c1aaa3ca3f935d68ca3eafd094fbf4afe772b9a
+size 341

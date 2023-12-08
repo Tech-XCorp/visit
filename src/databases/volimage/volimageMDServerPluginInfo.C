@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <volimagePluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(volimage,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void volimageMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:cf80f4cb46c7933535d33c3799eb2f76ef04370686e39453dd115616094b2f48
+size 422

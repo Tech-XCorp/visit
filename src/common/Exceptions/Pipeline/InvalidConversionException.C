@@ -1,28 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ************************************************************************* //
-//                       InvalidConversionException.C                        //
-// ************************************************************************* //
-
-#include <InvalidConversionException.h>
-
-
-// ****************************************************************************
-//  Method: InvalidConversionException constructor
-//
-//  Arguments:
-//    setName    The set name.
-//
-//  Programmer: Cameron Christensen
-//  Creation:   May 22, 2014
-//
-// ****************************************************************************
-
-InvalidConversionException::InvalidConversionException()
-{
-    msg = "Impossible conversion was attempted.";
-}
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:4bec64b80921645aa816240446fd7128c96698521013061c614e8c6866feedb3
+size 952

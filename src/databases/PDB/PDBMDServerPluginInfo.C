@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <PDBPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(PDB,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void PDBMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:6a9314f92e966ea186d91402ed2a046b10351ba61740c169ce2e6fe68bf9a8ed
+size 407

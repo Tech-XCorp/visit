@@ -1,7 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="Lines" label="Lines" type="database" dbtype="STMD" version="1.0">
-    <FilePatterns>
-      *.lines
-      *.lines.gz
-    </FilePatterns>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:83ffa6b2c99569718c4b0943b857e990f7aee037c4e58771128d62955e93094c
+size 186

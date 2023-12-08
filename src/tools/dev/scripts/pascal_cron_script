@@ -1,12 +1,3 @@
-#!/bin/sh
-
-# Change directories to the working directory.
-cd visit_run_tests
-
-# Get the latest version of the test script
-rm -f regressiontest_pascal
-wget https://raw.githubusercontent.com/visit-dav/visit/develop/src/tools/dev/scripts/regressiontest_pascal
-
-# Run the test suite.
-chmod 755 regressiontest_pascal
-./regressiontest_pascal
+version https://git-lfs.github.com/spec/v1
+oid sha256:0c1dc1bb70b225045083d09ffe3245a052e50f96154f7d2b7b89daefe6966c41
+size 336

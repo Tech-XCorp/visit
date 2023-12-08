@@ -1,6 +1,3 @@
-#define ERROR_IN(name,action)  NULL,name,__FILE__,__LINE__,action
-#define LOCATION(name)  location(name,__FILE__,__LINE__)
-char *location(const char *string, const char *file, int linenumber);
-enum ACTION
-{ CONTINUE, ABORT };
-void error_action(const char *start, ...);
+version https://git-lfs.github.com/spec/v1
+oid sha256:5ff6fd676b8f8d7c90d10e893fb1b37a69e175cda10ac2a04c7d7e8579075b1d
+size 269

@@ -1,17 +1,3 @@
--specification
-C
--docomposite
--scriptfile
-test2.py
--output
-test2.cdb
--format
-png
--geometry
-300x300
--camera
-static
--var
-pressure
--var
-v
+version https://git-lfs.github.com/spec/v1
+oid sha256:92293737978796f2f67cdaa9be2d831872d9ccc78f3f7aa6c2a9007d229d06ce
+size 135

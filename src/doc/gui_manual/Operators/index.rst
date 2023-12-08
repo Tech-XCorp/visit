@@ -1,14 +1,3 @@
-.. _Operators:
-
-Operators
-=========
-
-This chapter explains the concept of an operator and goes into detail about 
-each of VisIt's operators.
-
-.. toctree::
-    :maxdepth: 2
-
-    Working_with_Operators
-    Operators_that_Generate_New_Variables
-    OperatorTypes/index
+version https://git-lfs.github.com/spec/v1
+oid sha256:5c98ebca571033010fe0ae14bb6fad1ed068a38aecfdefc2a5ad6d225cd3793b
+size 266

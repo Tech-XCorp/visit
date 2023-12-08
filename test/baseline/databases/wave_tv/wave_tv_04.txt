@@ -1,2 +1,3 @@
-With TreatAllDBsAsTimeVarying set to 1 (true),
-AddPlot() returned 0 for state 16 and 1 for state 17
+version https://git-lfs.github.com/spec/v1
+oid sha256:087b28289b7384d38db0c08c79afbf3e51b1343a1105d8d4dc7ae8deeca2df7e
+size 99

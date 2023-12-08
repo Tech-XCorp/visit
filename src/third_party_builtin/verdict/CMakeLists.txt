@@ -1,23 +1,3 @@
-SET(VERDICT_SOURCES
-    V_EdgeMetric.C
-    V_GaussIntegration.C
-    V_HexMetric.C
-    V_KnifeMetric.C
-    V_PyramidMetric.C
-    V_QuadMetric.C
-    V_TetMetric.C
-    V_TriMetric.C
-    V_WedgeMetric.C
-    VerdictVector.C
-)
-
-INCLUDE_DIRECTORIES(
-    ${CMAKE_CURRENT_SOURCE_DIR}
-)
-
-ADD_DEFINITIONS(-DVERDICT_EXPORTS)
-
-ADD_LIBRARY(visit_verdict ${VERDICT_SOURCES})
-
-VISIT_INSTALL_TARGETS(visit_verdict)
-SET_TARGET_PROPERTIES(visit_verdict PROPERTIES FOLDER thirdparty_builtin/visit_verdict)
+version https://git-lfs.github.com/spec/v1
+oid sha256:6b3a82c651beec31fc13f89b9283bcb06b77fe59ff84c45521789b5fceabb1a3
+size 486

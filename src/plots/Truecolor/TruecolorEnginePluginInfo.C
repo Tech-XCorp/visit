@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: TruecolorEnginePluginInfo.C
-// ****************************************************************************
-
-#include <TruecolorPluginInfo.h>
-#include <avtTruecolorPlot.h>
-
-VISIT_PLOT_PLUGIN_ENTRY_EV(Truecolor,Engine)
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:9ad7e4e74a866d0283a0423c0eb340a44cc41517d74ef85f96c1cd721a8860af
+size 533

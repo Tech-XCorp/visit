@@ -1,18 +1,3 @@
-CONFIG      += designer plugin debug_and_release
- 
-TARGET      = $$qtLibraryTarget($$TARGET)
-TEMPLATE    = lib
-QTDIR_build:DESTDIR     = $$QT_BUILD_TREE/plugins/designer
-
-INCLUDEPATH += ../..
-
-HEADERS     = QvisSpectrumBar.h \
-              QvisSpectrumBarPlugin.h 
-SOURCES     = QvisSpectrumBar.cpp \
-              QvisSpectrumBarPlugin.cpp 
-
-# install
-target.path = $$[QT_INSTALL_PLUGINS]/designer
-sources.files = $$SOURCES $$HEADERS *.pro
-sources.path = $$[QT_INSTALL_EXAMPLES]/designer/QvisSpectrumBarPlugin
-INSTALLS += target sources
+version https://git-lfs.github.com/spec/v1
+oid sha256:4664b79c8f207a262ca4a521369ea8338ecaf4d72f74151312617ca6ff6701ea
+size 539

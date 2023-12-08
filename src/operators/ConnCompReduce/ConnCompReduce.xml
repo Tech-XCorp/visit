@@ -1,6 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="ConnCompReduce" label="Reduce Connected Components" type="operator" version="1.0" category="Analysis">
-    <Attribute name="ConnCompReduceAttributes" purpose="This class contains attributes for the reduce connected components operator.">
-      <Field name="target" label="Target Reduction " type="double">0.1</Field>
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:884f948a7afa605c0e5dbe9997d24adc2cdf1c48a99168c71900cb6fc89980bd
+size 384

@@ -1,12 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="Nek5000" type="database" label="Nek5000" version="1.0" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="MTMD" haswriter="false" hasoptions="true" filePatternsStrict="false" opensWholeDirectory="false">
-    <FilePatterns>
-      *.nek3d
-      *.nek2d
-      *.nek5k
-      *.nek5000
-      *.nek
-    </FilePatterns>
-    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:4ad14aae4185cf934a9f0db7691ae0eb682db64a8a056d6b39ce79315b06b86f
+size 534

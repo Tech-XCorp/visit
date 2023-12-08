@@ -1,6 +1,3 @@
-<?xml version="1.0"?>
-  <Attribute name="ColorControlPoint" codefile="ColorControlPoint.code" purpose="This class contains an RGBA color with a position value." exportAPI="STATE_API" exportInclude="state_exports.h">
-    <Field name="colors" type="ucharArray" length="4">0 0 0 255</Field>
-    <Field name="position" type="float">0.0</Field>
-    <Function name="ColorControlPoint" user="true"></Function>
-  </Attribute>
+version https://git-lfs.github.com/spec/v1
+oid sha256:44aad932268179bef4bb91e18708ab9f05093b083b93196a5a42f96456e606b5
+size 418

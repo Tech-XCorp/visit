@@ -1,34 +1,3 @@
-Function: operator =
-Declaration: LightAttributes &operator=(const LightAttributes &obj);
-Definition:
-LightAttributes&
-LightAttributes::operator = (const LightAttributes &obj)
-{
-    if (this == &obj) return *this;
-    enabledFlagCanBeToggled = obj.enabledFlagCanBeToggled;
-    if (enabledFlagCanBeToggled)
-        enabledFlag = obj.enabledFlag;
-    type = obj.type;
-    direction[0] = obj.direction[0];
-    direction[1] = obj.direction[1];
-    direction[2] = obj.direction[2];
-
-    color = obj.color;
-    brightness = obj.brightness;
-
-    SelectAll();
-    return *this;
-}
-
-Function: SetEnabledFlag
-Declaration: void SetEnabledFlag(bool enabledFlag_);
-Definition:
-void
-LightAttributes::SetEnabledFlag(bool enabledFlag_)
-{
-    if (enabledFlagCanBeToggled)
-    {
-        enabledFlag = enabledFlag_;
-        Select(1, (void *)&enabledFlag);
-    }
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:1fdb04e2e0053373284beef07d541feede83f8bfc3d4ea70f46d2844431a02fc
+size 845

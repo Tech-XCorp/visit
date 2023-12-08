@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <ExodusPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Exodus,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void ExodusMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:878c7678ddb96e75468dea9841b0889f46bfe965be61626a2e45291d27268920
+size 416

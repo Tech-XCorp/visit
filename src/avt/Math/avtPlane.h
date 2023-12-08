@@ -1,11 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef AVT_PLANE_H
-#define AVT_PLANE_H
-#include <math_exports.h>
-
-bool MATH_API PlaneIntersectsCube(double plane[4], double bounds[6]);
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:ae2fb0c814aa0a22bf9166bd8958ae3c13270911442388918d99f46230bf672c
+size 369

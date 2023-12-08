@@ -1,21 +1,3 @@
-import sys
-__system_bytecode_setting = sys.dont_write_bytecode
-sys.dont_write_bytecode = True
-
-import visitproxy
-
-host = "localhost"
-port = 9002
-password = "bob"
-BUFSIZE = 4096
-visType = "none"
-#create a VisIt Proxy
-vp = visitproxy.ViewerProxy()
-
-gmap = sys.modules["__main__"].__dict__
-gmap["vp"] = vp
-
-#connect to existing host & password
-vp.connect(host,port,password,visType)
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:dd800865c2f912eaf7a718ea867dce3bfc381e0724ac92f42868e3d921b49b5d
+size 382

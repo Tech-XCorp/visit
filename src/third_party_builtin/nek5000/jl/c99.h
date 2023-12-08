@@ -1,16 +1,3 @@
-#ifndef C99_H
-#define C99_H
-
-#ifndef __STDC_VERSION__
-#  define NO_C99
-#elif __STDC_VERSION__ < 199901L
-#  define NO_C99
-#endif
-
-#ifdef NO_C99
-#  define restrict
-#  define inline
-#  undef NO_C99
-#endif
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:b6e2f71da86eec3e0d44f7216fc62fb0c6376cbe5ef5bee51391821f337e7ac0
+size 210

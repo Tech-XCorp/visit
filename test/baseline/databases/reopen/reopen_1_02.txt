@@ -1,5 +1,3 @@
-activeSource = "notset"
-activeTimeSlider = -1
-timeSliders = ()
-timeSliderCurrentStates = ()
-animationMode = 2
+version https://git-lfs.github.com/spec/v1
+oid sha256:71e504b4b9a326756321d1263fecf26cef69752b0b7c006ec30d7c30cfc5785b
+size 110

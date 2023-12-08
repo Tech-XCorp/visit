@@ -1,32 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="Adventure" type="database" label="Adventure" version="1.0" enabled="true" mdspecificcode="true" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STMD" haswriter="false" hasoptions="false" filePatternsStrict="false">
-    <CXXFLAGS>
-      ${ADVIO_INCLUDE_DIR}
-    </CXXFLAGS>
-    <LIBS>
-      ${ADVIO_LIB}
-      visit_verdict
-    </LIBS>
-    <LDFLAGS>
-      ${ADVIO_LIBRARY_DIR}
-    </LDFLAGS>
-    <FilePatterns>
-      *.adv
-      *.inp
-      *.msh
-    </FilePatterns>
-    <Files components="M">
-      avtAdventureFileFormat.C
-      AdvData.C
-      AdvDataSet.C
-      MshData.C
-    </Files>
-    <Files components="E">
-      avtAdventureFileFormat.C
-      AdvData.C
-      AdvDataSet.C
-      MshData.C
-    </Files>
-    <Attribute name="" purpose="" persistent="false" keyframe="true" exportAPI="" exportInclude="">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:ad0713080e5079a5d69de866afd6d4ec6a28a575e1fa3a9e223bc475bf96f1b2
+size 897

@@ -1,21 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include "EnginePropertiesRPC.h" 
-
-
-// ****************************************************************************
-//  Method: EnginePropertiesRPC
-//
-//  Purpose: 
-//    This is the RPC's constructor
-//
-//  Programmer: Brad Whitlock
-//  Creation:   Mon Oct 10 11:13:18 PDT 2011
-//
-// ****************************************************************************
-
-EnginePropertiesRPC::EnginePropertiesRPC() : NonBlockingRPC("a", &returnAtts)
-{
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:8fa26c45f5b798222853bbf1412de308c1923104920b69aff3376fb5bdb22a34
+size 669

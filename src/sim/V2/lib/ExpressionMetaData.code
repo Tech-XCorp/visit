@@ -1,26 +1,3 @@
-Target: xml2sim
-Function: simv2_ExpressionMetaData_check
-Declaration: SIMV2_API int simv2_ExpressionMetaData_check(visit_handle);
-Definition:
-int
-simv2_ExpressionMetaData_check(visit_handle h)
-{
-    VisIt_ExpressionMetaData *obj = GetObject(h, "simv2_ExpressionMetaData_check");
-    int retval = VISIT_ERROR;
-    if(obj != NULL)
-    {
-        if(obj->name == "")
-        {
-            VisItError("ExpressionMetaData needs a name");
-            return VISIT_ERROR;
-        }
-        if(obj->definition == "")
-        {
-            VisItError("ExpressionMetaData needs a definition");
-            return VISIT_ERROR;
-        }
-        retval = VISIT_OKAY;
-    }
-    return retval;
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:0722b16d10e9043f8e602ff212f729f27cdd4fd0ea1570a61cb6026e4b6d970d
+size 682

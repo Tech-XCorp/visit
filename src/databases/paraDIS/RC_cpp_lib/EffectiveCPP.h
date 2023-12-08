@@ -1,17 +1,3 @@
-/* tricks from Effective C++ class */ 
-
-#ifndef EFFECTIVE_CPP_H
-#define EFFECTIVE_CPP_H
-
-/*!
-  This used to contain template operators such as the following: 
-  template <class T>
-  const T& operator *(const T&other) {}
-  
-  however, this caused problems for any class that had its own operator *() for example.  So I moved them to where I specifically needed them, which was in the Point class, it turns out. 
-*/ 
-namespace RC_Math {
-  
-}
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:12ddd67a4b91c68d4d1f2399e04db5eebfd286a6ef9c7be0d7ddf23629741cc4
+size 448

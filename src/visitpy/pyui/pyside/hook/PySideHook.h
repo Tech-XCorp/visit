@@ -1,14 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef PYSIDEVISITHOOK_H
-#define PYSIDEVISITHOOK_H
-
-class PySideHook
-{
-public:
-};
-
-#endif
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:f2cacd9cc40d0e4123e364c7d6ed56f190050d777ccd7464c855821d730ab4cd
+size 316

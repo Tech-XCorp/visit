@@ -1,19 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="FITS" type="database" label="FITS" version="1.0" enabled="true" mdspecificcode="false" onlyengine="false" noengine="false" dbtype="STSD" haswriter="false" hasoptions="false">
-    <CXXFLAGS>
-      ${CFITSIO_INCLUDE_DIR}
-    </CXXFLAGS>
-    <LDFLAGS>
-      ${CFITSIO_LIBRARY_DIR}
-    </LDFLAGS>
-    <LIBS>
-      ${CFITSIO_LIB}
-    </LIBS>
-    <FilePatterns>
-      *.fit
-      *.fits
-      *.imh
-    </FilePatterns>
-    <Attribute name="" purpose="" persistent="true" exportAPI="" exportInclude="">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:d45396cf59b7dfd2677c0fb49675c63f2aefad0ee11ec86a5ae8e1aaca895713
+size 563

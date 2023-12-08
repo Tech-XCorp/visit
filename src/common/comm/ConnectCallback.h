@@ -1,24 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef CONNECT_CALLBACK_H
-#define CONNECT_CALLBACK_H
-#include <vectortypes.h>
-
-//
-// This is a type of callback function that is used by the 
-// ExistingRemoteProcess class when trying to connect to a remote process.
-//
-// Modifications:
-//   Brad Whitlock, Thu Dec 19 11:35:47 PDT 2002
-//   I added the key argument.
-//
-//   Brad Whitlock, Mon May 5 14:00:28 PST 2003
-//   I replaced the individual arguments with stringVector.
-//
-
-typedef void (ConnectCallback)(const std::string &remoteHost,
-    const stringVector &args, void *data);
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:63ab1db14529c601e93507a1de53a8155a7962630d9c5178eba4b6424170f943
+size 771

@@ -1,33 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ************************************************************************* //
-//                          avtVMetricWarpage.h                              //
-// ************************************************************************* //
-
-#ifndef AVT_VMETRIC_WARPAGE_H
-#define AVT_VMETRIC_WARPAGE_H
-#include <expression_exports.h>
-#include <avtVerdictExpression.h>
-
-// ****************************************************************************
-//  Class: avtVMetricWarpage
-//
-//  Purpose:
-//    This metric measures Warpage.
-//
-//  Programmer: Akira Haddox
-//  Creation:   June 13, 2002
-//
-// ****************************************************************************
-
-class EXPRESSION_API avtVMetricWarpage : public avtVerdictExpression
-{
-    public:
-        double Metric(double coords[][3], int type);
-};
-
-#endif
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:c88806d380326a981e9c331b0f974ae4e2d0dfbc4452949b26f488a82a41a9cf
+size 1048

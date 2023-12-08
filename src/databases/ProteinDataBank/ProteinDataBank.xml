@@ -1,9 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="ProteinDataBank" type="database" label="ProteinDataBank" version="1.0" enabled="true" mdspecificcode="false" onlyengine="false" noengine="false" dbtype="STSD" haswriter="false" hasoptions="true">
-    <FilePatterns>
-      *.ent
-      *.pdb
-    </FilePatterns>
-    <Attribute name="" purpose="" persistent="true" exportAPI="" exportInclude="">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:97915689329684a43ea0b63320531c98f33ebd84492be2e0e762e49c2274359e
+size 409

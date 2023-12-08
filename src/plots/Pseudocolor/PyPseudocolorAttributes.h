@@ -1,31 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef PY_PSEUDOCOLORATTRIBUTES_H
-#define PY_PSEUDOCOLORATTRIBUTES_H
-#include <Python.h>
-#include <Py2and3Support.h>
-#include <PseudocolorAttributes.h>
-
-//
-// Functions exposed to the VisIt module.
-//
-#define PSEUDOCOLORATTRIBUTES_NMETH 108
-void           PyPseudocolorAttributes_StartUp(PseudocolorAttributes *subj, void *data);
-void           PyPseudocolorAttributes_CloseDown();
-PyMethodDef *  PyPseudocolorAttributes_GetMethodTable(int *nMethods);
-bool           PyPseudocolorAttributes_Check(PyObject *obj);
-PseudocolorAttributes *  PyPseudocolorAttributes_FromPyObject(PyObject *obj);
-PyObject *     PyPseudocolorAttributes_New();
-PyObject *     PyPseudocolorAttributes_Wrap(const PseudocolorAttributes *attr);
-void           PyPseudocolorAttributes_SetParent(PyObject *obj, PyObject *parent);
-void           PyPseudocolorAttributes_SetDefaults(const PseudocolorAttributes *atts);
-std::string    PyPseudocolorAttributes_GetLogString();
-std::string    PyPseudocolorAttributes_ToString(const PseudocolorAttributes *, const char *);
-PyObject *     PyPseudocolorAttributes_getattr(PyObject *self, char *name);
-int            PyPseudocolorAttributes_setattr(PyObject *self, char *name, PyObject *args);
-extern PyMethodDef PyPseudocolorAttributes_methods[PSEUDOCOLORATTRIBUTES_NMETH];
-
-#endif
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:21daff8a7ad03670927c9cfb2955709abc67e221661ecc262dc260dc3b891506
+size 1519

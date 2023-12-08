@@ -1,4 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="AUXFile" label="AUX" type="database" dbtype="STSD" version="1.0">
-    <FilePatterns> *.aux </FilePatterns>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:2f73e55f2a22fc808c6b1ed22780fdbd787c77df0f69658fd3ee944d1b1bcbbf
+size 157

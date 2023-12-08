@@ -1,32 +1,3 @@
-================================================================================
-CASE: mpirun 
-
-INPUT: visit -engine -norun engine_par -l mpirun -np 8 -host 127.0.0.1 -port 5600
-
-RESULTS:
-mpirun -np 8 $VISIT_EXE_DIR/engine_par -plugindir $HOME/.visit/$VERSION/$PLATFORM/plugins:$VISITDIR/plugins -visithome $VISITDIR -visitarchhome $VISITDIR/ -dv -host $HOST -port 5600
-
-================================================================================
-CASE: mpirun -totalview engine_par
-
-INPUT: visit -engine -norun engine_par -l mpirun -np 8 -host 127.0.0.1 -port 5600 -totalview engine_par
-
-RESULTS:
-totalview mpirun -a -dograb -np 8 $VISIT_EXE_DIR/engine_par -plugindir $HOME/.visit/$VERSION/$PLATFORM/plugins:$VISITDIR/plugins -visithome $VISITDIR -visitarchhome $VISITDIR/ -dv -host $HOST -port 5600
-
-================================================================================
-CASE: mpirun -valgrind engine_par
-
-INPUT: visit -engine -norun engine_par -l mpirun -np 8 -host 127.0.0.1 -port 5600 -valgrind engine_par
-
-RESULTS:
-mpirun -np 8 valgrind --tool=memcheck --error-limit=no --num-callers=50 --leak-check=full --track-origins=yes --show-reachable=yes --log-file=vg_engine_par_%p.log $VISIT_EXE_DIR/engine_par -plugindir $HOME/.visit/$VERSION/$PLATFORM/plugins:$VISITDIR/plugins -visithome $VISITDIR -visitarchhome $VISITDIR/ -dv -host $HOST -port 5600
-
-================================================================================
-CASE: mpirun -strace engine_par
-
-INPUT: visit -engine -norun engine_par -l mpirun -np 8 -host 127.0.0.1 -port 5600 -strace engine_par
-
-RESULTS:
-mpirun -np 8 strace -ttt -T $VISIT_EXE_DIR/engine_par -plugindir $HOME/.visit/$VERSION/$PLATFORM/plugins:$VISITDIR/plugins -visithome $VISITDIR -visitarchhome $VISITDIR/ -dv -host $HOST -port 5600
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:a1f06500d9f17185dbd8d8edd2bd49c729dcc353c7f36caaf9c63b1b80c91f88
+size 1791

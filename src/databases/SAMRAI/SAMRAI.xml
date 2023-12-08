@@ -1,15 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="SAMRAI" type="database" label="SAMRAI" version="1.0" mdspecificcode="true" dbtype="STMD">
-    <FilePatterns> 
-      *.samrai 
-    </FilePatterns>
-    <CXXFLAGS> 
-      ${HDF5_INCLUDE_DIR} 
-    </CXXFLAGS>
-    <LDFLAGS>  
-      ${HDF5_LIBRARY_DIR} 
-    </LDFLAGS>
-    <LIBS>     
-      ${HDF5_LIB} 
-    </LIBS>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:cf28e2d0250755ae20013862886805fe15fa24cef13796dc855d97c791cc06db
+size 360

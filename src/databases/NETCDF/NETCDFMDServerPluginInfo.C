@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <NETCDFPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(NETCDF,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void NETCDFMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:622a2b7ac287406abab5f27091b5d9d5be6d023b6389bdeaab96aec0b89fdeac
+size 416

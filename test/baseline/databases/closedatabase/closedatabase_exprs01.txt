@@ -1,2 +1,3 @@
-The database VISIT_TOP_DIR/data/silo_hdf5_test_data/globe.silo was closed.
-Expressions:
+version https://git-lfs.github.com/spec/v1
+oid sha256:2cd2e5d62309c76966341e8df4058864753d2e1387ca1f08abba2720e00633d4
+size 88

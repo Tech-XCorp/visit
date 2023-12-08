@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <XSFPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(XSF,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void XSFMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:65d85ab845382de72e41bbb1cf11f060b5e585d1114bad54183f24d9acab1ce8
+size 407

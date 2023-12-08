@@ -1,15 +1,3 @@
-# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-# Project developers.  See the top-level LICENSE file for dates and other
-# details.  No copyright assignment is required to contribute to VisIt.
-
-#****************************************************************************
-# Modifications:
-#
-#****************************************************************************
-
-INSTALL(FILES ${VISIT_BINARY_DIR}/include/visit-config.h 
-              ${VISIT_BINARY_DIR}/include/visit-python-config.h
-              visit-hdf5.h
-    DESTINATION ${VISIT_INSTALLED_VERSION_INCLUDE}/visit/include
-    PERMISSIONS OWNER_WRITE OWNER_READ GROUP_WRITE GROUP_READ WORLD_READ
-)
+version https://git-lfs.github.com/spec/v1
+oid sha256:843e4cce3ac7f3b73852d66d6bbe3cfbde0ec9af697050216787cca606e08eca
+size 686

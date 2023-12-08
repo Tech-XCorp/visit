@@ -1,18 +1,3 @@
-/*
- * wincapi.h: Windows Crypto API functions defined in wincrypt.c
- * that use the crypt32 library. Also centralises the machinery
- * for dynamically loading that library.
- */
-
-#if !defined NO_SECURITY
-
-#ifndef WINCAPI_GLOBAL
-#define WINCAPI_GLOBAL extern
-#endif
-
-DECL_WINDOWS_FUNCTION(WINCAPI_GLOBAL, BOOL, CryptProtectMemory,
-		      (LPVOID,DWORD,DWORD));
-
-int got_crypt(void);
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:8bf2ee88dfc6544b8ccbac3756222cd8850a5b70530d4880550aa0f684f6e00a
+size 390

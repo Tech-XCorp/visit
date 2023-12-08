@@ -1,6 +1,3 @@
-MyThreeDatabaseCorrelation has 30 states
-activeSource = "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbA00.pdb"
-activeTimeSlider = 0
-timeSliders = ("MyThreeDatabaseCorrelation", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbA00.pdb", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbB00.pdb", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbC00.pdb")
-timeSliderCurrentStates = (24, 7, 16, 24)
-animationMode = 2
+version https://git-lfs.github.com/spec/v1
+oid sha256:4e2aaf37453d162993bed8b96139bd5d6180ae56b2d9b2de6f92a2559f0117b1
+size 405

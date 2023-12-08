@@ -1,21 +1,3 @@
-.. VisIt User Manual documentation for both GUI and CLI
-
-VisIt User Manuals
-==================
-
-.. toctree::
-   :maxdepth: 1 
-
-   How to Search <searching>
-   Building VisIt <building_visit/index>
-   GUI Manual <gui_manual/index>
-   CLI Manual <cli_manual/index>
-   Tutorials <tutorials/index>
-   Getting Data Into VisIt <data_into_visit/index>
-   Developer Manual <dev_manual/index>
-
-.. Indices and tables
-.. ==================
-
-.. * :ref:`genindex`
-.. * :ref:`search`
+version https://git-lfs.github.com/spec/v1
+oid sha256:5214011df8df1f492501b41c0850686d859eece486f978fb3a751552bcc8a491
+size 470

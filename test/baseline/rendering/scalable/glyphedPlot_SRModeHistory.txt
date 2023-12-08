@@ -1,2 +1,3 @@
-force SR mode 0
-window 1:SR is ON
+version https://git-lfs.github.com/spec/v1
+oid sha256:3731a737ac29e5fe25e0a590d1a2eb10a42987f61056e27f931d709c26d570ad
+size 34

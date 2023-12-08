@@ -1,5 +1,3 @@
-/* HACK:
- * This is an empty file used to create an empty static library link_mpi_libs.a.
- * This library is used to ensure that MPI libraries are added to the end of the
- * link line, i.e., only the dependencies of that library are important and not
- * the library itself. */
+version https://git-lfs.github.com/spec/v1
+oid sha256:d6202bfe8c2d0fd3ed328abff375f8f63636e9abccb42683abeda13575a0f333
+size 277

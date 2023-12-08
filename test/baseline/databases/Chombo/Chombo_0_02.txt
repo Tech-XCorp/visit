@@ -1,6 +1,3 @@
-Number of states: 5
-Cycle=0, Time=0
-Cycle=1000, Time=1398.41
-Cycle=2000, Time=2288.05
-Cycle=3000, Time=3037.08
-Cycle=4000, Time=3761.2
+version https://git-lfs.github.com/spec/v1
+oid sha256:2ec682a9669b0b3528de0f749ea87433aea44592c6f3d047ceff5d744a293ffa
+size 135

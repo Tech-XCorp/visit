@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <CalePluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Cale,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void CaleMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:5f1783951e9b21af0a61978c67e78ecd9056daf8eb438fe5eeb05bc2df1744b6
+size 410

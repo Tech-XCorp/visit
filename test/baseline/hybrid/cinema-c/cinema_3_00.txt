@@ -1,21 +1,3 @@
--specification
-C
--docomposite
--scriptfile
-test3.py
--output
-test3.cdb
--format
-png
--geometry
-300x300
--camera
-phi-theta
--phi
-6
--theta
-5
--var
-pressure
--var
-v
+version https://git-lfs.github.com/spec/v1
+oid sha256:fc428d4fd19fa9e6055f056182cabb739e9a55ea8f7ca3443d9bca599ee4f093
+size 154

@@ -1,12 +1,3 @@
-{   'BOV': 'success',
-    'Blueprint': 'success',
-    'CGNS': 'success',
-    'Cale': 'success',
-    'Claw': 'success',
-    'Exodus': 'success',
-    'FITS': 'success',
-    'H5Part': 'success',
-    'MFEM': 'success',
-    'Mili': 'success',
-    'SAMRAI': 'success',
-    'VTK': 'success'}
+version https://git-lfs.github.com/spec/v1
+oid sha256:75bfa92421eb8a02f95870bb4c81967a92da87853a6af2c168beee4e33225b92
+size 285

@@ -1,10 +1,3 @@
-
-B:  ucd3d.silo
-ucdmesh3d 
-Point: <-1, 3.2, 3>
-Zone:  257
-Incident Nodes:  327  321  447  453  326  320  446  452  
-mat1:  
-    1 = 0.1
-    4 = 0.9
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:a30a049120c1c7f9f30ed5a4797d1194e2b9bf8cfeed20708952e7dba828d5a1
+size 149

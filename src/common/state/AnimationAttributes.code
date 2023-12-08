@@ -1,35 +1,3 @@
-Function: ProcessOldVersions
-Declaration: virtual void ProcessOldVersions(DataNode *parentNode, const char *configVersion);
-Definition:
-// ****************************************************************************
-// Method: AnimationAttributes::ProcessOldVersions
-//
-// Purpose:
-//   This method creates modifies a DataNode representation of the object
-//   so it conforms to the newest representation of the object, which can
-//   can be read back in.
-//
-// Programmer: Kathleen Bonnell
-// Creation:   January 12, 2005
-//
-// Modifications:
-//
-// ****************************************************************************
-void
-AnimationAttributes::ProcessOldVersions(DataNode *parentNode,
-                                       const char *configVersion)
-{
-    if(parentNode == 0)
-        return;
-
-    DataNode *searchNode = parentNode->GetNode("AnimationAttributes");
-    if(searchNode == 0)
-        return;
-
-    DataNode *pcNode = searchNode->GetNode("pipelineCachingMode");
-    if (pcNode == 0)
-        return;
-
-    if (VersionLessThan(configVersion, "1.1.5"))
-        searchNode->RemoveNode("pipelineCachingMode");
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:352152510c3ad499277f92b76cd6641e46b2df3a79642b43ec8ff8eefe99a448
+size 1126

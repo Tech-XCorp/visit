@@ -1,2 +1,3 @@
-Pseudocolor:  (InvalidFilesException)
-viewer: There was an error opening VISIT_TOP_DIR/test/wave0080.silo. It may be an invalid file.
+version https://git-lfs.github.com/spec/v1
+oid sha256:15e052e4684303a166fba703b850c1bac47f56001e3b8bc8bfd1656d46a4f7e3
+size 133

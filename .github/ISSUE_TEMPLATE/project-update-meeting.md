@@ -1,21 +1,3 @@
----
-name: Project update meeting
-about: Capture regular agenda and any needed notes from project meetings
-title: Project update meeting
-labels: admin, reviewed
-assignees: ''
-
----
-
-- [ ] Round-table checkins
-  - Note any key updates here
-- [ ] Inclusive Minute (first meeting of each new month)
-  - Note any resources here
-- [ ] New issues triage
-  - Notes are taken in associated individual issues
-- [ ] Unanswered Q&A discussions
-  - Notes are taken in associated individual discussion posts
-- [ ] Next release issue triage (as needed prior to releases)
-  - Note any key issues/decisions here
-- [ ] Topic(s) for next Special topics meeting?
-  - Decide if we'll have a special topics meeting and on what topic(s)
+version https://git-lfs.github.com/spec/v1
+oid sha256:e1af5b47d9aa4beee901b398a611cfa5904c0bbbbf22d2bb8ea2c4f7b8b26ac8
+size 713

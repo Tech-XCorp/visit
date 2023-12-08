@@ -1,6 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="XSF" type="database" label="XSF" version="1.0" enabled="true" mdspecificcode="false" onlyengine="false" noengine="false" dbtype="MTSD" haswriter="false" hasoptions="false">
-    <FilePatterns>
-      *.xsf
-    </FilePatterns>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:f4cc5b45e7b2abba026116428cbe3d289d684ff6600ebc5b8fa4dd42b51ec196
+size 274

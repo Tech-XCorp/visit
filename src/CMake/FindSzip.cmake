@@ -1,23 +1,3 @@
-# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-# Project developers.  See the top-level LICENSE file for dates and other
-# details.  No copyright assignment is required to contribute to VisIt.
-
-#****************************************************************************
-# Modifications:
-#   Kathleen Biagas, Tues Oct 1 09:33:47 MST 2013
-#   Removed VISIT_MSVC_VERSION from windows handling.
-#
-#****************************************************************************/
-
-# Use the SZIP_DIR hint from the config-site .cmake file 
-
-INCLUDE(${VISIT_SOURCE_DIR}/CMake/SetUpThirdParty.cmake)
-
-IF (WIN32)
-  IF(SZIP_LIB_NAME) 
-      SET_UP_THIRD_PARTY(SZIP lib include ${SZIP_LIB_NAME})
-  ELSE()
-      SET_UP_THIRD_PARTY(SZIP lib include szlibdll)
-  ENDIF()
-ENDIF (WIN32)
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:a498db8a5acf8f44720f17f36d6e256dd117c9233a901e8aa4952c632dad0e3c
+size 797

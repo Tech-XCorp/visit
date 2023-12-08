@@ -1,20 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="CaleHDF5" type="database" label="Visit Plugin to read Cale HDF5 dumps" version="1.1" enabled="true" mdspecificcode="false" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STSD" haswriter="false" hasoptions="false" filePatternsStrict="false" opensWholeDirectory="false">
-    <CXXFLAGS>
-      ${HDF5_INCLUDE_DIR}
-    </CXXFLAGS>
-    <LDFLAGS>
-      ${HDF5_LIBRARY_DIR}
-    </LDFLAGS>
-    <LIBS>
-      ${HDF5_LIB}
-    </LIBS>
-    <FilePatterns>
-      *.ch5
-      *.cale
-    </FilePatterns>
-    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="" codefile="CaleHDF5.code">
-      <Function name="CaleHDF5CommonPluginInfo::SetupDatabase" user="false" member="true">
-      </Function>
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:99ba814a556552ebcbc6145136bac4b9a4b81e4c23c9bb7f148f44ce5c54a2b4
+size 807

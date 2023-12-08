@@ -1,2 +1,3 @@
-wg_PLY.1.ply
-wg_PLY.2.ply
+version https://git-lfs.github.com/spec/v1
+oid sha256:95978eef9db11a86ac29e39e696feadf5d8d8c2263466d964837a1d9b1d1955a
+size 26

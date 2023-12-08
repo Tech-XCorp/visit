@@ -1,10 +1,3 @@
-<?xml version="1.0"?>
-  <Attribute name="avtTensorMetaData" purpose="Contains tensor metadata attributes" persistent="false" keyframe="true" exportAPI="DBATTS_API" exportInclude="dbatts_exports.h" codefile="avtTensorMetaData.code" baseClass="avtVarMetaData">
-    <Field name="dim" label="Dimensions" type="int" access="public">
-      0
-    </Field>
-    <Function name="avtTensorMetaData2" user="true" member="true">
-    </Function>
-    <Function name="Print" user="true" member="true">
-    </Function>
-  </Attribute>
+version https://git-lfs.github.com/spec/v1
+oid sha256:704af46b4798a9a5c6c8a420a5b684b699eb9a3a27280acdd895b3def3acf368
+size 517

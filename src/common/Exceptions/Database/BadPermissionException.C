@@ -1,32 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ************************************************************************* //
-//                           BadPermissionException.C                        //
-// ************************************************************************* //
-
-#include <stdio.h>                  // for sprintf
-#include <BadPermissionException.h>
-
-
-// ****************************************************************************
-//  Method: BadPermissionException constructor
-//
-//  Arguments:
-//      filename    The name of a file we don't have permissions to.
-//
-//  Programmer: Hank Childs
-//  Creation:   November 7, 2001
-//
-// ****************************************************************************
-
-BadPermissionException::BadPermissionException(const char *filename)
-{
-    char str[1024];
-    sprintf(str, "No read permissions for %s.", filename);
-
-    msg = str;
-}
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:6bf6ed5b9ca5332ae7673ed39c0e283e95b6f646115043c3e3fd2e32a6b6ef36
+size 1086

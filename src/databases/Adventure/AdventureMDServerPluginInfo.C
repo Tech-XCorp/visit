@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <AdventurePluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Adventure,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void AdventureMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:c795b1ee4c0bea6f96ba644a9d901dd74ac600d1057eae5bb85d5ab2d868c9df
+size 425

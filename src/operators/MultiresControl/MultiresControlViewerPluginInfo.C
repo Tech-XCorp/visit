@@ -1,14 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: MultiresControlViewerPluginInfo.C
-// ****************************************************************************
-
-#include <MultiresControlPluginInfo.h>
-#include <MultiresControlAttributes.h>
-
-VISIT_OPERATOR_PLUGIN_ENTRY_EV(MultiresControl,Viewer)
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:8ea83e273d71deefbc3e87343e2e5926cb006a02970715d9cd9e5026f82bcb8e
+size 565

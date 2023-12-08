@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <GadgetPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Gadget,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void GadgetMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:14e096c7e154e583fa3621b4b4d875477b54c2f4cbee2e7c217ce0d70994a277
+size 416

@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <OpenPMDPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(OpenPMD,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void OpenPMDMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:d4766b4114f618ca9cbc00a3c49966e7c3b409a8a5d36286d3634a5017434b1a
+size 419

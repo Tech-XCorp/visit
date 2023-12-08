@@ -1,10 +1,3 @@
-.. _Lineout operator:
-
-Lineout operator
-~~~~~~~~~~~~~~~~
-
-The Lineout operator samples data values along a line, producing a 1D database
-from databases of greater dimension. This operator is used implicitly by
-VisIt's Lineout capability and cannot be added to plots. For more information on
-Lineout, see the :ref:`Lineout` section in the :ref:`Quantitative` chapter.
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:4f7b2dad361e5269beb1218f4edfe96983e5ce00e8f63d1bab363887dfd409cb
+size 368

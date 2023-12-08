@@ -1,14 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: SurfCompPrepViewerPluginInfo.C
-// ****************************************************************************
-
-#include <SurfCompPrepPluginInfo.h>
-#include <SurfCompPrepAttributes.h>
-
-VISIT_OPERATOR_PLUGIN_ENTRY_EV(SurfCompPrep,Viewer)
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:069c979dd67b52d538b8fd84c9c3169a57d91cb8ba21d65e5a16dd5afb5d63a7
+size 553

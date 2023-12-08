@@ -1,8 +1,3 @@
-<?xml version="1.0"?>
-  <Attribute name="PostponedAction" purpose="This class contains the attributes for controlling the viewer vis a postponed action." persistent="false" exportAPI="VIEWER_RPC_API" exportInclude="viewerrpc_exports.h">
-    <Field name="RPC" label="RPC" type="att" subtype="ViewerRPC">
-    </Field>
-    <Field name="window" label="window" type="int">
-      0
-    </Field>
-  </Attribute>
+version https://git-lfs.github.com/spec/v1
+oid sha256:86e3ce7548f23b7f283424cef5150e1ab9428afa15b772fa14e915fb6934e5be
+size 404

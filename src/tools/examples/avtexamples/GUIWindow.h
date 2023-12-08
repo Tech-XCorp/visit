@@ -1,27 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef GUI_WINDOW_H
-#define GUI_WINDOW_H
-
-#include <QMainWindow>
-
-class vtkRenderWindow;
-
-class GUIWindow : public QMainWindow
-{
-    Q_OBJECT
-public:
-    GUIWindow();
-    virtual ~GUIWindow();
-
-private slots:
-    void spinBoxChanged(int val);
-
-private:
-    void DrawCylinder(vtkRenderWindow *renderWindow);
-    void CreateMainWindow();
-};
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:3e37a649110d7ae1852078c1037f0fc1165d923c5b6304cfcdd201c240f6c059
+size 572

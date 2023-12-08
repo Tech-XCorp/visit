@@ -1,33 +1,3 @@
-#ifndef COMMAND_PARSER_H
-#define COMMAND_PARSER_H
-#include <QObject>
-#include <QStringList>
-
-#include <VisItViewer.h>
-#include "Synchronizer.h"
-
-class CommandParser : public QObject
-{
-   Q_OBJECT
-public:
-   CommandParser(VisItViewer *v);
-   virtual ~CommandParser();
-
-   void ProcessCommands(const QString &filename);
-signals:
-    void openFile(const QString &);
-    void changeVariable(const QString &);
-    void changePlotType(int);
-    void setNContours(int);
-    void saveWindow();
-    void quitApp();
-
-private slots:
-   void ProcessOneCommand();
-private:
-    VisItViewer  *viewer;
-    QStringList   commands;
-    Synchronizer *sync;
-};
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:f2acc989256335936db62672cb6f15075c47fb8fc0d0dfc227694e192cf89065
+size 649

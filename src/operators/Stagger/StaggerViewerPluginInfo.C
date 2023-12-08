@@ -1,14 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: StaggerViewerPluginInfo.C
-// ****************************************************************************
-
-#include <StaggerPluginInfo.h>
-#include <StaggerAttributes.h>
-
-VISIT_OPERATOR_PLUGIN_ENTRY_EV(Stagger,Viewer)
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:29747d998e938173e3d40aaeb051cb7d58246ed1efa98df0da492c55f3b4089e
+size 533

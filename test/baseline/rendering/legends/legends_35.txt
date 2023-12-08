@@ -1,1 +1,3 @@
-('Plot0024', 'text_obj')
+version https://git-lfs.github.com/spec/v1
+oid sha256:f001ce549df5d07fd67e8918f8b46c435691299cc573b15ed686f3d93bd5208e
+size 24

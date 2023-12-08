@@ -1,7 +1,3 @@
-In one vulcan console, run this command to start the server:
-
-srun -N 1 -n 2 -A sspwork -p pdebug server.elf --file `pwd`/connect.txt --port 5605
-
-In another vulcan console, run this command to start the client:
-
-./client.elf --file connect.txt
+version https://git-lfs.github.com/spec/v1
+oid sha256:b240bcd9b3ea48f90d33e7049666a70712ccb0b27b9dcc7ecf3f53ab1e82dc59
+size 245

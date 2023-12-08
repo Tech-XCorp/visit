@@ -1,16 +1,3 @@
-# ----------------------------------------------------------------------------
-#  CLASSES: nightly
-#
-#  Test Case:  lcs_ic_1.py
-#
-#  Tests:      operator   - LCS, IntegralCurve
-#
-#  Programmer: Allen Sanderson
-#  Date:       August 25, 2015
-# ----------------------------------------------------------------------------
-
-Source(tests_path("operators", "lcs_operator_main"))
-
-LCS_operator("IntegralCurve", "ftle_double_gyre_1_domain")
-
-Exit()
+version https://git-lfs.github.com/spec/v1
+oid sha256:9c49e365c75c1875f96c65aea20e8a45a5e47bb3580b577ad4e7b3cedcdd57a3
+size 442

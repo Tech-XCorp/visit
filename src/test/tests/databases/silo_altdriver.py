@@ -1,20 +1,3 @@
-# ----------------------------------------------------------------------------
-#  CLASSES: nightly
-#
-#  Test Case:  silo_altdriver
-#
-#  Tests:      Runs the silo.py test using the 'other' driver. If silo.py
-#              was run on PDB driver, this will run them on HDF5 driver and
-#              vice versa.
-#
-#  Programmer: Mark C. Miller
-#  Date:       25Jan10
-#
-# ----------------------------------------------------------------------------
-
-if TestEnv.params["silo_mode"] == "pdb":
-    TestEnv.params["silo_mode"] = "hdf5"
-else:
-    TestEnv.params["silo_mode"] = "pdb"
-
-Source(tests_path("databases","silo.py"))
+version https://git-lfs.github.com/spec/v1
+oid sha256:21aba5845ad2f188bc526c3b2ced097c5d2cf7d0f82c22533272e36c222ca046
+size 618

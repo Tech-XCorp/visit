@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <FITSPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(FITS,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void FITSMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:f0eeded7c8c12e1622c211f9ce7e9fdf7e866603a47724a56748bb593bea83a8
+size 410

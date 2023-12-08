@@ -1,34 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ************************************************************************* //
-//                      IncompatibleDomainListsException.C                   //
-// ************************************************************************* //
-
-#include <stdio.h>  // for sprintf
-#include <IncompatibleDomainListsException.h>
-
-
-// ****************************************************************************
-//  Method: IncompatibleDomainListsException constructor
-//
-//  Arguments:
-//      n1      The number of domains for the first domain list.
-//      n2      The number of domains for the second domain list.
-//
-//  Programmer: Hank Childs
-//  Creation:   July 24, 2000
-//
-// ****************************************************************************
-
-IncompatibleDomainListsException::IncompatibleDomainListsException(int n1, 
-                                                                   int n2)
-{
-    char  str[1024];
-    sprintf(str, "Cannot relate domain lists with %d domains and %d domains.",
-                n1, n2);
-    msg = str;
-}
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:2e88015c8523e6eccefea1029b905ddfbbe728d9d8f83689186fed2e603f0ce8
+size 1276

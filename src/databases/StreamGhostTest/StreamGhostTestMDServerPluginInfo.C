@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <StreamGhostTestPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(StreamGhostTest,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void StreamGhostTestMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:525902b047598e80220e69fc75bff80fc8374b4f7abb1d682f80975830399035
+size 443

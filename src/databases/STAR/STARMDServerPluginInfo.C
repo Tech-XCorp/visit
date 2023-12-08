@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <STARPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(STAR,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void STARMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:b122f6ff64819f5ab654e580498d2adf27129b1be62959ad68065d092a7fe2a2
+size 410

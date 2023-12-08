@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <FLASHPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(FLASH,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void FLASHMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:49a8926828cb2d6f692184eb5f66dcb3bb8eeb3240c3af8a3e4dce3036a1b872
+size 413

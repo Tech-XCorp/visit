@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <FieldViewXDBPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(FieldViewXDB,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void FieldViewXDBMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:3f6c3a3d3306ff6e53254357ca5617434e6ff99ee06fe4a1d02d1ce0092aa50d
+size 434

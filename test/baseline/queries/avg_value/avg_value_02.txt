@@ -1,1 +1,3 @@
-The average value of vel is 4.06619e-17, -1.2443e-17, 0
+version https://git-lfs.github.com/spec/v1
+oid sha256:0ef35f6bac07492e3fbc1c17c381babf503c15a1acfb128782a3879366249e4d
+size 55

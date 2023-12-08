@@ -1,30 +1,3 @@
-<?xml version="1.0"?>
-  <Attribute name="DatabaseCorrelationList" purpose="This class contains the database correlations that we know about." persistent="true" exportAPI="STATE_API" exportInclude="state_exports.h" codefile="DatabaseCorrelationList.code">
-    <Enum name="WhenToCorrelate">
-      CorrelateAlways
-      CorrelateNever
-      CorrelateOnlyIfSameLength
-    </Enum>
-    <Field name="correlations" label="Database correlations" type="attVector" subtype="DatabaseCorrelation">
-    </Field>
-    <Field name="needPermission" label="Need permission to create a correlation" type="bool">
-      true
-    </Field>
-    <Field name="defaultCorrelationMethod" label="The correlation method used by default." type="int">
-      0
-    </Field>
-    <Field name="whenToCorrelate" label="When VisIt should correlate databases" type="enum" subtype="WhenToCorrelate">
-      CorrelateOnlyIfSameLength
-    </Field>
-    <Function name="FindCorrelation" user="true" member="true">
-    </Function>
-    <Function name="PrintOperator" user="true" member="false">
-    </Function>
-    <Function name="RemoveCorrelation" user="true" member="true">
-    </Function>
-    <Function name="CreateNode" user="false" member="true">
-    </Function>
-    <Include file="header" quoted="false">
-      visitstream.h
-    </Include>
-  </Attribute>
+version https://git-lfs.github.com/spec/v1
+oid sha256:67cd31dbb5d0e6fb822f02d8fb099d84e8a52c071730bf1eb727f199058ed240
+size 1314

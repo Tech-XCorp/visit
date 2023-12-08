@@ -1,13 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="PlainText" type="database" label="PlainText" version="1.0" enabled="true" mdspecificcode="true" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STSD" haswriter="false" hasoptions="true" filePatternsStrict="false">
-    <FilePatterns>
-      *.csv
-      *.tsv
-      *.txt
-      *.csv.gz
-      *.tsv.gz
-      *.txt.gz
-    </FilePatterns>
-    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:fab80a51cd4bfe1f324938d6b59e172a6422f5e9465a8dd367d4777e4b697d39
+size 520

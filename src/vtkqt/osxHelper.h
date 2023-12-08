@@ -1,10 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef _OSX_HELPER_
-#define _OSX_HELPER_
-
-void disableGLHiDPI(long win_id);
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:be84990deddb22b332962cf5878079c31d51132d1c0c66db60c2617e3705cb1f
+size 309

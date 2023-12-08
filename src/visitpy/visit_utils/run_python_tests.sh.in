@@ -1,11 +1,3 @@
-#!/bin/sh
-
-# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-# Project developers.  See the top-level LICENSE file for dates and other
-# details.  No copyright assignment is required to contribute to VisIt.
-
-cd @_VISIT_UTILS_SRC_DIR@
-#
-@PYTHON_EXECUTABLE@ -B setup.py test $@
-#
-cd @_VISIT_UTILS_BIN_DIR@
+version https://git-lfs.github.com/spec/v1
+oid sha256:b0d3f7eeb1848c30b690d5b272223dc9767580f57cecb9acf65eb64371855911
+size 328

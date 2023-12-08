@@ -1,26 +1,3 @@
-# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-# Project developers.  See the top-level LICENSE file for dates and other
-# details.  No copyright assignment is required to contribute to VisIt.
-
-#****************************************************************************
-# Modifications:
-#
-#****************************************************************************
-
-
-include_directories(
-${VISIT_BINARY_DIR}/include
-${VISIT_SOURCE_DIR}/include
-${VTK_INCLUDE_DIRS}
-)
-
-
-add_library(visit_vtk_offscreen vtkOffScreenRenderingFactory.C)
-
-if(HAVE_OSMESA)
-    target_link_libraries(visit_vtk_offscreen ${OSMESA_LIBRARIES})
-elseif(HAVE_EGL)
-    target_link_libraries(visit_vtk_offscreen ${EGL_LIBRARIES})
-endif()
-
-VISIT_INSTALL_TARGETS(visit_vtk_offscreen)
+version https://git-lfs.github.com/spec/v1
+oid sha256:7c000f5d955d36ee8ebe56e212783092a97b9ed794f8f32e74f0ae1e43b97d89
+size 780

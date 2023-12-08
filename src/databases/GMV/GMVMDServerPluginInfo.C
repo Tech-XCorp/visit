@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <GMVPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(GMV,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void GMVMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:de6ae973f895d9ab3d502bf6224b90642c2c3485045654831d2580e49e1b56e7
+size 407

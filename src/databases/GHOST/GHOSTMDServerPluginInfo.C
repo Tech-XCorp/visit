@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <GHOSTPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(GHOST,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void GHOSTMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:2e53df7dd5801596e6b108d03fdf30d112cfcf992c1da395dbc2781ebf04d1cd
+size 413

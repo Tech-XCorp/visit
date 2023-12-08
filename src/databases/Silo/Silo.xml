@@ -1,31 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="Silo" type="database" label="Silo" version="1.0" enabled="true" mdspecificcode="true" engspecificcode="false" onlyengine="false" noengine="false" dbtype="STMD" haswriter="true" hasoptions="true" filePatternsStrict="false" opensWholeDirectory="false">
-    <CXXFLAGS>
-      ${SILO_INCLUDE_DIR}
-    </CXXFLAGS>
-    <LDFLAGS>
-      ${SILO_LIBRARY_DIR}
-    </LDFLAGS>
-    <LIBS>
-      ${SILO_LIB}
-    </LIBS>
-    <FilePatterns>
-      *.silo
-      *.pdb
-    </FilePatterns>
-    <Files components="M">
-      avtSiloFileFormat.C
-      avtSiloMBObjectCache.C
-      avtSiloOptions.C
-    </Files>
-    <Files components="E">
-      avtSiloFileFormat.C
-      avtSiloMBObjectCache.C
-      avtSiloOptions.C
-      avtSiloWriter.C
-    </Files>
-    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="" codefile="Silo.code">
-      <Function name="SiloCommonPluginInfo::SetReadOptions" user="false" member="true">
-      </Function>
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:e90d6230c7a1159dd7e0f1f55796ba8e9d6abe55414723929f6f91ad06d32282
+size 1019

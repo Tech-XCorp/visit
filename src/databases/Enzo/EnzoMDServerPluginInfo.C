@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <EnzoPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Enzo,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void EnzoMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:8d97a21146e4fd8ab7c485fcc62b9aa720b801bf1108a882ac5329d76ac0b95b
+size 410

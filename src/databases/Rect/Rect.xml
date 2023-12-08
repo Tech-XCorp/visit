@@ -1,9 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="Rect" type="database" label="Rect" version="1.0" dbtype="MTMD">
-    <FilePatterns>
-      *.rect 
-      *.rect.gz
-    </FilePatterns>
-    <Attribute name="" purpose="" persistent="false" exportAPI="" exportInclude="">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:b43595b5303c01ab26538724c1436caf3d4d6d02e8da34a0165c1c46be0f59b1
+size 284

@@ -1,6 +1,3 @@
-Correlation01 has 20 states
-activeSource = "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbB00.pdb"
-activeTimeSlider = 0
-timeSliders = ("Correlation01", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbB00.pdb")
-timeSliderCurrentStates = (7, 7)
-animationMode = 2
+version https://git-lfs.github.com/spec/v1
+oid sha256:7d56a65ef790c0e856e6b0710818bb995834ba470c1bc0a8728ea9e28384a038
+size 258

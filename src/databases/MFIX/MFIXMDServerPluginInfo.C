@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <MFIXPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(MFIX,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void MFIXMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:6a1f0c1b47f43b956722c2485e9be312b575f7f5c37fde04f4a99460a70f5b6e
+size 410

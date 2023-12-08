@@ -1,14 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ************************************************************************* //
-//  File: TessellateViewerPluginInfo.C
-// ************************************************************************* //
-
-#include <TessellatePluginInfo.h>
-#include <TessellateAttributes.h>
-
-VISIT_OPERATOR_PLUGIN_ENTRY_EV(Tessellate,Viewer)
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:e9c88bc69f1762b1a8ffc4fc756a1d573342fd00ca40349ba1b13a28f0d5de82
+size 545

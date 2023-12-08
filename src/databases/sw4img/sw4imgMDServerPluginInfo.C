@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <sw4imgPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(sw4img,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void sw4imgMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:c7797b00004338d35284805edc96df131660196db053b09b0c4a89d8ad53a3ca
+size 416

@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <BlueprintPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Blueprint,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void BlueprintMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:a333bfafa83892c9eeee5617ab004b54946a93302f023afdb9c5573faf7c8aa7
+size 425

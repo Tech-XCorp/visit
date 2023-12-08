@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: BoundaryEnginePluginInfo.C
-// ****************************************************************************
-
-#include <BoundaryPluginInfo.h>
-#include <avtBoundaryPlot.h>
-
-VISIT_PLOT_PLUGIN_ENTRY_EV(Boundary,Engine)
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:bfad7f77ff40e69a3942eac5f79aa360630fee2ffb87b3cc16cabb47ec4b97ca
+size 529

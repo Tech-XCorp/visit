@@ -1,16 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="VLI" type="database" label="Very Large Item Files" version="1.0" enabled="true" mdspecificcode="true" engspecificcode="false" onlyengine="false" noengine="false" dbtype="MTMD" haswriter="false" hasoptions="false">
-    <FilePatterns>
-      *.vli
-    </FilePatterns>
-    <Files components="M">
-      avtVLIFileFormat.C
-      VLIFileManager.C
-    </Files>
-    <Files components="E">
-      avtVLIFileFormat.C
-      VLIFileManager.C
-    </Files>
-    <Attribute name="" purpose="" persistent="true" keyframe="true" exportAPI="" exportInclude="">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:46de64ec9d8c62d45784f5488d476bf5584e5c4997451e907caf8ca14f8a0c42
+size 607

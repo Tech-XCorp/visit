@@ -1,6 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include "pysidegui.h"
-PySideGUI *PySideGUI::_instance = NULL;
+version https://git-lfs.github.com/spec/v1
+oid sha256:59dbf17cde0f1083fa73b3391e2b5139a1c6432bd2ce51a2c4133e935da2b4d8
+size 287

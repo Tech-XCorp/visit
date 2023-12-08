@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <TCGAPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(TCGA,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void TCGAMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:ae1f8eea576dbb32cc82a66252b7dde37f223d9b6c19a869c630e25934aa977d
+size 410

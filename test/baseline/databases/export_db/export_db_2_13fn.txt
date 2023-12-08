@@ -1,1 +1,3 @@
-wg_Silo.silo
+version https://git-lfs.github.com/spec/v1
+oid sha256:aa0a3228fffe9defc5d26652223d9b1cdf8bb6a72694513bd508dc99fdf693ea
+size 13

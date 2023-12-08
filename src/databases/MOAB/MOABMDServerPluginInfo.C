@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <MOABPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(MOAB,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void MOABMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:45e32351d96fd4590de3ae8c8532c044860bc731ec802dd7232d194673955382
+size 410

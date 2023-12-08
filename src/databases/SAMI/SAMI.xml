@@ -1,15 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="SAMI" type="database" label="SAMI" version="1.0" dbtype="STSD">
-    <FilePatterns> 
-      *.sami 
-    </FilePatterns>
-    <CXXFLAGS> 
-      ${SILO_INCLUDE_DIR} 
-    </CXXFLAGS>
-    <LDFLAGS> 
-      ${SILO_LIBRARY_DIR} 
-    </LDFLAGS>
-    <LIBS> 
-      ${SILO_LIB} 
-    </LIBS>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:cd2b43c2dd63f5a869e5103be9030d58f28e28e0dc6b05065031dd9375c47241
+size 327

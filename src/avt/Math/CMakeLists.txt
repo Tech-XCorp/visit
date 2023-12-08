@@ -1,34 +1,3 @@
-# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-# Project developers.  See the top-level LICENSE file for dates and other
-# details.  No copyright assignment is required to contribute to VisIt.
-
-#*****************************************************************************
-# Modifications:
-#
-#****************************************************************************
-
-SET(AVTMATH_SOURCES
-avtFactorial.C
-avtHermitePolynomial.C
-avtMatrix.C
-avtPlane.C
-avtPolynomial.C
-avtQuaternion.C
-avtTrackball.C
-avtVecArray.C
-avtVector.C
-)
-
-INCLUDE_DIRECTORIES(
-${CMAKE_CURRENT_SOURCE_DIR}
-${VISIT_COMMON_INCLUDES}
-${VTK_INCLUDE_DIRS}
-)
-
-# Add link directories
-LINK_DIRECTORIES(${LIBRARY_OUTPUT_DIRECTORY} )
-
-ADD_LIBRARY(avtmath ${AVTMATH_SOURCES})
-TARGET_LINK_LIBRARIES(avtmath visitcommon vtkCommonCore)
-
-VISIT_INSTALL_TARGETS(avtmath)
+version https://git-lfs.github.com/spec/v1
+oid sha256:c7fcc85eb847abce4ec328e42d1707b8d913e3d50b647d55f47448a36c0ba7e2
+size 852

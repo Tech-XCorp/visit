@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <TSurfPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(TSurf,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void TSurfMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:9ea425c4de942a5119bb1d16841643aba306bdb10131b311c0193f710f628187
+size 413

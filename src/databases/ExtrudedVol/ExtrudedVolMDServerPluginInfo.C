@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <ExtrudedVolPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(ExtrudedVol,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void ExtrudedVolMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:e160699a8e9aaef12386df075133932f06f200bb0c419305a8a9e276eac81bb8
+size 431

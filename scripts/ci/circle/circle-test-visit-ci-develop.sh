@@ -1,7 +1,3 @@
-#!/bin/bash
-set -ev
-export PATH=$PATH:/home/ci/masonry/build-mb-develop-ci-smoke/thirdparty_shared/third_party/cmake/3.9.3/ci/bin/
-mkdir ci-build
-cd ci-build
-cmake -DVISIT_CONFIG_SITE:PATH="/home/ci/visit-ci-cfg.cmake" ../src
-make -j 4
+version https://git-lfs.github.com/spec/v1
+oid sha256:4eadc6dd08f0e17de3416c8fa24b65b19daa8605c47f50b5ec671f95622de813
+size 236

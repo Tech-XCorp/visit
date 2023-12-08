@@ -1,12 +1,3 @@
-import sys
-sys.path.append("/usr/gapps/conduit/software/ascent/0.7.1/toss_3_x86_64_ib/openmp/gnu/conduit-install/lib/python3.7/site-packages")
-
-import conduit
-
-n = conduit.Node()
-n["my"] = "data"
-n["a/b/c"] = "d"
-n["a"]["b"]["e"] = 64.0
-print(n)
-
-print("total bytes: %d" % n.total_strided_bytes())
+version https://git-lfs.github.com/spec/v1
+oid sha256:32edf82d78cbda0ca7a606f1d315f310c65a7628844ac0f799facf11fef0808e
+size 298

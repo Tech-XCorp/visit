@@ -1,7 +1,3 @@
-<?xml version="1.0"?>
-  <Attribute name="MessageMetaData" purpose="" persistent="false" keyframe="false" exportAPI="" exportInclude="" codefile="MessageMetaData.code">
-    <Field name="name" label="name" type="string">
-    </Field>
-    <Function name="simv2_MessageMetaData_check" user="true" member="true">
-    </Function>
-  </Attribute>
+version https://git-lfs.github.com/spec/v1
+oid sha256:a7eb49d54a72f69128a7119a0673a9e7364b263b6126a810ba0dd598cd007592
+size 339

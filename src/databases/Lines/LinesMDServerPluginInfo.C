@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <LinesPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(Lines,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void LinesMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:0c2b69e7f82faaf04dd8c1514c6ae72c29e27e025a244ff3ef360e3d31a16e88
+size 413

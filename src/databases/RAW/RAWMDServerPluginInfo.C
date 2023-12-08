@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <RAWPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(RAW,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void RAWMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:50cd55a7695be9b87561e489fe7f1871d95d0a7efb88c83c86c62615f4e3d18f
+size 407

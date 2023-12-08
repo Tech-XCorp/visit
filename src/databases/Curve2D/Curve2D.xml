@@ -1,15 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="Curve2D" type="database" label="Curve2D" version="1.0" enabled="true" mdspecificcode="true" onlyengine="false" noengine="false" dbtype="STSD" haswriter="true" hasoptions="true">
-    <FilePatterns>
-      *.curve
-      *.ultra
-      *.ult
-      *.u
-      *.curve.gz
-      *.ultra.gz
-      *.ult.gz
-      *.u.gz
-    </FilePatterns>
-    <Attribute name="" purpose="" persistent="false">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:68e4c5f76e5b5fe3b511c8d9be4acc0ae66da979712ce8444fe58abd4f689fed
+size 450

@@ -1,9 +1,3 @@
-You must set the following environment variables when running the
-avt examples in a development build.
-
-setenv VISITARCHHOME path_to_visit/src/
-setenv VISITHOME path_to_visit/src
-setenv VISITPLUGINDIR path_to_visit/src/plugins
-
-The qvtkopenglExample and qtvtkExample examples do not require setting
-any environment variables.
+version https://git-lfs.github.com/spec/v1
+oid sha256:42ce3e65795824bb00ddb9602169a842d30495ddab03584b4b28e0abdc8a01be
+size 326

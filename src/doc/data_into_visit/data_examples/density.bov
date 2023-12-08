@@ -1,9 +1,3 @@
-TIME: 10.
-DATA_FILE: density.bof
-DATA_SIZE: 10 10 10
-DATA_FORMAT: FLOAT
-VARIABLE: density
-DATA_ENDIAN: LITTLE
-CENTERING: ZONAL
-BRICK_ORIGIN: 0. 0. 0.
-BRICK_SIZE: 10. 10. 10.
+version https://git-lfs.github.com/spec/v1
+oid sha256:7378ecbebb7ad4d59cc25621cc32629ce65fe7d14ba8b4f7bd823f95d22a15b8
+size 174

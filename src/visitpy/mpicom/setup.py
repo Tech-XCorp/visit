@@ -1,34 +1,3 @@
-# Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-# Project developers.  See the top-level LICENSE file for dates and other
-# details.  No copyright assignment is required to contribute to VisIt.
-
-###############################################################################
-# file: setup.py
-# Purpose: disutils setup for mpicom module.
-#
-# Programmer: Cyrus Harrison
-# Creation: Thu Apr  5 08:42:40 PDT 2012
-#
-#
-# Modifications:
-#
-#
-###############################################################################
-
-import sys
-from distutils.core import setup
-from distutils.command.install_egg_info import install_egg_info
-
-# disable install_egg_info
-class SkipEggInfo(install_egg_info):
-    def run(self):
-        pass
-
-
-setup (name = 'mpicom',
-       description = 'mpicom',
-       package_dir = {'mpicom':'py_src'},
-       packages=['mpicom'],
-       cmdclass={'install_egg_info': SkipEggInfo})
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:ad91d0237bb5a03f99c449247e02eb6e06766585ef2d271ecd6d4752e2c3d373
+size 926

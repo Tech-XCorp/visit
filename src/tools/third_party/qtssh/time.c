@@ -1,16 +1,3 @@
-/*
- * Portable implementation of ltime() for any ISO-C platform where
- * time_t behaves. (In practice, we've found that platforms such as
- * Windows and Mac have needed their own specialised implementations.)
- */
-
-#include <time.h>
-#include <assert.h>
-
-struct tm ltime(void)
-{
-    time_t t;
-    time(&t);
-    assert (t != ((time_t)-1));
-    return *localtime(&t);
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:99952a54474c897712c95ca201939d11ac96efdba5ea7dc90cb0f5b73514775c
+size 366

@@ -1,21 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef QVIS_DELAYED_WINDOW_OBSERVER_H
-#define QVIS_DELAYED_WINDOW_OBSERVER_H
-#include <gui_exports.h>
-#include <QvisDelayedWindow.h>
-#include <Observer.h>
-
-class GUI_API QvisDelayedWindowObserver : public QvisDelayedWindow, public Observer
-{
-    Q_OBJECT
-public:
-    QvisDelayedWindowObserver(Subject *subj, const QString &caption);
-    virtual ~QvisDelayedWindowObserver();
-    virtual void CreateWindowContents() = 0;
-    virtual void Update(Subject *TheChangedSubject);
-};
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:8857e762d2776dfabbd0c74909516798564f863b46d57effe00762f97a3e9739
+size 709

@@ -1,8 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="TSurf" type="database" label="TSurf" version="1.0" enabled="true" mdspecificcode="true" onlyengine="false" noengine="false" dbtype="STSD" haswriter="false" hasoptions="false">
-    <FilePatterns>
-      *.ts_deg83
-    </FilePatterns>
-    <Attribute name="" purpose="" persistent="false">
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:a079fc4df678f0a347950b2cdafd6de4e5e0efb0efa29b86219c3cd82ebf1e94
+size 353

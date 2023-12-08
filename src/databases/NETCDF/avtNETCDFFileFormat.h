@@ -1,16 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef AVT_NETCDF_FILE_FORMAT_H
-#define AVT_NETCDF_FILE_FORMAT_H
-
-class avtFileFormatInterface;
-
-//
-// Prototype for the file format interface factory function.
-//
-avtFileFormatInterface *
-NETCDF_CreateFileFormatInterface(const char * const *, int, int);
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:f3f3f3c124f0522e400c867cc89f0c2b791b99ea0af0244ec9029cff007a8e80
+size 488

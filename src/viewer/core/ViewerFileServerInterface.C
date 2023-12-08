@@ -1,15 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <ViewerFileServerInterface.h>
-
-const int ViewerFileServerInterface::ANY_STATE = -1;
-
-ViewerFileServerInterface::ViewerFileServerInterface()
-{
-}
-
-ViewerFileServerInterface::~ViewerFileServerInterface()
-{
-}
+version https://git-lfs.github.com/spec/v1
+oid sha256:3f15b5d7c6ab730c39b17d8e60913d02cc1fe429b2330c8a36b0dd36a07ec094
+size 438

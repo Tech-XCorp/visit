@@ -1,10 +1,3 @@
-
-C:  summary.samrai
-amr_mesh level 1 patch level1,patch0 
-Point: <-0.2875, 0.075>
-Zone:  247
-Incident Nodes:  260  261  280  279  
-energy:  <zonal> = 0
-        material material_1 = 0
-        material material_3 = 8.5e-05
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:923c862a6f13d219b608091a2c2a1a487f173fefa9c58837ab38ab4afc9cfa35
+size 223

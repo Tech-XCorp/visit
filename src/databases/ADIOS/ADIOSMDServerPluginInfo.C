@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#include <ADIOSPluginInfo.h>
-
-VISIT_DATABASE_PLUGIN_ENTRY(ADIOS,MDServer)
-
-// this makes compilers happy... remove if we ever have functions here
-void ADIOSMDServerPluginInfo::dummy()
-{
-}
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:33a5d1994d73c30e92629cd3ed9e5cec33a46461af3f12a14054d9c6079b0555
+size 413

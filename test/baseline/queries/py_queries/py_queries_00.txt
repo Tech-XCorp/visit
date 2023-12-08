@@ -1,1 +1,3 @@
-The average value = 0.468215
+version https://git-lfs.github.com/spec/v1
+oid sha256:84d570cd174c423e6f1fdf396da1025b6d6234a94ab0181c1887b605697f0315
+size 29

@@ -1,36 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ************************************************************************* //
-//                       FileDoesNotExistException.h                         //
-// ************************************************************************* //
-
-#ifndef FILE_DOES_NOT_EXIST_EXCEPTION_H
-#define FILE_DOES_NOT_EXIST_EXCEPTION_H
-#include <avtexception_exports.h>
-#include <DatabaseException.h>
-
-
-// ****************************************************************************
-//  Class: FileDoesNotExistException
-//
-//  Purpose:
-//      The exception thrown when a file does not exist.
-//
-//  Programmer: Brad Whitlock
-//  Creation:   Fri Jul 26 11:15:22 PDT 2002
-//
-//  Modifications:
-//
-// ****************************************************************************
-
-class AVTEXCEPTION_API FileDoesNotExistException : public DatabaseException
-{
-  public:
-                          FileDoesNotExistException(const char *);
-    virtual              ~FileDoesNotExistException() VISIT_THROW_NOTHING {;};
-};
-
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:21cbeb67ea2e202134502bcba56d756ca813c2df603ee07eb7062f6893c90411
+size 1232

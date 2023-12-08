@@ -1,14 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: EllipsoidSliceViewerPluginInfo.C
-// ****************************************************************************
-
-#include <EllipsoidSlicePluginInfo.h>
-#include <EllipsoidSliceAttributes.h>
-
-VISIT_OPERATOR_PLUGIN_ENTRY_EV(EllipsoidSlice,Viewer)
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:9821639bf75a73ca09c353f0c326755758202b92469a7888e9f9bd1cbac2bcb8
+size 561

@@ -1,5 +1,3 @@
-activeSource = "localhost:VISIT_TOP_DIR/data/silo_hdf5_test_data/wave*.silo database"
-activeTimeSlider = 0
-timeSliders = ("localhost:VISIT_TOP_DIR/data/silo_hdf5_test_data/wave*.silo database")
-timeSliderCurrentStates = (30)
-animationMode = 2
+version https://git-lfs.github.com/spec/v1
+oid sha256:7ad7c62f10d40ddbddb4440a4366f9e9e7f5a3c629dd79d9ae17177a9eb3f80b
+size 243

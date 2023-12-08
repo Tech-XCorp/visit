@@ -1,3 +1,3 @@
-Simulation executable "ghostcells" exists.
-Simulation "ghostcells" started.
-VisIt connected to simulation "ghostcells".
+version https://git-lfs.github.com/spec/v1
+oid sha256:07a42c6bd3fcb54058282519ed68dba429e16b66a82037f54f440506ec822cf9
+size 119

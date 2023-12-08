@@ -1,7 +1,3 @@
-<?xml version="1.0"?>
-  <Plugin name="DeferExpression" type="operator" label="DeferExpression" version="1.0" enabled="true" mdspecificcode="false" onlyengine="false" noengine="false" category="Analysis">
-    <Attribute name="DeferExpressionAttributes" purpose="Attributes for the DeferExpression operator" persistent="true" exportAPI="" exportInclude="">
-      <Field name="exprs" label="Expressions to defer evaluation of" type="stringVector">
-      </Field>
-    </Attribute>
-  </Plugin>
+version https://git-lfs.github.com/spec/v1
+oid sha256:d8c7df3c0de85b262aee5bcaf31f8dff9e57bc1c1e8b52d64d9eb5845ba2c4e0
+size 489

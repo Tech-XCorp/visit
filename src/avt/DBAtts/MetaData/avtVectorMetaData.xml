@@ -1,16 +1,3 @@
-<?xml version="1.0"?>
-  <Attribute name="avtVectorMetaData" purpose="Contains vector metadata attributes" persistent="false" keyframe="true" exportAPI="DBATTS_API" exportInclude="dbatts_exports.h" codefile="avtVectorMetaData.code" baseClass="avtVarMetaData">
-    <Field name="varDim" label="Variable dimension" type="int" access="public">
-      0
-    </Field>
-    <Function name="avtVectorMetaData2" user="true" member="true">
-    </Function>
-    <Function name="avtVectorMetaData3" user="true" member="true">
-    </Function>
-    <Function name="SetExtents" user="true" member="true">
-    </Function>
-    <Function name="UnsetExtents" user="true" member="true">
-    </Function>
-    <Function name="Print" user="true" member="true">
-    </Function>
-  </Attribute>
+version https://git-lfs.github.com/spec/v1
+oid sha256:bd2adaeb8ee471f280a615629ceb920e5aab46686dafe6549aa139debd5a8465
+size 763

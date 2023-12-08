@@ -1,6 +1,3 @@
-ABC_Stretch has 30 states
-activeSource = "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbC00.pdb"
-activeTimeSlider = 1
-timeSliders = ("ABC_Index", "ABC_Stretch", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbA00.pdb", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbB00.pdb", "localhost:VISIT_TOP_DIR/data/pdb_test_data/dbC00.pdb")
-timeSliderCurrentStates = (29, 10, 3, 7, 10)
-animationMode = 2
+version https://git-lfs.github.com/spec/v1
+oid sha256:5d3ac416c4b281102b1d6490572cf24e75e2208fe98dd08101f1e0fc245af9e9
+size 391

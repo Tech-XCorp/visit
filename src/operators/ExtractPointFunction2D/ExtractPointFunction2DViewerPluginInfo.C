@@ -1,14 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ****************************************************************************
-//  File: ExtractPointFunction2DViewerPluginInfo.C
-// ****************************************************************************
-
-#include <ExtractPointFunction2DPluginInfo.h>
-#include <ExtractPointFunction2DAttributes.h>
-
-VISIT_OPERATOR_PLUGIN_ENTRY_EV(ExtractPointFunction2D,Viewer)
-
-
+version https://git-lfs.github.com/spec/v1
+oid sha256:3014936a4d32c7382320124a8b24a7f19baddf4d24a882bbe729adb2dd2f1b45
+size 593

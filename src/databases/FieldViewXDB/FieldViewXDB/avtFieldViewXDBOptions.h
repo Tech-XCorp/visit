@@ -1,29 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-// ************************************************************************* //
-//                             avtFieldViewXDBOptions.h
-// ************************************************************************* //
-
-#ifndef AVT_FIELDVIEW_XDB_OPTIONS_H
-#define AVT_FIELDVIEW_XDB_OPTIONS_H
-
-class DBOptionsAttributes;
-
-// ****************************************************************************
-//  Functions: avtFieldViewXDBOptions
-//
-//  Purpose:
-//      Creates the options for FieldViewXDB readers and/or writers.
-//
-//  Programmer: Brad Whitlock
-//  Creation:   Mon Sep 28 16:06:41 PDT 2015
-//
-// ****************************************************************************
-
-DBOptionsAttributes *GetFieldViewXDBReadOptions(void);
-DBOptionsAttributes *GetFieldViewXDBWriteOptions(void);
-
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:04cbd6e531b64e45b826d55b85b606df4a524474c5411b966749e0bcd5b0276c
+size 1027

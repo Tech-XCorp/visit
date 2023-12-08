@@ -1,3 +1,3 @@
-Simulation executable "polyhedral" exists.
-Simulation "polyhedral" started.
-VisIt connected to simulation "polyhedral".
+version https://git-lfs.github.com/spec/v1
+oid sha256:76cecd8cabe16a8a49ea03e53d5f49189956cbb712632bcc07b4254d5f98f758
+size 119

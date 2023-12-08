@@ -1,13 +1,3 @@
-// Copyright (c) Lawrence Livermore National Security, LLC and other VisIt
-// Project developers.  See the top-level LICENSE file for dates and other
-// details.  No copyright assignment is required to contribute to VisIt.
-
-#ifndef VOLUME_RLE_FUNCTIONS_H
-#define VOLUME_RLE_FUNCTIONS_H
-#include <vectortypes.h>
-
-void VolumeRLECompress(const unsignedCharVector &in, unsignedCharVector &out);
-
-void VolumeRLEDecompress(const unsignedCharVector &in, unsignedCharVector &out);
-
-#endif
+version https://git-lfs.github.com/spec/v1
+oid sha256:8c645272256d6191df2ff9ccfbccdd078e23c5686826316375c1104e78397f62
+size 481
