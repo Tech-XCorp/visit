@@ -294,11 +294,15 @@ ENDFOREACH(VTK_TARGET ${VTK_TARGETS})
 # If we have HDF5 build all HDF5 Data Gen Target Programs
 #-----------------------------------------------------------------------------
 IF(HDF5_FOUND)
+    set(HDF5_ZLIB_LIB)
+    if (NOT WIN32)
+      set(HDF5_ZLIB_LIB ${ZLIB_LIB})
+    endif ()
     FOREACH(HDF5_TARGET ${HDF5_TARGETS})
         BUILD_DATA_TARGET(${HDF5_TARGET}
             INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} ${HDF5_INCLUDE_DIR}
             LIB_DIRS ${HDF5_LIBRARY_DIR}
-            LIBS ${HDF5_LIB} ${DL_LIB})
+            LIBS ${HDF5_LIB} ${DL_LIB} ${HDF5_ZLIB_LIB})
     ENDFOREACH()
 ENDIF(HDF5_FOUND)
 
