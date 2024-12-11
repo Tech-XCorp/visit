@@ -3016,7 +3016,8 @@ vtkCSGGrid::DiscretizeSpaceMultiPass(int specificZone,
     // Threshold out the cells for this region
     vtkThreshold *threshold = vtkThreshold::New();
     threshold->SetInputData(rv);
-    threshold->ThresholdByUpper(0.5);
+// https://discourse.vtk.org/t/unnecessary-vtk-api-change/9929/4
+    threshold->SetUpperThreshold(0.5);
     threshold->Update();
     rv = threshold->GetOutput();
     rv->Register(0);
