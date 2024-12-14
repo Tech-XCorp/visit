@@ -98,7 +98,6 @@ dir="$(dirname $0)"
 # Make path absolute
 dir=`(cd $dir; pwd -P)`
 
->>>>>>> c9db46709c (Modify frontendlauncher for paths needed for composer and correct error message. Correct casing in internallauncher.)
 for ver in $versions; do
     thispython="$dir/../$ver/$platform/bin/python"
     thispython3="$dir/../$ver/$platform/bin/python3"

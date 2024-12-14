@@ -29,6 +29,7 @@ function(VISIT_INSTALL_TARGETS_RELATIVE dest_dir)
             endif()
         endforeach()
     else()
+        set_target_properties(${ARGN} PROPERTIES INSTALL_NAME_DIR "${CMAKE_INSTALL_PREFIX}/${VISIT_INSTALLED_VERSION_LIB}/${dest_dir}")
         INSTALL(TARGETS ${ARGN}
             RUNTIME DESTINATION ${VISIT_INSTALLED_VERSION_BIN}/${dest_dir}
             BUNDLE  DESTINATION ${VISIT_INSTALLED_VERSION_BIN}/${dest_dir}
