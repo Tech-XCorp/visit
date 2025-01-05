@@ -21,6 +21,7 @@
 #include <sstream>
 #include <iostream>
 #include <limits>
+#include <cmath>
 
 //****************************************************************************
 // Class: TimeScaleDraw
