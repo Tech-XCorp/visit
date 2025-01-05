@@ -76,8 +76,7 @@ endif()
 set(visit_qt_modules Core Concurrent Gui Widgets OpenGL Network PrintSupport Svg Xml UiTools)
 
 if(${QT_MAJOR_VERSION} EQUAL 5)
-    list(APPEND visit_qt_modules Qml)
-
+    # Qml not working with qt-5.14.2.  Appears not needed.
     if(LINUX)
         list(APPEND visit_qt_modules X11Extras)
     endif()
