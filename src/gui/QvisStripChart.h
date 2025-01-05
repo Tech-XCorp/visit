@@ -5,6 +5,7 @@
 #ifndef QVIS_STRIPCHART_H
 #define QVIS_STRIPCHART_H
 
+#include <qpen.h>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 

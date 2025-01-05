@@ -13,12 +13,14 @@
 #include <qwt_plot_zoomer.h>
 #include <qwt_plot_panner.h>
 #include <qwt_plot_canvas.h>
+#include <QPainter>
 
 #include <DebugStream.h>
 
 #include <sstream>
 #include <iostream>
 #include <limits>
+#include <cmath>
 
 //****************************************************************************
 // Class: TimeScaleDraw
