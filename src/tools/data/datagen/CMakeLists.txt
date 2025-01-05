@@ -223,11 +223,17 @@ endforeach()
 # If we have HDF5 build all HDF5 Data Gen Target Programs
 #-----------------------------------------------------------------------------
 if(HDF5_FOUND)
+# Needed for linking against static hdf5 if it was compiled with zlib
+# No harm adding always.
+    set(HDF5_ZLIB_LIB)
+    if (NOT WIN32)
+      set(HDF5_ZLIB_LIB ${ZLIB_LIB})
+    endif ()
     foreach(HDF5_TARGET unic xdmf xdmf2d)
         BUILD_DATA_TARGET(${HDF5_TARGET}
             INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} ${HDF5_INCLUDE_DIR}
             LIB_DIRS ${HDF5_LIBRARY_DIR}
-            LIBS ${HDF5_LIB} ${DL_LIB})
+            LIBS ${HDF5_LIB} ${DL_LIB} ${HDF5_ZLIB_LIB})
     endforeach()
 endif()
 
