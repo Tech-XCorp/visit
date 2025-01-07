@@ -1117,7 +1117,7 @@ vtkDataSet* avtVsFileFormat::getStructuredMesh(VsReader* reader,
     haveDataSelections = 1;
 #endif
 
-    int numPoints = 1;
+    size_t numPoints = 1;
     for (size_t i=0; i<numSpatialDims; ++i)
       numPoints *= gdims[i];
 
@@ -1183,7 +1183,7 @@ vtkDataSet* avtVsFileFormat::getStructuredMesh(VsReader* reader,
                           << numSpatialDims << " is less than 3.  "
                           << "Moving data into correct location." << std::endl;
 
-        for (int i=numPoints-1; i>=0; --i)
+        for (size_t i=numPoints-1; i>=0; --i)
         {
             unsigned char* destPtr
               = (unsigned char*) dataPtr + i*3*dsize;
