@@ -3970,6 +3970,16 @@ void avtVsFileFormat::RegisterMeshes(VsRegistry* registry, avtDatabaseMetaData* 
                                       (int) numTopologicalDims, meshType);
 
                 vmd->SetBounds( bounds );
+                VsLog::debugLog() << CLASSFUNCLINE
+                                  << "Setting avtMeshMetaData.numberCells to "
+                                  << numCells
+                                  << " or " <<(int)numCells
+                                  << "." << std::endl;
+                if ((int)numCells < 0) {
+                    VsLog::errorLog() << CLASSFUNCLINE
+                                      << "Number of cells has overflowed the integer field."
+                                      <<std::endl;
+                }
                 vmd->SetNumberCells( (int)numCells );
                 setAxisLabels(registry, vmd, rectMesh->hasTransform());
                 setGlobalExtents(registry, vmd);
@@ -4062,6 +4072,16 @@ void avtVsFileFormat::RegisterMeshes(VsRegistry* registry, avtDatabaseMetaData* 
                                   (int) numTopologicalDims, meshType);
 
             vmd->SetBounds( bounds );
+            VsLog::debugLog() << CLASSFUNCLINE
+                  << "Setting avtMeshMetaData.numberCells to "
+                  << numCells
+                  << " or " <<(int)numCells
+                  << "." << std::endl;
+            if ((int)numCells < 0) {
+                VsLog::errorLog() << CLASSFUNCLINE
+                                  << "Number of cells has overflowed the integer field."
+                                  <<std::endl;
+            }
             vmd->SetNumberCells( (int) numCells );
             setAxisLabels(registry, vmd);
             setGlobalExtents(registry, vmd);
@@ -4363,6 +4383,16 @@ void avtVsFileFormat::RegisterVarsWithMesh(VsRegistry* registry, avtDatabaseMeta
                               AVT_POINT_MESH);
 
         vmd->SetBounds(bounds);
+        VsLog::debugLog() << CLASSFUNCLINE
+                          << "Setting avtMeshMetaData.numberCells to "
+                          << numCells
+                          << " or " <<(int)numCells
+                          << "." << std::endl;
+        if ((int)numCells < 0) {
+            VsLog::errorLog() << CLASSFUNCLINE
+                              << "Number of cells has overflowed the integer field."
+                              <<std::endl;
+        }
         vmd->SetNumberCells(numCells);
         setAxisLabels(registry, vmd);
         setGlobalExtents(registry, vmd);
