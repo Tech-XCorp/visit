@@ -7,6 +7,7 @@ build_branch_*/
 /src/test/html/
 /src/test/json/
 /src/test/_run/
+/src/test/py_src/
 /src/test/results.json
 /src/test/tests.json
 visit.masonry.docker.src.tar
