@@ -260,8 +260,12 @@ if(NOT VISIT_QT_SKIP_INSTALL)
           set(OPENSSL_ROOT_DIR "${VISIT_QT_DIR}")
         endif()
         if(${QT_MAJOR_VERSION} EQUAL 5)
-            set(ssldlls ${OPENSSL_ROOT_DIR}/bin/libeay32.dll
-                        ${OPENSSL_ROOT_DIR}/bin/ssleay32.dll)
+            # NOTE(mdurant) I'm not sure how the Qt build version would affect
+            # the openssl library names. Also don't understand why the dlls would be
+            # in the "bin" folder. For now, following what I see on devwin10c
+            # with openssl-1.1.1k
+            set(ssldlls ${OPENSSL_ROOT_DIR}/lib/libssl.lib
+                        ${OPENSSL_ROOT_DIR}/lib/libcrypto.lib)
         else()
             set(ssldlls ${OPENSSL_ROOT_DIR}/bin/libcrypto-1_1-x64.dll
                         ${OPENSSL_ROOT_DIR}/bin/libssl-1_1-x64.dll)
