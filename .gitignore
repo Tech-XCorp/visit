@@ -14,3 +14,5 @@ visit.masonry.docker.src.tar
 visit.build_visit.docker.src.tar
 build-mb-*
 _logs
+*.vscode
+*.DS_Store
