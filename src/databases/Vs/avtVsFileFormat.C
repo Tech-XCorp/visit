@@ -828,10 +828,6 @@ avtVsFileFormat::getRectilinearMesh(VsReader* reader,
         }
 
         hid_t axisDataType = axisData->getType();
-        VsLog::debugLog() << CLASSFUNCLINE
-                          << "Axis dataset has type "
-                          << axisDataType
-                          << std::endl;
 
         // Read points and add in zero for any lacking dimension
         if( isDoubleType( axisDataType ) ) {
@@ -858,7 +854,7 @@ avtVsFileFormat::getRectilinearMesh(VsReader* reader,
 
         if (dataPtr) {
             VsLog::debugLog() << CLASSFUNCLINE
-                              << "Allocation suceeded.\n";
+                              << "Allocation succeeded.\n";
         } else {
             VsLog::debugLog() << CLASSFUNCLINE
                               << "Allocation failed, pointer is NULL."
@@ -1095,7 +1091,7 @@ vtkDataSet* avtVsFileFormat::getStructuredMesh(VsReader* reader,
         return NULL;
     }
 
-    // ARS - Becasue of the way the data structures are used to hold
+    // ARS - Because of the way the data structures are used to hold
     // structured data in VTK and VisIt the topological dimension has
     // to equal the spatial dimension. That is ONLY the last dim(s) of
     // the nodes can be 1.
