@@ -828,22 +828,23 @@ avtVsFileFormat::getRectilinearMesh(VsReader* reader,
         }
 
         hid_t axisDataType = axisData->getType();
+        size_t axisDataSize = axisData->getLength();
 
         // Read points and add in zero for any lacking dimension
         if( isDoubleType( axisDataType ) ) {
             VsLog::debugLog() << CLASSFUNCLINE
                               << "Initializing dblDataPtr with space for "
-                              << gdims[i]
+                              << axisDataSize
                               << " double values.\n";
-            dblDataPtr = new double[gdims[i]];
+            dblDataPtr = new double[axisDataSize];
             dataPtr = dblDataPtr;
         }
         else if( isFloatType( axisDataType ) ) {
             VsLog::debugLog() << CLASSFUNCLINE
                               << "Initializing fltDataPtr with space for "
-                              << gdims[i]
+                              << axisDataSize
                               << " float values.\n";
-            fltDataPtr = new float[gdims[i]];
+            fltDataPtr = new float[axisDataSize];
             dataPtr = fltDataPtr;
         } else {
             VsLog::debugLog() << CLASSFUNCLINE
