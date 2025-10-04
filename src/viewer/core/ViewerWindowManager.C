@@ -3474,6 +3474,18 @@ ViewerWindowManager::SetViewExtentsType(avtExtentType viewType,
 //    Garrett Morrison, Fri May 11 17:57:47 PDT 2018
 //    Added options for ospray rendering
 //
+//    Kevin Griffin, Thu Mar 6 15:51:48 CST 2025
+//    Added options for ANARI rendering
+//
+//    Kathleen Biagas, Thu Aug 14, 2025
+//    Added new RenderingAttributes items: MSAASamples, FXAAOptions.
+//
+//    Kathleen Biagas, Thu Aug 28 15:46:38 PDT 2025
+//    Removed surfaceRepresentation, no longer used.
+//
+//    Kevin Griffin, Wed Sep 10, 2025
+//    Refactored ANARI rendering options into AnariAttributes
+//
 // ****************************************************************************
 
 void
@@ -3494,6 +3506,12 @@ ViewerWindowManager::SetRenderingAttributes(int windowIndex)
 
         if (windows[index]->GetAntialiasing() != ratts->GetAntialiasing())
             windows[index]->SetAntialiasing(ratts->GetAntialiasing());
+
+        if (windows[index]->GetMSAASamples() != ratts->GetMSAASamples())
+            windows[index]->SetMSAASamples(ratts->GetMSAASamples());
+
+        if (windows[index]->GetFXAAOptions() != &ratts->GetFXAAOpt())
+            windows[index]->SetFXAAOptions(&ratts->GetFXAAOpt());
 
         if (windows[index]->GetOrderComposite() != ratts->GetOrderComposite())
             windows[index]->SetOrderComposite(ratts->GetOrderComposite());
@@ -3530,11 +3548,6 @@ ViewerWindowManager::SetRenderingAttributes(int windowIndex)
             ratts->GetMultiresolutionCellSize())
             windows[index]->SetMultiresolutionCellSize(
             ratts->GetMultiresolutionCellSize());
-
-        if (windows[index]->GetSurfaceRepresentation() !=
-            (int) ratts->GetGeometryRepresentation())
-            windows[index]->SetSurfaceRepresentation((int)
-            ratts->GetGeometryRepresentation());
 
         if ((windows[index]->GetStereo() != ratts->GetStereoRendering()) ||
             (windows[index]->GetStereoType() != (int) ratts->GetStereoType()))
@@ -3615,6 +3628,11 @@ ViewerWindowManager::SetRenderingAttributes(int windowIndex)
             windows[index]->SetOsprayAO(ratts->GetOsprayAO());
         if (windows[index]->GetOsprayShadows() != ratts->GetOsprayShadows())
             windows[index]->SetOsprayShadows(ratts->GetOsprayShadows());
+#endif
+
+#ifdef HAVE_ANARI
+    if (windows[index]->GetAnariAttributes() != ratts->GetAnariAttributes())
+        windows[index]->SetAnariAttributes(ratts->GetAnariAttributes());
 #endif
 
         // If the updatesEnabled flag was true before we temporarily disabled
@@ -5224,6 +5242,21 @@ ViewerWindowManager::UpdateLightListAtts()
 //   Garrett Morrison, Fri May 11 17:57:47 PDT 2018
 //   Added ospray rendering properties
 //
+//   Kevin Griffin, Thu Mar 6 15:51:48 CST 2025
+//   Added ANARI rendering properties
+//
+//   Kathleen Biagas, Monday July 28, 2025.
+//   Antialiasing is now an int (enum).
+//
+//   Kathleen Biagas, Thu Aug 14, 2025
+//   Added new RenderingAttributes items: MSAASamples, FXAAOptions.
+//
+//   Kathleen Biagas, Thu Aug 28 15:46:38 PDT 2025
+//   Removed geometryRepresentation, no longer used.
+//
+//   Kevin Griffin, Wed Sep 10, 2025
+//   Refactored ANARI rendering properties into AnariAttributes
+//
 // ****************************************************************************
 
 void
@@ -5244,11 +5277,11 @@ ViewerWindowManager::UpdateRenderingAtts(int windowIndex)
         // If new rendering attributes are introduced ALL of the above
         // classes (in multiple places) must be updated.
 
-        GetViewerState()->GetRenderingAttributes()->SetAntialiasing(win->GetAntialiasing());
+        GetViewerState()->GetRenderingAttributes()->SetAntialiasing((RenderingAttributes::AAMode) win->GetAntialiasing());
+        GetViewerState()->GetRenderingAttributes()->SetMSAASamples(win->GetMSAASamples());
+        GetViewerState()->GetRenderingAttributes()->SetFXAAOpt(*(win->GetFXAAOptions()));
         GetViewerState()->GetRenderingAttributes()->SetMultiresolutionMode(win->GetMultiresolutionMode());
         GetViewerState()->GetRenderingAttributes()->SetMultiresolutionCellSize(win->GetMultiresolutionCellSize());
-        GetViewerState()->GetRenderingAttributes()->SetGeometryRepresentation(
-            (RenderingAttributes::GeometryRepresentation)win->GetSurfaceRepresentation());
         GetViewerState()->GetRenderingAttributes()->SetStereoRendering(win->GetStereo());
         GetViewerState()->GetRenderingAttributes()->SetStereoType((RenderingAttributes::StereoTypes)
             win->GetStereoType());
@@ -5276,6 +5309,10 @@ ViewerWindowManager::UpdateRenderingAtts(int windowIndex)
         GetViewerState()->GetRenderingAttributes()->SetOspraySPP(win->GetOspraySPP());
         GetViewerState()->GetRenderingAttributes()->SetOsprayAO(win->GetOsprayAO());
         GetViewerState()->GetRenderingAttributes()->SetOsprayShadows(win->GetOsprayShadows());
+#endif
+
+#ifdef HAVE_ANARI
+        GetViewerState()->GetRenderingAttributes()->SetAnariAttributes(win->GetAnariAttributes());
 #endif
 
         // Tell the client about the new rendering information.
@@ -8189,6 +8226,15 @@ ViewerWindowManager::CreateVisWindow(const int windowIndex,
 //    Kathleen Biagas, Thu Apr  2 17:06:22 PDT 2015
 //    Ensure color texturing flag gets set.
 //
+//    Kathleen Biagas, Thu Aug 14, 2025
+//    Added new RenderingAttributes items: MSAASamples, FXAAOptions.
+//
+//    Kathleen Biagas, Thu Aug 28 15:46:38 PDT 2025
+//    Removed geometryRepresentation, no longer used.
+//
+//    Kevin Griffin, Wed Sep 10, 2025
+//    Added AnariAttributes
+//
 // ****************************************************************************
 
 void
@@ -8212,10 +8258,10 @@ ViewerWindowManager::SetWindowAttributes(int windowIndex, bool copyAtts)
         w->SetToolLock(false);
     }
     w->SetAntialiasing(GetViewerState()->GetRenderingAttributes()->GetAntialiasing());
+    w->SetMSAASamples(GetViewerState()->GetRenderingAttributes()->GetMSAASamples());
+    w->SetFXAAOptions(&GetViewerState()->GetRenderingAttributes()->GetFXAAOpt());
     w->SetMultiresolutionMode(GetViewerState()->GetRenderingAttributes()->GetMultiresolutionMode());
     w->SetMultiresolutionCellSize(GetViewerState()->GetRenderingAttributes()->GetMultiresolutionCellSize());
-    int rep = (int)GetViewerState()->GetRenderingAttributes()->GetGeometryRepresentation();
-    w->SetSurfaceRepresentation(rep);
     w->SetStereoRendering(GetViewerState()->GetRenderingAttributes()->GetStereoRendering(),
         (int)GetViewerState()->GetRenderingAttributes()->GetStereoType());
     w->SetNotifyForEachRender(GetViewerState()->GetRenderingAttributes()->GetNotifyForEachRender());
@@ -8244,6 +8290,9 @@ ViewerWindowManager::SetWindowAttributes(int windowIndex, bool copyAtts)
     w->SetOsprayShadows(GetViewerState()->GetRenderingAttributes()->GetOsprayShadows());
 #endif
 
+#ifdef HAVE_ANARI
+    w->SetAnariAttributes(GetViewerState()->GetRenderingAttributes()->GetAnariAttributes());
+#endif
 }
 
 // ****************************************************************************
@@ -10117,3 +10166,27 @@ ViewerWindowManager::CheckForOSPRayRendering() const
 #endif
 }
 
+// ****************************************************************************
+//  Method: ViewerWindowManager::QueryMSAAAvailability
+//
+//  Purpose: Checks if MSAA is available.
+//
+//  Programmer: Kathleen Biagas
+//  Creation:   Aug 26, 2025
+//
+// ****************************************************************************
+
+void
+ViewerWindowManager::QueryMSAAAvailability(int windowIndex)
+{
+    int index = (windowIndex == -1) ? activeWindow : windowIndex;
+    if(windows[index] != 0)
+    {
+        bool msaaAvail = windows[index]->MSAAAvailable();
+        if(msaaAvail != GetViewerState()->GetRenderingAttributes()->GetMSAAAvailable())
+        {
+            GetViewerState()->GetRenderingAttributes()->SetMSAAAvailable(msaaAvail);
+            GetViewerState()->GetRenderingAttributes()->Notify();
+        }
+    }
+}

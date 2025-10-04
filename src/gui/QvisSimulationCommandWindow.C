@@ -76,13 +76,8 @@ QvisSimulationCommandWindow::CreateWindowContents()
     vb->addLayout(commandButtonLayout);
     vb->addStretch(10);
     commandButtonLayout->setContentsMargins(0,0,0,0);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(commandGroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(handleCommandButton(int)));
-#else
     connect(commandGroup, SIGNAL(idClicked(int)),
             this, SLOT(handleCommandButton(int)));
-#endif
     bool added = false;
     EnsureButtonExists(5, added);
 
@@ -101,8 +96,8 @@ QvisSimulationCommandWindow::CreateWindowContents()
     startCycle->setText(tr("0"));
     timeLayout->addWidget(startLabel,0,0);
     timeLayout->addWidget(startCycle,0,1);
-    connect(startCycle,SIGNAL(textChanged(const QString &)),
-            this,SLOT(handleStart(const QString&)));
+    connect(startCycle,SIGNAL(editingFinished()),
+            this,SLOT(handleStart()));
 
     stepCycle = new QLineEdit(timeGroup);
     stepLabel = new QLabel(timeGroup);
@@ -110,8 +105,8 @@ QvisSimulationCommandWindow::CreateWindowContents()
     stepCycle->setText(tr("1"));
     timeLayout->addWidget(stepLabel,0,2);
     timeLayout->addWidget(stepCycle,0,3);
-    connect(stepCycle,SIGNAL(textChanged(const QString &)),
-            this,SLOT(handleStep(const QString&)));
+    connect(stepCycle,SIGNAL(editingFinished()),
+            this,SLOT(handleStep()));
     
     stopCycle = new QLineEdit(timeGroup);
     stopLabel = new QLabel(timeGroup);
@@ -119,8 +114,8 @@ QvisSimulationCommandWindow::CreateWindowContents()
     stopCycle->setText(tr("0"));
     timeLayout->addWidget(stopLabel,0,4);
     timeLayout->addWidget(stopCycle,0,5);
-    connect(stopCycle,SIGNAL(textChanged(const QString &)),
-            this,SLOT(handleStop(const QString&)));
+    connect(stopCycle,SIGNAL(editingFinished()),
+            this,SLOT(handleStop()));
 }
 
 int
@@ -241,7 +236,7 @@ QvisSimulationCommandWindow::handleTimeRanging(bool b)
 }
 
 void
-QvisSimulationCommandWindow::handleStart(const QString &text)
+QvisSimulationCommandWindow::handleStart()
 {
     QString value(startCycle->text().trimmed());
     if(!value.isEmpty())
@@ -249,7 +244,7 @@ QvisSimulationCommandWindow::handleStart(const QString &text)
 }
 
 void
-QvisSimulationCommandWindow::handleStop(const QString &text)
+QvisSimulationCommandWindow::handleStop()
 {
     QString value(stopCycle->text().trimmed());
     if(!value.isEmpty())
@@ -257,7 +252,7 @@ QvisSimulationCommandWindow::handleStop(const QString &text)
 }
 
 void
-QvisSimulationCommandWindow::handleStep(const QString &text)
+QvisSimulationCommandWindow::handleStep()
 {
     QString value(stepCycle->text().trimmed());
     if(!value.isEmpty())

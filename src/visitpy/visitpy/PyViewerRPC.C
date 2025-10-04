@@ -5,6 +5,7 @@
 #include <PyViewerRPC.h>
 #include <ObserverToCallback.h>
 #include <stdio.h>
+#include <string.h>
 #include <Py2and3Support.h>
 
 // ****************************************************************************
@@ -23,7 +24,7 @@
 //
 // This struct contains the Python type information and a ViewerRPC.
 //
-struct ViewerRPCObject
+struct PyViewerRPCObject
 {
     PyObject_HEAD
     ViewerRPC *data;
@@ -93,7 +94,7 @@ PyViewerRPC_ToString(const ViewerRPC *atts, const char *prefix, const bool forLo
         "SetPlotOrderToFirstRPC, SetPlotOrderToLastRPC, RenamePickLabelRPC, GetQueryParametersRPC, "
         "DDTConnectRPC, DDTFocusRPC, ReleaseToDDTRPC, PlotDDTVispointVariablesRPC, "
         "ExportRPC, ExportHostProfileRPC, StartPlotAnimationRPC, StopPlotAnimationRPC, "
-        "ReadHostProfilesFromDirectoryRPC, SetRemoveDuplicateNodesRPC, MaxRPC";
+        "ReadHostProfilesFromDirectoryRPC, SetRemoveDuplicateNodesRPC, QueryMSAAAvailabilityRPC, MaxRPC";
     switch (atts->GetRPCType())
     {
       case ViewerRPC::CloseRPC:
@@ -940,6 +941,10 @@ PyViewerRPC_ToString(const ViewerRPC *atts, const char *prefix, const bool forLo
           snprintf(tmpStr, 1000, "%sRPCType = %sSetRemoveDuplicateNodesRPC  # %s\n", prefix, prefix, RPCType_names);
           str += tmpStr;
           break;
+      case ViewerRPC::QueryMSAAAvailabilityRPC:
+          snprintf(tmpStr, 1000, "%sRPCType = %sQueryMSAAAvailabilityRPC  # %s\n", prefix, prefix, RPCType_names);
+          str += tmpStr;
+          break;
       case ViewerRPC::MaxRPC:
           snprintf(tmpStr, 1000, "%sRPCType = %sMaxRPC  # %s\n", prefix, prefix, RPCType_names);
           str += tmpStr;
@@ -1104,16 +1109,44 @@ PyViewerRPC_ToString(const ViewerRPC *atts, const char *prefix, const bool forLo
 static PyObject *
 ViewerRPC_Notify(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     obj->data->Notify();
     Py_INCREF(Py_None);
     return Py_None;
 }
 
+static PyObject *
+ViewerRPC_dir(PyObject *self, PyObject *args)
+{
+    static ViewerRPC atts; // dummy to access field names
+
+    PyObject *dir_list = PyList_New(0);
+    if (!dir_list)
+    {
+        PyErr_NoMemory();
+        return NULL;
+    }
+
+    // Add methods from the methods table
+    for (PyMethodDef const *method = &PyViewerRPC_methods[0];
+         method && method->ml_name;
+         method++) {
+        if (!strncmp(method->ml_name, "__dir__", 7)) continue;
+        if (!strncmp(method->ml_name, "Notify", 6)) continue;
+        PyList_Append(dir_list, PyUnicode_FromString(method->ml_name));
+    }
+
+    // Add members using generic AttributeGroup interface
+    for (int i = 0; i < atts.NumAttributes(); i++) {
+        PyList_Append(dir_list, PyUnicode_FromString(atts.GetFieldName(i).c_str()));
+    }
+
+    return dir_list;
+}
 /*static*/ PyObject *
 ViewerRPC_SetRPCType(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1148,11 +1181,11 @@ ViewerRPC_SetRPCType(PyObject *self, PyObject *args)
         return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ int");
     }
 
-    if (cval < 0 || cval >= 212)
+    if (cval < 0 || cval >= 213)
     {
         std::stringstream ss;
         ss << "An invalid RPCType value was given." << std::endl;
-        ss << "Valid values are in the range [0,211]." << std::endl;
+        ss << "Valid values are in the range [0,212]." << std::endl;
         ss << "You can also use the following symbolic names:";
         ss << " CloseRPC";
         ss << ", DetachRPC";
@@ -1365,6 +1398,7 @@ ViewerRPC_SetRPCType(PyObject *self, PyObject *args)
         ss << ", StopPlotAnimationRPC";
         ss << ", ReadHostProfilesFromDirectoryRPC";
         ss << ", SetRemoveDuplicateNodesRPC";
+        ss << ", QueryMSAAAvailabilityRPC";
         ss << ", MaxRPC";
         return PyErr_Format(PyExc_ValueError, ss.str().c_str());
     }
@@ -1381,7 +1415,7 @@ ViewerRPC_SetRPCType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetRPCType(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetRPCType()));
     return retval;
 }
@@ -1389,7 +1423,7 @@ ViewerRPC_GetRPCType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetWindowLayout(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1441,7 +1475,7 @@ ViewerRPC_SetWindowLayout(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetWindowLayout(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetWindowLayout()));
     return retval;
 }
@@ -1449,7 +1483,7 @@ ViewerRPC_GetWindowLayout(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetWindowId(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1501,7 +1535,7 @@ ViewerRPC_SetWindowId(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetWindowId(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetWindowId()));
     return retval;
 }
@@ -1509,7 +1543,7 @@ ViewerRPC_GetWindowId(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetWindowMode(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1561,7 +1595,7 @@ ViewerRPC_SetWindowMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetWindowMode(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetWindowMode()));
     return retval;
 }
@@ -1569,7 +1603,7 @@ ViewerRPC_GetWindowMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetWindowArea(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1610,7 +1644,7 @@ ViewerRPC_SetWindowArea(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetWindowArea(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetWindowArea().c_str());
     return retval;
 }
@@ -1618,7 +1652,7 @@ ViewerRPC_GetWindowArea(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetDatabase(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1659,7 +1693,7 @@ ViewerRPC_SetDatabase(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetDatabase(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetDatabase().c_str());
     return retval;
 }
@@ -1667,7 +1701,7 @@ ViewerRPC_GetDatabase(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetProgramHost(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1708,7 +1742,7 @@ ViewerRPC_SetProgramHost(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetProgramHost(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetProgramHost().c_str());
     return retval;
 }
@@ -1716,7 +1750,7 @@ ViewerRPC_GetProgramHost(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetProgramSim(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1757,7 +1791,7 @@ ViewerRPC_SetProgramSim(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetProgramSim(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetProgramSim().c_str());
     return retval;
 }
@@ -1765,7 +1799,7 @@ ViewerRPC_GetProgramSim(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetProgramOptions(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     stringVector vec;
 
@@ -1822,7 +1856,7 @@ ViewerRPC_SetProgramOptions(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetProgramOptions(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     // Allocate a tuple the with enough entries to hold the programOptions.
     const stringVector &programOptions = obj->data->GetProgramOptions();
     PyObject *retval = PyTuple_New(programOptions.size());
@@ -1834,7 +1868,7 @@ ViewerRPC_GetProgramOptions(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetNFrames(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1886,7 +1920,7 @@ ViewerRPC_SetNFrames(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetNFrames(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetNFrames()));
     return retval;
 }
@@ -1894,7 +1928,7 @@ ViewerRPC_GetNFrames(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetStateNumber(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1946,7 +1980,7 @@ ViewerRPC_SetStateNumber(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetStateNumber(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetStateNumber()));
     return retval;
 }
@@ -1954,7 +1988,7 @@ ViewerRPC_GetStateNumber(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetFrameRange(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
     int *vals = obj->data->GetFrameRange();
@@ -2021,7 +2055,7 @@ ViewerRPC_SetFrameRange(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetFrameRange(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     // Allocate a tuple the with enough entries to hold the frameRange.
     PyObject *retval = PyTuple_New(2);
     const int *frameRange = obj->data->GetFrameRange();
@@ -2033,7 +2067,7 @@ ViewerRPC_GetFrameRange(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetFrame(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2085,7 +2119,7 @@ ViewerRPC_SetFrame(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetFrame(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetFrame()));
     return retval;
 }
@@ -2093,7 +2127,7 @@ ViewerRPC_GetFrame(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetPlotType(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2145,7 +2179,7 @@ ViewerRPC_SetPlotType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetPlotType(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetPlotType()));
     return retval;
 }
@@ -2153,7 +2187,7 @@ ViewerRPC_GetPlotType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetOperatorType(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2205,7 +2239,7 @@ ViewerRPC_SetOperatorType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetOperatorType(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetOperatorType()));
     return retval;
 }
@@ -2213,7 +2247,7 @@ ViewerRPC_GetOperatorType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetVariable(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2254,7 +2288,7 @@ ViewerRPC_SetVariable(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetVariable(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetVariable().c_str());
     return retval;
 }
@@ -2262,7 +2296,7 @@ ViewerRPC_GetVariable(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetActivePlotIds(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     intVector vec;
 
@@ -2326,7 +2360,7 @@ ViewerRPC_SetActivePlotIds(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetActivePlotIds(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     // Allocate a tuple the with enough entries to hold the activePlotIds.
     const intVector &activePlotIds = obj->data->GetActivePlotIds();
     PyObject *retval = PyTuple_New(activePlotIds.size());
@@ -2338,7 +2372,7 @@ ViewerRPC_GetActivePlotIds(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetActiveOperatorIds(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     intVector vec;
 
@@ -2402,7 +2436,7 @@ ViewerRPC_SetActiveOperatorIds(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetActiveOperatorIds(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     // Allocate a tuple the with enough entries to hold the activeOperatorIds.
     const intVector &activeOperatorIds = obj->data->GetActiveOperatorIds();
     PyObject *retval = PyTuple_New(activeOperatorIds.size());
@@ -2414,7 +2448,7 @@ ViewerRPC_GetActiveOperatorIds(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetExpandedPlotIds(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     intVector vec;
 
@@ -2478,7 +2512,7 @@ ViewerRPC_SetExpandedPlotIds(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetExpandedPlotIds(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     // Allocate a tuple the with enough entries to hold the expandedPlotIds.
     const intVector &expandedPlotIds = obj->data->GetExpandedPlotIds();
     PyObject *retval = PyTuple_New(expandedPlotIds.size());
@@ -2490,7 +2524,7 @@ ViewerRPC_GetExpandedPlotIds(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetColorTableName(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2531,7 +2565,7 @@ ViewerRPC_SetColorTableName(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetColorTableName(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetColorTableName().c_str());
     return retval;
 }
@@ -2539,7 +2573,7 @@ ViewerRPC_GetColorTableName(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetQueryName(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2580,7 +2614,7 @@ ViewerRPC_SetQueryName(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetQueryName(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetQueryName().c_str());
     return retval;
 }
@@ -2588,7 +2622,7 @@ ViewerRPC_GetQueryName(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetQueryPoint1(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
     double *vals = obj->data->GetQueryPoint1();
@@ -2655,7 +2689,7 @@ ViewerRPC_SetQueryPoint1(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetQueryPoint1(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     // Allocate a tuple the with enough entries to hold the queryPoint1.
     PyObject *retval = PyTuple_New(3);
     const double *queryPoint1 = obj->data->GetQueryPoint1();
@@ -2667,7 +2701,7 @@ ViewerRPC_GetQueryPoint1(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetToolId(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2719,7 +2753,7 @@ ViewerRPC_SetToolId(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetToolId(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetToolId()));
     return retval;
 }
@@ -2727,7 +2761,7 @@ ViewerRPC_GetToolId(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetEmbeddedPlotId(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2779,7 +2813,7 @@ ViewerRPC_SetEmbeddedPlotId(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetEmbeddedPlotId(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetEmbeddedPlotId()));
     return retval;
 }
@@ -2787,7 +2821,7 @@ ViewerRPC_GetEmbeddedPlotId(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetBoolFlag(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2839,7 +2873,7 @@ ViewerRPC_SetBoolFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetBoolFlag(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetBoolFlag()?1L:0L);
     return retval;
 }
@@ -2847,7 +2881,7 @@ ViewerRPC_GetBoolFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetIntArg1(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2899,7 +2933,7 @@ ViewerRPC_SetIntArg1(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetIntArg1(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetIntArg1()));
     return retval;
 }
@@ -2907,7 +2941,7 @@ ViewerRPC_GetIntArg1(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetIntArg2(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2959,7 +2993,7 @@ ViewerRPC_SetIntArg2(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetIntArg2(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetIntArg2()));
     return retval;
 }
@@ -2967,7 +3001,7 @@ ViewerRPC_GetIntArg2(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetIntArg3(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3019,7 +3053,7 @@ ViewerRPC_SetIntArg3(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetIntArg3(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetIntArg3()));
     return retval;
 }
@@ -3027,7 +3061,7 @@ ViewerRPC_GetIntArg3(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetIntArg4(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3079,7 +3113,7 @@ ViewerRPC_SetIntArg4(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetIntArg4(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetIntArg4()));
     return retval;
 }
@@ -3087,7 +3121,7 @@ ViewerRPC_GetIntArg4(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetStringArg1(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3128,7 +3162,7 @@ ViewerRPC_SetStringArg1(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetStringArg1(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetStringArg1().c_str());
     return retval;
 }
@@ -3136,7 +3170,7 @@ ViewerRPC_GetStringArg1(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetStringArg2(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3177,7 +3211,7 @@ ViewerRPC_SetStringArg2(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetStringArg2(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetStringArg2().c_str());
     return retval;
 }
@@ -3185,7 +3219,7 @@ ViewerRPC_GetStringArg2(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetToolUpdateMode(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3237,7 +3271,7 @@ ViewerRPC_SetToolUpdateMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetToolUpdateMode(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetToolUpdateMode()));
     return retval;
 }
@@ -3245,7 +3279,7 @@ ViewerRPC_GetToolUpdateMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_SetQueryParams(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
 
     (void) obj;
     // NOT IMPLEMENTED!!!
@@ -3258,7 +3292,7 @@ ViewerRPC_SetQueryParams(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 ViewerRPC_GetQueryParams(PyObject *self, PyObject *args)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)self;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)self;
     (void) obj;
     // NOT IMPLEMENTED!!!
     // name=queryParams, type=MapNode
@@ -3269,7 +3303,8 @@ ViewerRPC_GetQueryParams(PyObject *self, PyObject *args)
 
 
 PyMethodDef PyViewerRPC_methods[VIEWERRPC_NMETH] = {
-    {"Notify", ViewerRPC_Notify, METH_VARARGS},
+    {"__dir__", ViewerRPC_dir, METH_NOARGS},
+    {"Notify", ViewerRPC_Notify, METH_NOARGS},
     {"SetRPCType", ViewerRPC_SetRPCType, METH_VARARGS},
     {"GetRPCType", ViewerRPC_GetRPCType, METH_VARARGS},
     {"SetWindowLayout", ViewerRPC_SetWindowLayout, METH_VARARGS},
@@ -3344,19 +3379,22 @@ PyMethodDef PyViewerRPC_methods[VIEWERRPC_NMETH] = {
 //
 
 static void
-ViewerRPC_dealloc(PyObject *v)
+PyViewerRPC_dealloc(PyObject *v)
 {
-   ViewerRPCObject *obj = (ViewerRPCObject *)v;
+   PyViewerRPCObject *obj = (PyViewerRPCObject *)v;
    if(obj->parent != 0)
        Py_DECREF(obj->parent);
    if(obj->owns)
        delete obj->data;
 }
 
-static PyObject *ViewerRPC_richcompare(PyObject *self, PyObject *other, int op);
+static PyObject *PyViewerRPC_richcompare(PyObject *self, PyObject *other, int op);
 PyObject *
-PyViewerRPC_getattr(PyObject *self, char *name)
+PyViewerRPC_getattro(PyObject *self, PyObject *attr_name)
 {
+    const char *name = PyUnicode_AsUTF8(attr_name);
+    if (!name) return NULL;
+
     if(strcmp(name, "RPCType") == 0)
         return ViewerRPC_GetRPCType(self, NULL);
     if(strcmp(name, "CloseRPC") == 0)
@@ -3781,6 +3819,8 @@ PyViewerRPC_getattr(PyObject *self, char *name)
         return PyInt_FromLong(long(ViewerRPC::ReadHostProfilesFromDirectoryRPC));
     if(strcmp(name, "SetRemoveDuplicateNodesRPC") == 0)
         return PyInt_FromLong(long(ViewerRPC::SetRemoveDuplicateNodesRPC));
+    if(strcmp(name, "QueryMSAAAvailabilityRPC") == 0)
+        return PyInt_FromLong(long(ViewerRPC::QueryMSAAAvailabilityRPC));
     if(strcmp(name, "MaxRPC") == 0)
         return PyInt_FromLong(long(ViewerRPC::MaxRPC));
 
@@ -3849,26 +3889,19 @@ PyViewerRPC_getattr(PyObject *self, char *name)
     if(strcmp(name, "queryParams") == 0)
         return ViewerRPC_GetQueryParams(self, NULL);
 
+    PyObject *meth = Py_FindMethod(PyViewerRPC_methods, self, (char*)name);
+    if (meth) return meth;
 
-    // Add a __dict__ answer so that dir() works
-    if (!strcmp(name, "__dict__"))
-    {
-        PyObject *result = PyDict_New();
-        for (int i = 0; PyViewerRPC_methods[i].ml_meth; i++)
-            PyDict_SetItem(result,
-                PyString_FromString(PyViewerRPC_methods[i].ml_name),
-                PyString_FromString(PyViewerRPC_methods[i].ml_name));
-        return result;
-    }
-
-    return Py_FindMethod(PyViewerRPC_methods, self, name);
+    return PyObject_GenericGetAttr(self, attr_name);
 }
 
 int
-PyViewerRPC_setattr(PyObject *self, char *name, PyObject *args)
+PyViewerRPC_setattro(PyObject *self, PyObject *attr_name, PyObject *args)
 {
     PyObject NULL_PY_OBJ;
     PyObject *obj = &NULL_PY_OBJ;
+    const char *name = PyUnicode_AsUTF8(attr_name);
+    if (!name) return -1;
 
     if(strcmp(name, "RPCType") == 0)
         obj = ViewerRPC_SetRPCType(self, args);
@@ -3935,6 +3968,12 @@ PyViewerRPC_setattr(PyObject *self, char *name, PyObject *args)
     else if(strcmp(name, "toolUpdateMode") == 0)
         obj = ViewerRPC_SetToolUpdateMode(self, args);
 
+    if (obj == &NULL_PY_OBJ && PyObject_GenericSetAttr(self, attr_name, args) == 0)
+    {
+        Py_INCREF(Py_None);
+        obj = Py_None;
+    }
+
     if (obj != NULL && obj != &NULL_PY_OBJ)
         Py_DECREF(obj);
 
@@ -3949,78 +3988,45 @@ PyViewerRPC_setattr(PyObject *self, char *name, PyObject *args)
     return (obj != NULL) ? 0 : -1;
 }
 
-static int
-ViewerRPC_print(PyObject *v, FILE *fp, int flags)
-{
-    ViewerRPCObject *obj = (ViewerRPCObject *)v;
-    fprintf(fp, "%s", PyViewerRPC_ToString(obj->data, "",false).c_str());
-    return 0;
-}
-
 PyObject *
-ViewerRPC_str(PyObject *v)
+PyViewerRPC_str(PyObject *v)
 {
-    ViewerRPCObject *obj = (ViewerRPCObject *)v;
+    PyViewerRPCObject *obj = (PyViewerRPCObject *)v;
     return PyString_FromString(PyViewerRPC_ToString(obj->data,"", false).c_str());
 }
 
 //
 // The doc string for the class.
 //
-#if PY_MAJOR_VERSION > 2 || (PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION >= 5)
-static const char *ViewerRPC_Purpose = "This class contains the attributes for controlling the viewer.";
-#else
-static char *ViewerRPC_Purpose = "This class contains the attributes for controlling the viewer.";
-#endif
+static char const *PyViewerRPC_purpose = "This class contains the attributes for controlling the viewer.";
 
 //
-// Python Type Struct Def Macro from Py2and3Support.h
+// Initialize the python object type structure with default values.
+// If you need to do something custom, #undef VISIT_PY_TYPE_OBJ_TP_SLOTS,
+// which is defined with default values for our standard python objects
+// in src/visitpy/common/Py2and3Support.h. Then re-define it here AHEAD of
+// instantiating the type with VISIT_PY_TYPE_OBJ. Look for examples of
+// such customization in src/avt/PythonFilters or src/visitpy/common.
 //
-//         VISIT_PY_TYPE_OBJ( VPY_TYPE,
-//                            VPY_NAME,
-//                            VPY_OBJECT,
-//                            VPY_DEALLOC,
-//                            VPY_PRINT,
-//                            VPY_GETATTR,
-//                            VPY_SETATTR,
-//                            VPY_STR,
-//                            VPY_PURPOSE,
-//                            VPY_RICHCOMP,
-//                            VPY_AS_NUMBER)
-
-//
-// The type description structure
-//
-
-VISIT_PY_TYPE_OBJ(ViewerRPCType,         \
-                  "ViewerRPC",           \
-                  ViewerRPCObject,       \
-                  ViewerRPC_dealloc,     \
-                  ViewerRPC_print,       \
-                  PyViewerRPC_getattr,   \
-                  PyViewerRPC_setattr,   \
-                  ViewerRPC_str,         \
-                  ViewerRPC_Purpose,     \
-                  ViewerRPC_richcompare, \
-                  0); /* as_number*/
+VISIT_PY_TYPE_OBJ(ViewerRPC);
 
 //
 // Helper function for comparing.
 //
 static PyObject *
-ViewerRPC_richcompare(PyObject *self, PyObject *other, int op)
+PyViewerRPC_richcompare(PyObject *self, PyObject *other, int op)
 {
     // only compare against the same type 
-    if ( Py_TYPE(self) != &ViewerRPCType
-         || Py_TYPE(other) != &ViewerRPCType)
+    if ( Py_TYPE(self) != &PyViewerRPCType
+         || Py_TYPE(other) != &PyViewerRPCType)
     {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
 
     PyObject *res = NULL;
-    ViewerRPC *a = ((ViewerRPCObject *)self)->data;
-    ViewerRPC *b = ((ViewerRPCObject *)other)->data;
+    ViewerRPC *a = ((PyViewerRPCObject *)self)->data;
+    ViewerRPC *b = ((PyViewerRPCObject *)other)->data;
 
     switch (op)
     {
@@ -4049,8 +4055,8 @@ static ViewerRPC *currentAtts = 0;
 static PyObject *
 NewViewerRPC(int useCurrent)
 {
-    ViewerRPCObject *newObject;
-    newObject = PyObject_NEW(ViewerRPCObject, &ViewerRPCType);
+    PyViewerRPCObject *newObject;
+    newObject = PyObject_NEW(PyViewerRPCObject, &PyViewerRPCType);
     if(newObject == NULL)
         return NULL;
     if(useCurrent && currentAtts != 0)
@@ -4061,14 +4067,15 @@ NewViewerRPC(int useCurrent)
         newObject->data = new ViewerRPC;
     newObject->owns = true;
     newObject->parent = 0;
+    PyType_Ready(&PyViewerRPCType);
     return (PyObject *)newObject;
 }
 
 static PyObject *
 WrapViewerRPC(const ViewerRPC *attr)
 {
-    ViewerRPCObject *newObject;
-    newObject = PyObject_NEW(ViewerRPCObject, &ViewerRPCType);
+    PyViewerRPCObject *newObject;
+    newObject = PyObject_NEW(PyViewerRPCObject, &PyViewerRPCType);
     if(newObject == NULL)
         return NULL;
     newObject->data = (ViewerRPC *)attr;
@@ -4170,13 +4177,13 @@ PyViewerRPC_GetMethodTable(int *nMethods)
 bool
 PyViewerRPC_Check(PyObject *obj)
 {
-    return (obj->ob_type == &ViewerRPCType);
+    return (obj->ob_type == &PyViewerRPCType);
 }
 
 ViewerRPC *
 PyViewerRPC_FromPyObject(PyObject *obj)
 {
-    ViewerRPCObject *obj2 = (ViewerRPCObject *)obj;
+    PyViewerRPCObject *obj2 = (PyViewerRPCObject *)obj;
     return obj2->data;
 }
 
@@ -4195,7 +4202,7 @@ PyViewerRPC_Wrap(const ViewerRPC *attr)
 void
 PyViewerRPC_SetParent(PyObject *obj, PyObject *parent)
 {
-    ViewerRPCObject *obj2 = (ViewerRPCObject *)obj;
+    PyViewerRPCObject *obj2 = (PyViewerRPCObject *)obj;
     obj2->parent = parent;
 }
 

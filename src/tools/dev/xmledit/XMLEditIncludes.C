@@ -36,6 +36,9 @@
 //    Kathleen Biagas, Tue Apr 18 16:34:41 PDT 2023
 //    Support Qt6: buttonClicked -> idClicked.
 //
+//    Kathleen Biagas, Fri Mar 21, 2025
+//    Change QLineEdit connections from 'textChanged' to 'editingFinished.'
+//
 // ****************************************************************************
 XMLEditIncludes::XMLEditIncludes(QWidget *p)
     : QFrame(p)
@@ -104,21 +107,14 @@ XMLEditIncludes::XMLEditIncludes(QWidget *p)
 
     connect(includelist, SIGNAL(currentRowChanged(int)),
             this, SLOT(UpdateWindowSingleItem()));
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(fileGroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(fileGroupChanged(int)));
-    connect(quotedGroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(quotedGroupChanged(int)));
-#else
     connect(fileGroup, SIGNAL(idClicked(int)),
             this, SLOT(fileGroupChanged(int)));
     connect(quotedGroup, SIGNAL(idClicked(int)),
             this, SLOT(quotedGroupChanged(int)));
-#endif
-    connect(file, SIGNAL(textChanged(const QString&)),
-            this, SLOT(includeTextChanged(const QString&)));
-    connect(target, SIGNAL(textChanged(const QString&)),
-            this, SLOT(targetTextChanged(const QString&)));
+    connect(file, SIGNAL(editingFinished()),
+            this, SLOT(includeTextChanged()));
+    connect(target, SIGNAL(editingFinished()),
+            this, SLOT(targetTextChanged()));
     connect(newButton, SIGNAL(clicked()),
             this, SLOT(includelistNew()));
     connect(delButton, SIGNAL(clicked()),
@@ -317,7 +313,22 @@ XMLEditIncludes::BlockAllSignals(bool block)
 //    Cyrus Harrison, Thu May 15 16:00:46 PDT 200
 //    First pass at porting to Qt 4.4.0
 //
+//    Kathleen Biagas, Fri Mar 21, 2025
+//    If passed 'text' arg is empty as would be the case when triggered by
+//    'editingFinished' signal, grab contents of file widget.
+//    Arg is only non-empty when this function called from targetTextChanged.
+//
+//    Kathleen Biagas, Wed April 16, 2025
+//    Add no-arg includeTextChanged to match editingFinished signal.
+//
 // ****************************************************************************
+
+void
+XMLEditIncludes::includeTextChanged()
+{
+    includeTextChanged(file->text());
+}
+
 void
 XMLEditIncludes::includeTextChanged(const QString &text)
 {
@@ -350,9 +361,12 @@ XMLEditIncludes::includeTextChanged(const QString &text)
 //    Cyrus Harrison, Thu May 15 16:00:46 PDT 200
 //    First pass at porting to Qt 4.4.0
 //
+//    Kathleen Biagas, Fri Mar 21, 2025
+//    Removed QString arg as this slot is now connected to 'editingFinished'.
+//
 // ****************************************************************************
 void
-XMLEditIncludes::targetTextChanged(const QString &text)
+XMLEditIncludes::targetTextChanged()
 {
     Attribute *a = xmldoc->attribute;
     int index = includelist->currentRow();
@@ -360,7 +374,7 @@ XMLEditIncludes::targetTextChanged(const QString &text)
         return;
     Include *n = a->includes[index];
 
-    n->target = text;
+    n->target = target->text();
     includeTextChanged(n->include);
 }
 

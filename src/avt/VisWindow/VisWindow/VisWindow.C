@@ -4652,7 +4652,7 @@ VisWindow::UpdateParallelAxes()
 //   Alister Maguire, Fri Mar  9 10:13:30 PST 2018
 //   Only update the triad color if the
 //   set manually flag is raised.
-// 
+//
 //   Justin Privitera, Wed Oct  9 14:35:28 PDT 2024
 //   Fix triad line width so it uses linewidth infrastructure.
 //
@@ -6104,8 +6104,7 @@ size_t VisWindow::GetAlphaCompositeBlocking() const
 //   Sets the window's antialiasing mode.
 //
 // Arguments:
-//   enabled : Whether or not antialiasing is enabled.
-//   frames  : The number of frames to use for AA.
+//   aaMode :  The antialiasing mode.
 //
 // Programmer: Brad Whitlock
 // Creation:   Mon Sep 23 14:06:02 PST 2002
@@ -6117,14 +6116,17 @@ size_t VisWindow::GetAlphaCompositeBlocking() const
 //   Kathleen Bonnell, Mon Sep 29 13:15:20 PDT 2003
 //   Added call to RecalculateRenderOrder.
 //
+//   Kathleen Biagas, Monday July 28, 2025
+//   Antialiasing is now an int (enum).
+//
 // ****************************************************************************
 
 void
-VisWindow::SetAntialiasing(bool enabled)
+VisWindow::SetAntialiasing(int aaMode)
 {
-    if (enabled != rendering->GetAntialiasing())
+    if (aaMode != rendering->GetAntialiasing())
     {
-        rendering->SetAntialiasing(enabled);
+        rendering->SetAntialiasing(aaMode);
         RecalculateRenderOrder();
     }
 }
@@ -6141,14 +6143,115 @@ VisWindow::SetAntialiasing(bool enabled)
 // Creation:   Mon Sep 23 14:06:46 PST 2002
 //
 // Modifications:
+//   Kathleen Biagas, Monday July 28, 2025
+//   Antialiasing is now an int (enum).
 //
 // ****************************************************************************
 
-bool
+int
 VisWindow::GetAntialiasing() const
 {
     return rendering->GetAntialiasing();
 }
+
+// ****************************************************************************
+// Method: VisWindow::SetMSAASamples
+//
+// Purpose:
+//   Sets the window's MSAASamples
+//
+// Arguments:
+//   numSamp  : The number of MSAA samples to use for AA.
+//
+// Programmer: Kathleen Biagas
+// Creation:   August 14, 2025
+//
+// Modifications:
+//
+// ****************************************************************************
+
+void
+VisWindow::SetMSAASamples(int numSamp)
+{
+    rendering->SetMSAASamples(numSamp);
+}
+
+// ****************************************************************************
+// Method: VisWindow::GetMSAASamples
+//
+// Returns:    The window's MSAASamples.
+//
+// Programmer: Kathleen Biagas
+// Creation:   August 14, 2025
+//
+// Modifications:
+//
+// ****************************************************************************
+
+int
+VisWindow::GetMSAASamples() const
+{
+    return rendering->GetMSAASamples();
+}
+
+
+// ****************************************************************************
+// Method: VisWindow::MSAAAvailable
+//
+// Returns:    Whether or not MSAA is available.
+//
+// Programmer: Kathleen Biagas
+// Creation:   August 26, 2025
+//
+// Modifications:
+//
+// ****************************************************************************
+
+bool
+VisWindow::MSAAAvailable() const
+{
+    return rendering->MSAAAvailable();
+}
+
+// ****************************************************************************
+// Method: VisWindow::SetFXAAOptions
+//
+// Purpose:
+//   Sets the options for FXAA.
+//
+// Arguments:
+//   fxaaOpt : The new FXAA options
+//
+// Programmer: Kathleen Biagas
+// Creation:   August 14, 2025
+//
+// Modifications:
+//
+// ****************************************************************************
+
+void
+VisWindow::SetFXAAOptions(const FXAAOptions *fxaaOpt)
+{
+    rendering->SetFXAAOptions(fxaaOpt);
+}
+
+// ****************************************************************************
+// Method: VisWindow::GetFXAAOptions
+//
+// Purpose:
+//   Returns a pointer to the window's FXAAOptions.
+//
+// Programmer: Kathleen Biagas
+// Creation:   August 14, 2025
+//
+// ****************************************************************************
+
+const FXAAOptions *
+VisWindow::GetFXAAOptions() const
+{
+    return rendering->GetFXAAOptions();
+}
+
 
 // ****************************************************************************
 // Method: VisWindow::SetMultiresolutionMode
@@ -6345,50 +6448,6 @@ VisWindow::IsDirect(void)
     return rendering->IsDirect();
 }
 
-// ****************************************************************************
-// Method: VisWindow::SetSurfaceRepresentation
-//
-// Purpose:
-//   Sets the window's surface representation.
-//
-// Arguments:
-//   rep : The window's new surface representation.
-//
-// Programmer: Brad Whitlock
-// Creation:   Mon Sep 23 14:11:19 PST 2002
-//
-// Modifications:
-//
-// ****************************************************************************
-
-void
-VisWindow::SetSurfaceRepresentation(int rep)
-{
-    std::vector< VisWinColleague * >::iterator it;
-    for (it = colleagues.begin() ; it != colleagues.end() ; it++)
-    {
-        (*it)->SetSurfaceRepresentation(rep);
-    }
-}
-
-// ****************************************************************************
-// Method: VisWindow::GetSurfaceRepresentation
-//
-// Purpose:
-//   Gets the window's surface representation.
-//
-// Programmer: Brad Whitlock
-// Creation:   Mon Sep 23 14:11:50 PST 2002
-//
-// Modifications:
-//
-// ****************************************************************************
-
-int
-VisWindow::GetSurfaceRepresentation() const
-{
-    return rendering->GetSurfaceRepresentation();
-}
 
 // ****************************************************************************
 // Method: VisWindow::SetSpecularProperties
@@ -6964,6 +7023,46 @@ VisWindow::GetOsprayShadows() const
 }
 #endif
 
+#ifdef HAVE_ANARI
+// ****************************************************************************
+// Method: VisWindow::SetAnariAttributes
+//
+// Purpose:
+//   Sets the ANARI attributes
+//
+// Arguments:
+//   attrs    The ANARI attributes to set
+//
+// Programmer:  Kevin Griffin
+// Creation:    Thu 26 Oct 2023 09:51:22 AM PDT
+//
+// ****************************************************************************
+
+void
+VisWindow::SetAnariAttributes(const AnariAttributes &attrs)
+{
+    rendering->SetAnariAttributes(attrs);
+}
+
+// ****************************************************************************
+// Method: VisWindow::GetAnariAttributes
+//
+// Purpose:
+//   Returns the ANARI attributes
+//
+// Returns:    The ANARI attributes
+//
+// Programmer:  Kevin Griffin
+// Creation:    Thu 26 Oct 2023 09:51:22 AM PDT
+//
+// ****************************************************************************
+
+const AnariAttributes &
+VisWindow::GetAnariAttributes() const
+{
+    return rendering->GetAnariAttributes();
+}
+#endif
 
 // ****************************************************************************
 // Method: VisWindow::CreateToolbar
@@ -7818,4 +7917,3 @@ VisWindow::GetExtents(double ext[2]) // TODO: Remove with VTK8
 {
     plots->GetDataRange(ext[0], ext[1]);
 }
-

@@ -5,9 +5,11 @@
 #include <PyVolumeAttributes.h>
 #include <ObserverToCallback.h>
 #include <stdio.h>
+#include <string.h>
 #include <Py2and3Support.h>
 #include <PyColorControlPointList.h>
 #include <PyGaussianControlPointList.h>
+#include <PyAnariAttributes.h>
 
 // ****************************************************************************
 // Module: PyVolumeAttributes
@@ -25,7 +27,7 @@
 //
 // This struct contains the Python type information and a VolumeAttributes.
 //
-struct VolumeAttributesObject
+struct PyVolumeAttributesObject
 {
     PyObject_HEAD
     VolumeAttributes *data;
@@ -245,7 +247,8 @@ PyVolumeAttributes_ToString(const VolumeAttributes *atts, const char *prefix, co
     str += tmpStr;
     snprintf(tmpStr, 1000, "%ssamplesPerRay = %d\n", prefix, atts->GetSamplesPerRay());
     str += tmpStr;
-    const char *rendererType_names = "Serial, Parallel, Composite, Integration, SLIVR";
+    const char *rendererType_names = "Serial, Parallel, Composite, Integration, SLIVR, "
+        "ANARI";
     switch (atts->GetRendererType())
     {
       case VolumeAttributes::Serial:
@@ -266,6 +269,10 @@ PyVolumeAttributes_ToString(const VolumeAttributes *atts, const char *prefix, co
           break;
       case VolumeAttributes::SLIVR:
           snprintf(tmpStr, 1000, "%srendererType = %sSLIVR  # %s\n", prefix, prefix, rendererType_names);
+          str += tmpStr;
+          break;
+      case VolumeAttributes::ANARI:
+          snprintf(tmpStr, 1000, "%srendererType = %sANARI  # %s\n", prefix, prefix, rendererType_names);
           str += tmpStr;
           break;
       default:
@@ -407,22 +414,55 @@ PyVolumeAttributes_ToString(const VolumeAttributes *atts, const char *prefix, co
         snprintf(tmpStr, 1000, ")\n");
         str += tmpStr;
     }
+    { // new scope
+        std::string objPrefix(prefix);
+        objPrefix += "anariAttributes.";
+        str += PyAnariAttributes_ToString(&atts->GetAnariAttributes(), objPrefix.c_str(), forLogging);
+    }
     return str;
 }
 
 static PyObject *
 VolumeAttributes_Notify(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     obj->data->Notify();
     Py_INCREF(Py_None);
     return Py_None;
 }
 
+static PyObject *
+VolumeAttributes_dir(PyObject *self, PyObject *args)
+{
+    static VolumeAttributes atts; // dummy to access field names
+
+    PyObject *dir_list = PyList_New(0);
+    if (!dir_list)
+    {
+        PyErr_NoMemory();
+        return NULL;
+    }
+
+    // Add methods from the methods table
+    for (PyMethodDef const *method = &PyVolumeAttributes_methods[0];
+         method && method->ml_name;
+         method++) {
+        if (!strncmp(method->ml_name, "__dir__", 7)) continue;
+        if (!strncmp(method->ml_name, "Notify", 6)) continue;
+        PyList_Append(dir_list, PyUnicode_FromString(method->ml_name));
+    }
+
+    // Add members using generic AttributeGroup interface
+    for (int i = 0; i < atts.NumAttributes(); i++) {
+        PyList_Append(dir_list, PyUnicode_FromString(atts.GetFieldName(i).c_str()));
+    }
+
+    return dir_list;
+}
 /*static*/ PyObject *
 VolumeAttributes_SetOSPRayEnabledFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -474,7 +514,7 @@ VolumeAttributes_SetOSPRayEnabledFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOSPRayEnabledFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetOSPRayEnabledFlag()?1L:0L);
     return retval;
 }
@@ -482,7 +522,7 @@ VolumeAttributes_GetOSPRayEnabledFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOSPRayRenderType(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -540,7 +580,7 @@ VolumeAttributes_SetOSPRayRenderType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOSPRayRenderType(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetOSPRayRenderType()));
     return retval;
 }
@@ -548,7 +588,7 @@ VolumeAttributes_GetOSPRayRenderType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOSPRayShadowsEnabledFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -600,7 +640,7 @@ VolumeAttributes_SetOSPRayShadowsEnabledFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOSPRayShadowsEnabledFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetOSPRayShadowsEnabledFlag()?1L:0L);
     return retval;
 }
@@ -608,7 +648,7 @@ VolumeAttributes_GetOSPRayShadowsEnabledFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOSPRayUseGridAcceleratorFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -660,7 +700,7 @@ VolumeAttributes_SetOSPRayUseGridAcceleratorFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOSPRayUseGridAcceleratorFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetOSPRayUseGridAcceleratorFlag()?1L:0L);
     return retval;
 }
@@ -668,7 +708,7 @@ VolumeAttributes_GetOSPRayUseGridAcceleratorFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOSPRayPreIntegrationFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -720,7 +760,7 @@ VolumeAttributes_SetOSPRayPreIntegrationFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOSPRayPreIntegrationFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetOSPRayPreIntegrationFlag()?1L:0L);
     return retval;
 }
@@ -728,7 +768,7 @@ VolumeAttributes_GetOSPRayPreIntegrationFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOSPRaySingleShadeFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -780,7 +820,7 @@ VolumeAttributes_SetOSPRaySingleShadeFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOSPRaySingleShadeFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetOSPRaySingleShadeFlag()?1L:0L);
     return retval;
 }
@@ -788,7 +828,7 @@ VolumeAttributes_GetOSPRaySingleShadeFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOSPRayOneSidedLightingFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -840,7 +880,7 @@ VolumeAttributes_SetOSPRayOneSidedLightingFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOSPRayOneSidedLightingFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetOSPRayOneSidedLightingFlag()?1L:0L);
     return retval;
 }
@@ -848,7 +888,7 @@ VolumeAttributes_GetOSPRayOneSidedLightingFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOSPRayAOTransparencyEnabledFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -900,7 +940,7 @@ VolumeAttributes_SetOSPRayAOTransparencyEnabledFlag(PyObject *self, PyObject *ar
 /*static*/ PyObject *
 VolumeAttributes_GetOSPRayAOTransparencyEnabledFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetOSPRayAOTransparencyEnabledFlag()?1L:0L);
     return retval;
 }
@@ -908,7 +948,7 @@ VolumeAttributes_GetOSPRayAOTransparencyEnabledFlag(PyObject *self, PyObject *ar
 /*static*/ PyObject *
 VolumeAttributes_SetOSPRaySPP(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -960,7 +1000,7 @@ VolumeAttributes_SetOSPRaySPP(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOSPRaySPP(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetOSPRaySPP()));
     return retval;
 }
@@ -968,7 +1008,7 @@ VolumeAttributes_GetOSPRaySPP(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOSPRayAOSamples(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1020,7 +1060,7 @@ VolumeAttributes_SetOSPRayAOSamples(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOSPRayAOSamples(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetOSPRayAOSamples()));
     return retval;
 }
@@ -1028,7 +1068,7 @@ VolumeAttributes_GetOSPRayAOSamples(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOSPRayAODistance(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1080,7 +1120,7 @@ VolumeAttributes_SetOSPRayAODistance(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOSPRayAODistance(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetOSPRayAODistance());
     return retval;
 }
@@ -1088,7 +1128,7 @@ VolumeAttributes_GetOSPRayAODistance(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOSPRayMinContribution(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1140,7 +1180,7 @@ VolumeAttributes_SetOSPRayMinContribution(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOSPRayMinContribution(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetOSPRayMinContribution());
     return retval;
 }
@@ -1148,7 +1188,7 @@ VolumeAttributes_GetOSPRayMinContribution(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOSPRayMaxContribution(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1200,7 +1240,7 @@ VolumeAttributes_SetOSPRayMaxContribution(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOSPRayMaxContribution(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetOSPRayMaxContribution());
     return retval;
 }
@@ -1208,7 +1248,7 @@ VolumeAttributes_GetOSPRayMaxContribution(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetLegendFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1260,7 +1300,7 @@ VolumeAttributes_SetLegendFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetLegendFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetLegendFlag()?1L:0L);
     return retval;
 }
@@ -1268,7 +1308,7 @@ VolumeAttributes_GetLegendFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetLightingFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1320,7 +1360,7 @@ VolumeAttributes_SetLightingFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetLightingFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetLightingFlag()?1L:0L);
     return retval;
 }
@@ -1328,7 +1368,7 @@ VolumeAttributes_GetLightingFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetColorControlPoints(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *newValue = NULL;
     if(!PyArg_ParseTuple(args, "O", &newValue))
@@ -1345,7 +1385,7 @@ VolumeAttributes_SetColorControlPoints(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetColorControlPoints(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     // Since the new object will point to data owned by this object,
     // we need to increment the reference count.
     Py_INCREF(self);
@@ -1361,7 +1401,7 @@ VolumeAttributes_GetColorControlPoints(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOpacityAttenuation(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1413,7 +1453,7 @@ VolumeAttributes_SetOpacityAttenuation(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOpacityAttenuation(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(double(obj->data->GetOpacityAttenuation()));
     return retval;
 }
@@ -1421,7 +1461,7 @@ VolumeAttributes_GetOpacityAttenuation(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOpacityMode(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1480,7 +1520,7 @@ VolumeAttributes_SetOpacityMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOpacityMode(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetOpacityMode()));
     return retval;
 }
@@ -1488,7 +1528,7 @@ VolumeAttributes_GetOpacityMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOpacityControlPoints(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *newValue = NULL;
     if(!PyArg_ParseTuple(args, "O", &newValue))
@@ -1505,7 +1545,7 @@ VolumeAttributes_SetOpacityControlPoints(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOpacityControlPoints(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     // Since the new object will point to data owned by this object,
     // we need to increment the reference count.
     Py_INCREF(self);
@@ -1521,7 +1561,7 @@ VolumeAttributes_GetOpacityControlPoints(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetResampleType(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1582,7 +1622,7 @@ VolumeAttributes_SetResampleType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetResampleType(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetResampleType()));
     return retval;
 }
@@ -1590,7 +1630,7 @@ VolumeAttributes_GetResampleType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetResampleTarget(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1642,7 +1682,7 @@ VolumeAttributes_SetResampleTarget(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetResampleTarget(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetResampleTarget()));
     return retval;
 }
@@ -1650,7 +1690,7 @@ VolumeAttributes_GetResampleTarget(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetResampleCentering(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1709,7 +1749,7 @@ VolumeAttributes_SetResampleCentering(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetResampleCentering(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetResampleCentering()));
     return retval;
 }
@@ -1717,7 +1757,7 @@ VolumeAttributes_GetResampleCentering(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOpacityVariable(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1758,7 +1798,7 @@ VolumeAttributes_SetOpacityVariable(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOpacityVariable(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetOpacityVariable().c_str());
     return retval;
 }
@@ -1781,7 +1821,7 @@ VolumeAttributes_SetFreeformOpacity(PyObject *self, PyObject *args)
 //
 // THIS METHOD IS CUSTOM CODED!!!!!!.
 //
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
     unsigned char *cvals = obj->data->GetFreeformOpacity();
@@ -1857,7 +1897,7 @@ VolumeAttributes_SetFreeformOpacity(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetFreeformOpacity(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the freeformOpacity.
     PyObject *retval = PyTuple_New(256);
     const unsigned char *freeformOpacity = obj->data->GetFreeformOpacity();
@@ -1869,7 +1909,7 @@ VolumeAttributes_GetFreeformOpacity(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetUseColorVarMin(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1921,7 +1961,7 @@ VolumeAttributes_SetUseColorVarMin(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetUseColorVarMin(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetUseColorVarMin()?1L:0L);
     return retval;
 }
@@ -1929,7 +1969,7 @@ VolumeAttributes_GetUseColorVarMin(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetColorVarMin(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1981,7 +2021,7 @@ VolumeAttributes_SetColorVarMin(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetColorVarMin(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(double(obj->data->GetColorVarMin()));
     return retval;
 }
@@ -1989,7 +2029,7 @@ VolumeAttributes_GetColorVarMin(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetUseColorVarMax(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2041,7 +2081,7 @@ VolumeAttributes_SetUseColorVarMax(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetUseColorVarMax(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetUseColorVarMax()?1L:0L);
     return retval;
 }
@@ -2049,7 +2089,7 @@ VolumeAttributes_GetUseColorVarMax(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetColorVarMax(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2101,7 +2141,7 @@ VolumeAttributes_SetColorVarMax(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetColorVarMax(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(double(obj->data->GetColorVarMax()));
     return retval;
 }
@@ -2109,7 +2149,7 @@ VolumeAttributes_GetColorVarMax(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetUseOpacityVarMin(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2161,7 +2201,7 @@ VolumeAttributes_SetUseOpacityVarMin(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetUseOpacityVarMin(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetUseOpacityVarMin()?1L:0L);
     return retval;
 }
@@ -2169,7 +2209,7 @@ VolumeAttributes_GetUseOpacityVarMin(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOpacityVarMin(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2221,7 +2261,7 @@ VolumeAttributes_SetOpacityVarMin(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOpacityVarMin(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(double(obj->data->GetOpacityVarMin()));
     return retval;
 }
@@ -2229,7 +2269,7 @@ VolumeAttributes_GetOpacityVarMin(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetUseOpacityVarMax(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2281,7 +2321,7 @@ VolumeAttributes_SetUseOpacityVarMax(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetUseOpacityVarMax(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetUseOpacityVarMax()?1L:0L);
     return retval;
 }
@@ -2289,7 +2329,7 @@ VolumeAttributes_GetUseOpacityVarMax(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetOpacityVarMax(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2341,7 +2381,7 @@ VolumeAttributes_SetOpacityVarMax(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetOpacityVarMax(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(double(obj->data->GetOpacityVarMax()));
     return retval;
 }
@@ -2349,7 +2389,7 @@ VolumeAttributes_GetOpacityVarMax(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetSmoothData(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2401,7 +2441,7 @@ VolumeAttributes_SetSmoothData(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetSmoothData(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetSmoothData()?1L:0L);
     return retval;
 }
@@ -2409,7 +2449,7 @@ VolumeAttributes_GetSmoothData(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetSamplesPerRay(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2461,7 +2501,7 @@ VolumeAttributes_SetSamplesPerRay(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetSamplesPerRay(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetSamplesPerRay()));
     return retval;
 }
@@ -2469,7 +2509,7 @@ VolumeAttributes_GetSamplesPerRay(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetRendererType(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2504,17 +2544,18 @@ VolumeAttributes_SetRendererType(PyObject *self, PyObject *args)
         return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ int");
     }
 
-    if (cval < 0 || cval >= 5)
+    if (cval < 0 || cval >= 6)
     {
         std::stringstream ss;
         ss << "An invalid rendererType value was given." << std::endl;
-        ss << "Valid values are in the range [0,4]." << std::endl;
+        ss << "Valid values are in the range [0,5]." << std::endl;
         ss << "You can also use the following symbolic names:";
         ss << " Serial";
         ss << ", Parallel";
         ss << ", Composite";
         ss << ", Integration";
         ss << ", SLIVR";
+        ss << ", ANARI";
         return PyErr_Format(PyExc_ValueError, ss.str().c_str());
     }
 
@@ -2530,7 +2571,7 @@ VolumeAttributes_SetRendererType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetRendererType(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetRendererType()));
     return retval;
 }
@@ -2538,7 +2579,7 @@ VolumeAttributes_GetRendererType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetGradientType(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2596,7 +2637,7 @@ VolumeAttributes_SetGradientType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetGradientType(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetGradientType()));
     return retval;
 }
@@ -2604,7 +2645,7 @@ VolumeAttributes_GetGradientType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetScaling(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2663,7 +2704,7 @@ VolumeAttributes_SetScaling(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetScaling(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetScaling()));
     return retval;
 }
@@ -2671,7 +2712,7 @@ VolumeAttributes_GetScaling(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetSkewFactor(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2723,7 +2764,7 @@ VolumeAttributes_SetSkewFactor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetSkewFactor(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetSkewFactor());
     return retval;
 }
@@ -2731,7 +2772,7 @@ VolumeAttributes_GetSkewFactor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetLimitsMode(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2789,7 +2830,7 @@ VolumeAttributes_SetLimitsMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetLimitsMode(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetLimitsMode()));
     return retval;
 }
@@ -2797,7 +2838,7 @@ VolumeAttributes_GetLimitsMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetSampling(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2856,7 +2897,7 @@ VolumeAttributes_SetSampling(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetSampling(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetSampling()));
     return retval;
 }
@@ -2864,7 +2905,7 @@ VolumeAttributes_GetSampling(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetRendererSamples(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2916,7 +2957,7 @@ VolumeAttributes_SetRendererSamples(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetRendererSamples(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(double(obj->data->GetRendererSamples()));
     return retval;
 }
@@ -2924,7 +2965,7 @@ VolumeAttributes_GetRendererSamples(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetLowGradientLightingReduction(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2988,7 +3029,7 @@ VolumeAttributes_SetLowGradientLightingReduction(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetLowGradientLightingReduction(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetLowGradientLightingReduction()));
     return retval;
 }
@@ -2996,7 +3037,7 @@ VolumeAttributes_GetLowGradientLightingReduction(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetLowGradientLightingClampFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3048,7 +3089,7 @@ VolumeAttributes_SetLowGradientLightingClampFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetLowGradientLightingClampFlag(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetLowGradientLightingClampFlag()?1L:0L);
     return retval;
 }
@@ -3056,7 +3097,7 @@ VolumeAttributes_GetLowGradientLightingClampFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_SetLowGradientLightingClampValue(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3108,7 +3149,7 @@ VolumeAttributes_SetLowGradientLightingClampValue(PyObject *self, PyObject *args
 /*static*/ PyObject *
 VolumeAttributes_GetLowGradientLightingClampValue(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetLowGradientLightingClampValue());
     return retval;
 }
@@ -3117,7 +3158,7 @@ VolumeAttributes_GetLowGradientLightingClampValue(PyObject *self, PyObject *args
 /*static*/ PyObject *
 VolumeAttributes_SetMaterialProperties(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
 
     double *dvals = obj->data->GetMaterialProperties();
     if(!PyArg_ParseTuple(args, "dddd", &dvals[0], &dvals[1], &dvals[2], &dvals[3]))
@@ -3159,7 +3200,7 @@ VolumeAttributes_SetMaterialProperties(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 VolumeAttributes_GetMaterialProperties(PyObject *self, PyObject *args)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)self;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the materialProperties.
     PyObject *retval = PyTuple_New(4);
     const double *materialProperties = obj->data->GetMaterialProperties();
@@ -3168,10 +3209,44 @@ VolumeAttributes_GetMaterialProperties(PyObject *self, PyObject *args)
     return retval;
 }
 
+/*static*/ PyObject *
+VolumeAttributes_SetAnariAttributes(PyObject *self, PyObject *args)
+{
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
+
+    PyObject *newValue = NULL;
+    if(!PyArg_ParseTuple(args, "O", &newValue))
+        return NULL;
+    if(!PyAnariAttributes_Check(newValue))
+        return PyErr_Format(PyExc_TypeError, "Field anariAttributes can be set only with AnariAttributes objects");
+
+    obj->data->SetAnariAttributes(*PyAnariAttributes_FromPyObject(newValue));
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+/*static*/ PyObject *
+VolumeAttributes_GetAnariAttributes(PyObject *self, PyObject *args)
+{
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)self;
+    // Since the new object will point to data owned by this object,
+    // we need to increment the reference count.
+    Py_INCREF(self);
+
+    PyObject *retval = PyAnariAttributes_Wrap(&obj->data->GetAnariAttributes());
+    // Set the object's parent so the reference to the parent can be decref'd
+    // when the child goes out of scope.
+    PyAnariAttributes_SetParent(retval, self);
+
+    return retval;
+}
+
 
 
 PyMethodDef PyVolumeAttributes_methods[VOLUMEATTRIBUTES_NMETH] = {
-    {"Notify", VolumeAttributes_Notify, METH_VARARGS},
+    {"__dir__", VolumeAttributes_dir, METH_NOARGS},
+    {"Notify", VolumeAttributes_Notify, METH_NOARGS},
     {"SetOSPRayEnabledFlag", VolumeAttributes_SetOSPRayEnabledFlag, METH_VARARGS},
     {"GetOSPRayEnabledFlag", VolumeAttributes_GetOSPRayEnabledFlag, METH_VARARGS},
     {"SetOSPRayRenderType", VolumeAttributes_SetOSPRayRenderType, METH_VARARGS},
@@ -3262,6 +3337,8 @@ PyMethodDef PyVolumeAttributes_methods[VOLUMEATTRIBUTES_NMETH] = {
     {"GetLowGradientLightingClampValue", VolumeAttributes_GetLowGradientLightingClampValue, METH_VARARGS},
     {"SetMaterialProperties", VolumeAttributes_SetMaterialProperties, METH_VARARGS},
     {"GetMaterialProperties", VolumeAttributes_GetMaterialProperties, METH_VARARGS},
+    {"SetAnariAttributes", VolumeAttributes_SetAnariAttributes, METH_VARARGS},
+    {"GetAnariAttributes", VolumeAttributes_GetAnariAttributes, METH_VARARGS},
     {NULL, NULL}
 };
 
@@ -3270,19 +3347,22 @@ PyMethodDef PyVolumeAttributes_methods[VOLUMEATTRIBUTES_NMETH] = {
 //
 
 static void
-VolumeAttributes_dealloc(PyObject *v)
+PyVolumeAttributes_dealloc(PyObject *v)
 {
-   VolumeAttributesObject *obj = (VolumeAttributesObject *)v;
+   PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)v;
    if(obj->parent != 0)
        Py_DECREF(obj->parent);
    if(obj->owns)
        delete obj->data;
 }
 
-static PyObject *VolumeAttributes_richcompare(PyObject *self, PyObject *other, int op);
+static PyObject *PyVolumeAttributes_richcompare(PyObject *self, PyObject *other, int op);
 PyObject *
-PyVolumeAttributes_getattr(PyObject *self, char *name)
+PyVolumeAttributes_getattro(PyObject *self, PyObject *attr_name)
 {
+    const char *name = PyUnicode_AsUTF8(attr_name);
+    if (!name) return NULL;
+
     if(strcmp(name, "OSPRayEnabledFlag") == 0)
         return VolumeAttributes_GetOSPRayEnabledFlag(self, NULL);
     if(strcmp(name, "OSPRayRenderType") == 0)
@@ -3393,6 +3473,8 @@ PyVolumeAttributes_getattr(PyObject *self, char *name)
         return PyInt_FromLong(long(VolumeAttributes::Integration));
     if(strcmp(name, "SLIVR") == 0)
         return PyInt_FromLong(long(VolumeAttributes::SLIVR));
+    if(strcmp(name, "ANARI") == 0)
+        return PyInt_FromLong(long(VolumeAttributes::ANARI));
 
     if(strcmp(name, "gradientType") == 0)
         return VolumeAttributes_GetGradientType(self, NULL);
@@ -3455,66 +3537,22 @@ PyVolumeAttributes_getattr(PyObject *self, char *name)
         return VolumeAttributes_GetLowGradientLightingClampValue(self, NULL);
     if(strcmp(name, "materialProperties") == 0)
         return VolumeAttributes_GetMaterialProperties(self, NULL);
+    if(strcmp(name, "anariAttributes") == 0)
+        return VolumeAttributes_GetAnariAttributes(self, NULL);
 
-#include <visit-config.h>
+    PyObject *meth = Py_FindMethod(PyVolumeAttributes_methods, self, (char*)name);
+    if (meth) return meth;
 
-#if VISIT_OBSOLETE_AT_VERSION(3,5,0)
-#error This code is obsolete in this version of VisIt and should be removed.
-#else
-    // Try and handle legacy fields
-#define NAME_CHANGE_MESSAGE2(oldname, newname) \
-    PyErr_WarnFormat(NULL, 1, "'%s' is no longer a valid Volume attribute.\n" \
-                    "It's name has been changed to '%s', " \
-                    "please update your script.\n", oldname, newname);
-
-    // rendererTypes
-    if(strcmp(name, "Default") == 0)
-    {
-        NAME_CHANGE_MESSAGE2(name, "Serial");
-        return PyInt_FromLong(0L);
-    }
-    if(strcmp(name, "RayCasting") == 0)
-    {
-        NAME_CHANGE_MESSAGE2(name, "Composite");
-        return PyInt_FromLong(0L);
-    }
-    if(strcmp(name, "RayCastingIntegration") == 0)
-    {
-        NAME_CHANGE_MESSAGE2(name, "Integration");
-        return PyInt_FromLong(0L);
-    }
-    if(strcmp(name, "RayCastingSLIVR") == 0)
-    {
-        NAME_CHANGE_MESSAGE2(name, "SLIVR");
-        return PyInt_FromLong(0L);
-    }
-    if(strcmp(name, "RayCastingOSPRay") == 0)
-    {
-        PyErr_WarnFormat(NULL, 1, "'RayCastingOSPRay is no longer a valid Volume attribute.\nIt's value is being ignored, please remove it from your script.\nTry using 'Parallel' for 'rendererType' and set 'OSPRayEnabledFlag' to '1'\n");
-        return PyInt_FromLong(0L);
-    }
-    // end Renderer types
-#endif
-
-    // Add a __dict__ answer so that dir() works
-    if (!strcmp(name, "__dict__"))
-    {
-        PyObject *result = PyDict_New();
-        for (int i = 0; PyVolumeAttributes_methods[i].ml_meth; i++)
-            PyDict_SetItem(result,
-                PyString_FromString(PyVolumeAttributes_methods[i].ml_name),
-                PyString_FromString(PyVolumeAttributes_methods[i].ml_name));
-        return result;
-    }
-
-    return Py_FindMethod(PyVolumeAttributes_methods, self, name);
+    return PyObject_GenericGetAttr(self, attr_name);
 }
 
 int
-PyVolumeAttributes_setattr(PyObject *self, char *name, PyObject *args)
+PyVolumeAttributes_setattro(PyObject *self, PyObject *attr_name, PyObject *args)
 {
     PyObject NULL_PY_OBJ;
     PyObject *obj = &NULL_PY_OBJ;
+    const char *name = PyUnicode_AsUTF8(attr_name);
+    if (!name) return -1;
 
     if(strcmp(name, "OSPRayEnabledFlag") == 0)
         obj = VolumeAttributes_SetOSPRayEnabledFlag(self, args);
@@ -3606,84 +3644,15 @@ PyVolumeAttributes_setattr(PyObject *self, char *name, PyObject *args)
         obj = VolumeAttributes_SetLowGradientLightingClampValue(self, args);
     else if(strcmp(name, "materialProperties") == 0)
         obj = VolumeAttributes_SetMaterialProperties(self, args);
+    else if(strcmp(name, "anariAttributes") == 0)
+        obj = VolumeAttributes_SetAnariAttributes(self, args);
 
-#if VISIT_OBSOLETE_AT_VERSION(3,5,0)
-#error This code is obsolete in this version of VisIt. Please remove it
-#else
-#define NAME_CHANGE_MESSAGE(oldname, newname) \
-    PyErr_WarnFormat(NULL, 1, "'%s' is no longer a valid Volume attribute.\n" \
-                    "It's name has been changed to '%s', " \
-                    "please update your script.\n", oldname, newname);
-
-#define DEPRECATED_MESSAGE(oldname) \
-    PyErr_WarnFormat(NULL, 1, "'%s' is no longer a valid Volume attribute.\n" \
-                    "It's value is being ignored, " \
-                    "please remove it from your script.\n", oldname);
-
-    // Try and handle legacy fields
-    if(obj == &NULL_PY_OBJ)
+    if (obj == &NULL_PY_OBJ && PyObject_GenericSetAttr(self, attr_name, args) == 0)
     {
-        if (strcmp(name, "osprayShadowsEnabledFlag") == 0)
-        {
-            NAME_CHANGE_MESSAGE(name, "OSPRayShadowsEnabledFlag");
-            obj = VolumeAttributes_SetOSPRayShadowsEnabledFlag(self, args);
-        }
-        else if (strcmp(name, "osprayUseGridAcceleratorFlag") == 0)
-        {
-            NAME_CHANGE_MESSAGE(name, "OSPRayUseGridAcceleratorFlag");
-            obj = VolumeAttributes_SetOSPRayUseGridAcceleratorFlag(self, args);
-        }
-        else if (strcmp(name, "osprayPreIntegrationFlag") == 0)
-        {
-            NAME_CHANGE_MESSAGE(name, "OSPRayPreIntegrationFlag");
-            obj = VolumeAttributes_SetOSPRayPreIntegrationFlag(self, args);
-        }
-        else if (strcmp(name, "ospraySingleShadeFlag") == 0)
-        {
-            NAME_CHANGE_MESSAGE(name, "OSPRaySingleShadeFlag");
-            obj = VolumeAttributes_SetOSPRaySingleShadeFlag(self, args);
-        }
-        else if (strcmp(name, "osprayOneSidedLightingFlag") == 0)
-        {
-            NAME_CHANGE_MESSAGE(name, "OSPRayOneSidedLightingFlag");
-            obj = VolumeAttributes_SetOSPRayOneSidedLightingFlag(self, args);
-        }
-        else if (strcmp(name, "osprayAoTransparencyEnabledFlag") == 0)
-        {
-            NAME_CHANGE_MESSAGE(name, "OSPRayAOTransparencyEnabledFlag");
-            obj = VolumeAttributes_SetOSPRayAOTransparencyEnabledFlag(self, args);
-        }
-        else if (strcmp(name, "ospraySpp") == 0)
-        {
-            NAME_CHANGE_MESSAGE(name, "OSPRaySPP");
-            obj = VolumeAttributes_SetOSPRaySPP(self, args);
-        }
-        else if (strcmp(name, "osprayAoSamples") == 0)
-        {
-            NAME_CHANGE_MESSAGE(name, "OSPRayAOSamples");
-            obj = VolumeAttributes_SetOSPRayAOSamples(self, args);
-        }
-        else if (strcmp(name, "osprayAoDistance") == 0)
-        {
-            NAME_CHANGE_MESSAGE(name, "OSPRayAODistance");
-            obj = VolumeAttributes_SetOSPRayAODistance(self, args);
-        }
-        else if (strcmp(name, "osprayMinContribution") == 0)
-        {
-            NAME_CHANGE_MESSAGE(name, "OSPRayMinContribution");
-            obj = VolumeAttributes_SetOSPRayMinContribution(self, args);
-        }
-
-        if ((strcmp(name, "resampleFlag") == 0) ||
-            (strcmp(name, "compactVariable") == 0)  ||
-            (strcmp(name, "renderMode") == 0))
-        {
-            DEPRECATED_MESSAGE(name);
-            Py_INCREF(Py_None);
-            obj = Py_None;
-        }
+        Py_INCREF(Py_None);
+        obj = Py_None;
     }
-#endif
+
     if (obj != NULL && obj != &NULL_PY_OBJ)
         Py_DECREF(obj);
 
@@ -3698,78 +3667,45 @@ PyVolumeAttributes_setattr(PyObject *self, char *name, PyObject *args)
     return (obj != NULL) ? 0 : -1;
 }
 
-static int
-VolumeAttributes_print(PyObject *v, FILE *fp, int flags)
-{
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)v;
-    fprintf(fp, "%s", PyVolumeAttributes_ToString(obj->data, "",false).c_str());
-    return 0;
-}
-
 PyObject *
-VolumeAttributes_str(PyObject *v)
+PyVolumeAttributes_str(PyObject *v)
 {
-    VolumeAttributesObject *obj = (VolumeAttributesObject *)v;
+    PyVolumeAttributesObject *obj = (PyVolumeAttributesObject *)v;
     return PyString_FromString(PyVolumeAttributes_ToString(obj->data,"", false).c_str());
 }
 
 //
 // The doc string for the class.
 //
-#if PY_MAJOR_VERSION > 2 || (PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION >= 5)
-static const char *VolumeAttributes_Purpose = "This class contains the plot attributes for the volume plot.";
-#else
-static char *VolumeAttributes_Purpose = "This class contains the plot attributes for the volume plot.";
-#endif
+static char const *PyVolumeAttributes_purpose = "This class contains the plot attributes for the volume plot.";
 
 //
-// Python Type Struct Def Macro from Py2and3Support.h
+// Initialize the python object type structure with default values.
+// If you need to do something custom, #undef VISIT_PY_TYPE_OBJ_TP_SLOTS,
+// which is defined with default values for our standard python objects
+// in src/visitpy/common/Py2and3Support.h. Then re-define it here AHEAD of
+// instantiating the type with VISIT_PY_TYPE_OBJ. Look for examples of
+// such customization in src/avt/PythonFilters or src/visitpy/common.
 //
-//         VISIT_PY_TYPE_OBJ( VPY_TYPE,
-//                            VPY_NAME,
-//                            VPY_OBJECT,
-//                            VPY_DEALLOC,
-//                            VPY_PRINT,
-//                            VPY_GETATTR,
-//                            VPY_SETATTR,
-//                            VPY_STR,
-//                            VPY_PURPOSE,
-//                            VPY_RICHCOMP,
-//                            VPY_AS_NUMBER)
-
-//
-// The type description structure
-//
-
-VISIT_PY_TYPE_OBJ(VolumeAttributesType,         \
-                  "VolumeAttributes",           \
-                  VolumeAttributesObject,       \
-                  VolumeAttributes_dealloc,     \
-                  VolumeAttributes_print,       \
-                  PyVolumeAttributes_getattr,   \
-                  PyVolumeAttributes_setattr,   \
-                  VolumeAttributes_str,         \
-                  VolumeAttributes_Purpose,     \
-                  VolumeAttributes_richcompare, \
-                  0); /* as_number*/
+VISIT_PY_TYPE_OBJ(VolumeAttributes);
 
 //
 // Helper function for comparing.
 //
 static PyObject *
-VolumeAttributes_richcompare(PyObject *self, PyObject *other, int op)
+PyVolumeAttributes_richcompare(PyObject *self, PyObject *other, int op)
 {
     // only compare against the same type 
-    if ( Py_TYPE(self) != &VolumeAttributesType
-         || Py_TYPE(other) != &VolumeAttributesType)
+    if ( Py_TYPE(self) != &PyVolumeAttributesType
+         || Py_TYPE(other) != &PyVolumeAttributesType)
     {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
 
     PyObject *res = NULL;
-    VolumeAttributes *a = ((VolumeAttributesObject *)self)->data;
-    VolumeAttributes *b = ((VolumeAttributesObject *)other)->data;
+    VolumeAttributes *a = ((PyVolumeAttributesObject *)self)->data;
+    VolumeAttributes *b = ((PyVolumeAttributesObject *)other)->data;
 
     switch (op)
     {
@@ -3798,8 +3734,8 @@ static VolumeAttributes *currentAtts = 0;
 static PyObject *
 NewVolumeAttributes(int useCurrent)
 {
-    VolumeAttributesObject *newObject;
-    newObject = PyObject_NEW(VolumeAttributesObject, &VolumeAttributesType);
+    PyVolumeAttributesObject *newObject;
+    newObject = PyObject_NEW(PyVolumeAttributesObject, &PyVolumeAttributesType);
     if(newObject == NULL)
         return NULL;
     if(useCurrent && currentAtts != 0)
@@ -3810,14 +3746,15 @@ NewVolumeAttributes(int useCurrent)
         newObject->data = new VolumeAttributes;
     newObject->owns = true;
     newObject->parent = 0;
+    PyType_Ready(&PyVolumeAttributesType);
     return (PyObject *)newObject;
 }
 
 static PyObject *
 WrapVolumeAttributes(const VolumeAttributes *attr)
 {
-    VolumeAttributesObject *newObject;
-    newObject = PyObject_NEW(VolumeAttributesObject, &VolumeAttributesType);
+    PyVolumeAttributesObject *newObject;
+    newObject = PyObject_NEW(PyVolumeAttributesObject, &PyVolumeAttributesType);
     if(newObject == NULL)
         return NULL;
     newObject->data = (VolumeAttributes *)attr;
@@ -3919,13 +3856,13 @@ PyVolumeAttributes_GetMethodTable(int *nMethods)
 bool
 PyVolumeAttributes_Check(PyObject *obj)
 {
-    return (obj->ob_type == &VolumeAttributesType);
+    return (obj->ob_type == &PyVolumeAttributesType);
 }
 
 VolumeAttributes *
 PyVolumeAttributes_FromPyObject(PyObject *obj)
 {
-    VolumeAttributesObject *obj2 = (VolumeAttributesObject *)obj;
+    PyVolumeAttributesObject *obj2 = (PyVolumeAttributesObject *)obj;
     return obj2->data;
 }
 
@@ -3944,7 +3881,7 @@ PyVolumeAttributes_Wrap(const VolumeAttributes *attr)
 void
 PyVolumeAttributes_SetParent(PyObject *obj, PyObject *parent)
 {
-    VolumeAttributesObject *obj2 = (VolumeAttributesObject *)obj;
+    PyVolumeAttributesObject *obj2 = (PyVolumeAttributesObject *)obj;
     obj2->parent = parent;
 }
 

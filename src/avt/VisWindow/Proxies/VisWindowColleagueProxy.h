@@ -114,6 +114,15 @@
 //    Kathleen Biagas, Wed Aug 17, 2022
 //    Incorporate ARSanderson's OSPRAY 2.8.0 work for VTK 9.
 //
+//    Kevin Griffin, Wed 05 Mar 2025 11:59:26 AM CST
+//    Added Anari support.
+//
+//    Kathleen Biagas, Monday July 28, 2025
+//    Antialiasing is now an int (enum).
+//
+//    Kathleen Biagas, Thu Aug 28 15:39:06 PDT 2025
+//    Remove GetSurfaceRepresentation, no longer used.
+//
 // ****************************************************************************
 
 class VISWINDOW_API VisWindowColleagueProxy : public VisWindowProtectionProxy
@@ -183,9 +192,6 @@ class VISWINDOW_API VisWindowColleagueProxy : public VisWindowProtectionProxy
     void                UpdateLightPositions()
                                   { ProxiedUpdateLightPositions(); }
 
-    int                 GetSurfaceRepresentation()
-                                  { return ProxiedGetSurfaceRepresentation(); }
-
     bool                DisableExternalRenderRequests(bool bClearImage = false)
                                   { return ProxiedDisableExternalRenderRequests(bClearImage); }
 
@@ -198,7 +204,7 @@ class VISWINDOW_API VisWindowColleagueProxy : public VisWindowProtectionProxy
     void                ReAddColleaguesToRenderWindow()
                                   { ProxiedReAddColleaguesToRenderWindow(); }
 
-    bool                GetAntialiasing()
+    int                 GetAntialiasing()
                                   { return ProxiedGetAntialiasing(); }
 
     bool                GetFullFrameMode()
@@ -257,6 +263,10 @@ class VISWINDOW_API VisWindowColleagueProxy : public VisWindowProtectionProxy
                              { return ProxiedGetOsprayAO(); }
     bool                GetOsprayShadows()
                              { return ProxiedGetOsprayShadows(); }
+#endif
+
+#ifdef HAVE_ANARI
+    const AnariAttributes &GetAnariAttributes() { return ProxiedGetAnariAttributes(); }
 #endif
 };
 

@@ -33,6 +33,9 @@
 //    Cyrus Harrison, Thu May 15 16:00:46 PDT 200
 //    First pass at porting to Qt 4.4.0
 //
+//    Kathleen Biagas, Fri Mar 21, 2025
+//    Change QLineEdit connections from 'textChanged' to 'editingFinished.'
+///
 // ****************************************************************************
 XMLEditConstants::XMLEditConstants(QWidget *p)
     : QFrame(p)
@@ -93,14 +96,14 @@ XMLEditConstants::XMLEditConstants(QWidget *p)
 
     connect(constantlist, SIGNAL(currentRowChanged(int)),
             this, SLOT(UpdateWindowSingleItem()));
-    connect(target, SIGNAL(textChanged(const QString&)),
-            this, SLOT(targetTextChanged(const QString&)));
-    connect(name, SIGNAL(textChanged(const QString&)),
-            this, SLOT(nameTextChanged(const QString&)));
+    connect(target, SIGNAL(editingFinished()),
+            this, SLOT(targetTextChanged()));
+    connect(name, SIGNAL(editingFinished()),
+            this, SLOT(nameTextChanged()));
     connect(member, SIGNAL(clicked()),
             this, SLOT(memberChanged()));
-    connect(declaration, SIGNAL(textChanged(const QString&)),
-            this, SLOT(declarationTextChanged(const QString&)));
+    connect(declaration, SIGNAL(editingFinished()),
+            this, SLOT(declarationTextChanged()));
     connect(definition, SIGNAL(textChanged()),
             this, SLOT(definitionChanged()));
     connect(newButton, SIGNAL(clicked()),
@@ -302,7 +305,25 @@ XMLEditConstants::BlockAllSignals(bool block)
 //    Cyrus Harrison, Thu May 15 16:00:46 PDT 200
 //    First pass at porting to Qt 4.4.0
 //
+//    Kathleen Biagas, Fri Mar 21, 2025
+//    If passed 'text' arg is empty as would be the case when triggered by
+//    'editingFinished' signal, grab contents of file widget.
+//    Arg is only non-empty when this function called from targetTextChanged.
+//
+//    Also changed the text set in constantlist from 'text' to 'newname' which
+//    I believe is the intent.
+//
+//    Kathleen Biagas, Wed April 16, 2025
+//    Add no-arg nameTextChanged to match editingFinished signal.
+//
 // ****************************************************************************
+
+void
+XMLEditConstants::nameTextChanged()
+{
+    nameTextChanged(name->text());
+}
+
 void
 XMLEditConstants::nameTextChanged(const QString &text)
 {
@@ -321,7 +342,7 @@ XMLEditConstants::nameTextChanged(const QString &text)
         newname += "]";
     }
     BlockAllSignals(true);
-    constantlist->item(index)->setText(text);
+    constantlist->item(index)->setText(newname);
     BlockAllSignals(false);
 }
 
@@ -335,9 +356,12 @@ XMLEditConstants::nameTextChanged(const QString &text)
 //    Cyrus Harrison, Thu May 15 16:00:46 PDT 200
 //    First pass at porting to Qt 4.4.0
 //
+//    Kathleen Biagas, Fri Mar 21, 2025
+//    Removed QString arg as this slot is now connected to 'editingFinished'.
+//
 // ****************************************************************************
 void
-XMLEditConstants::targetTextChanged(const QString &text)
+XMLEditConstants::targetTextChanged()
 {
     Attribute *a = xmldoc->attribute;
     int index = constantlist->currentRow();
@@ -345,7 +369,7 @@ XMLEditConstants::targetTextChanged(const QString &text)
         return;
     Constant *c = a->constants[index];
 
-    c->target = text;
+    c->target = target->text();
     nameTextChanged(c->name);
 }
 
@@ -382,9 +406,12 @@ XMLEditConstants::memberChanged()
 //    Cyrus Harrison, Thu May 15 16:00:46 PDT 200
 //    First pass at porting to Qt 4.4.0
 //
+//    Kathleen Biagas, Fri Mar 21, 2025
+//    Removed QString arg as this slot is now connected to 'editingFinished'.
+//
 // ****************************************************************************
 void
-XMLEditConstants::declarationTextChanged(const QString &text)
+XMLEditConstants::declarationTextChanged()
 {
     Attribute *a = xmldoc->attribute;
     int index = constantlist->currentRow();
@@ -392,7 +419,7 @@ XMLEditConstants::declarationTextChanged(const QString &text)
         return;
     Constant *c = a->constants[index];
 
-    c->decl = text;
+    c->decl = declaration->text();
 }
 
 // ****************************************************************************

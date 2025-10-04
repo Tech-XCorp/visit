@@ -85,7 +85,6 @@ movie_format_info movieFormatInfo[] = {
     {"SWF movie",       "swf"},
     {"WMV movie",       "wmv"},
 #endif
-    {"Streaming movie", "sm"}
 };
 
 // Prefer MPEG since we provide an encoder for that format.
@@ -734,13 +733,8 @@ QvisSaveMovieWizard::CreateMovieTypePage()
 
     pageLayout->addStretch(10);
     r2->setChecked(true);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(page0_buttongroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(page0_movieTypeChanged(int)));
-#else
     connect(page0_buttongroup, SIGNAL(idClicked(int)),
             this, SLOT(page0_movieTypeChanged(int)));
-#endif
 
     // Add the page.
     setPage(Page_MovieType, page0);
@@ -799,13 +793,8 @@ QvisSaveMovieWizard::CreateNewTemplatePromptPage()
     buttonLayout->addWidget(r3);
 
     pageLayout->addStretch(10);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(page1_buttongroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(page1_newTemplateChanged(int)));
-#else
     connect(page1_buttongroup, SIGNAL(idClicked(int)),
             this, SLOT(page1_newTemplateChanged(int)));
-#endif
 
     // Add the page.
     setPage(Page_TemplateAction, page1);
@@ -1001,13 +990,8 @@ QvisSaveMovieWizard::CreateViewportPage()
     viewportLayout->addWidget(new QLabel(tr("Compositing"), viewportProps), 2, 0);
 
     page4_compositingMode = new QButtonGroup(this);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(page4_compositingMode, SIGNAL(buttonClicked(int)),
-            this, SLOT(page4_compositingModeChanged(int)));
-#else
     connect(page4_compositingMode, SIGNAL(idClicked(int)),
             this, SLOT(page4_compositingModeChanged(int)));
-#endif
     QRadioButton *rb0 = new QRadioButton(tr("Overlay"), viewportProps);
     page4_compositingMode->addButton(rb0, 0);
     viewportLayout->addWidget(rb0, 3, 0);
@@ -1109,8 +1093,8 @@ QvisSaveMovieWizard::CreateSequencesPage()
 
     // Create the sequence name controls.
     page5_sequenceName = new QLineEdit(page5_sequenceProperties);
-    connect(page5_sequenceName, SIGNAL(textChanged(const QString &)),
-            this, SLOT(page5_typedNewSequenceName(const QString &)));
+    connect(page5_sequenceName, SIGNAL(editingFinished()),
+            this, SLOT(page5_typedNewSequenceName()));
     page5_sequenceNameLabel = new QLabel(tr("Name"), page5_sequenceProperties);
     page5_sequenceNameLabel->setBuddy(page5_sequenceName);
     seqPropLayout->addWidget(page5_sequenceNameLabel, 0, 0);
@@ -1229,8 +1213,8 @@ QvisSaveMovieWizard::CreateSaveTemplateAsPage()
     QLabel *titleLabel = new QLabel(tr("Title"), page7);
     gLayout->addWidget(titleLabel, 0, 0);
     page7_templateName = new QLineEdit(page7);
-    connect(page7_templateName, SIGNAL(textChanged(const QString &)),
-            this, SLOT(page7_templateNameChanged(const QString &)));
+    connect(page7_templateName, SIGNAL(editingFinished()),
+            this, SLOT(page7_templateNameChanged()));
     gLayout->addWidget(page7_templateName, 0, 1);
 
     //
@@ -1311,13 +1295,8 @@ QvisSaveMovieWizard::CreateSettingsOkayPage()
     buttonLayout->addStretch(5);
 
     page8_buttongroup = new QButtonGroup(this);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(page8_buttongroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(page8_settingsOkayChanged(int)));
-#else
     connect(page8_buttongroup, SIGNAL(idClicked(int)),
             this, SLOT(page8_settingsOkayChanged(int)));
-#endif
 
     QRadioButton *r1 = new QRadioButton(tr("Yes"), page8);
     page8_buttongroup->addButton(r1, 0);
@@ -1429,13 +1408,8 @@ QvisSaveMovieWizard::CreateFormatPage()
     f2layout->setRowMinimumHeight(1, 15);
 
     page9_sizeTypeButtonGroup = new QButtonGroup(page9);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(page9_sizeTypeButtonGroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(page9_sizeTypeChanged(int)));
-#else
     connect(page9_sizeTypeButtonGroup, SIGNAL(idClicked(int)),
             this, SLOT(page9_sizeTypeChanged(int)));
-#endif
     QRadioButton *rb = new QRadioButton(tr("Use current window size"),
         formatAndResolution);
     page9_sizeTypeButtonGroup->addButton(rb, 0);
@@ -1602,24 +1576,24 @@ QvisSaveMovieWizard::CreateNumFramesPage()
 
     page10_fpsLineEdit = new QLineEdit(page10);
     gLayout->addWidget(page10_fpsLineEdit, 0, 1);
-    connect(page10_fpsLineEdit, SIGNAL(textChanged(const QString &)),
-            this, SLOT(page10_fpsChanged(const QString &)));
+    connect(page10_fpsLineEdit, SIGNAL(editingFinished()),
+            this, SLOT(page10_fpsChanged()));
 
     page10_startIndexLabel = new QLabel(tr("First frame"), page10);
     gLayout->addWidget(page10_startIndexLabel, 1, 0);
 
     page10_startIndexLineEdit = new QLineEdit(page10);
     gLayout->addWidget(page10_startIndexLineEdit, 1, 1);
-    connect(page10_startIndexLineEdit, SIGNAL(textChanged(const QString &)),
-            this, SLOT(page10_startIndexChanged(const QString &)));
+    connect(page10_startIndexLineEdit, SIGNAL(editingFinished()),
+            this, SLOT(page10_startIndexChanged()));
 
     page10_endIndexLabel = new QLabel(tr("Last frame"), page10);
     gLayout->addWidget(page10_endIndexLabel, 2, 0);
 
     page10_endIndexLineEdit = new QLineEdit(page10);
     gLayout->addWidget(page10_endIndexLineEdit, 2, 1);
-    connect(page10_endIndexLineEdit, SIGNAL(textChanged(const QString &)),
-            this, SLOT(page10_endIndexChanged(const QString &)));
+    connect(page10_endIndexLineEdit, SIGNAL(editingFinished()),
+            this, SLOT(page10_endIndexChanged()));
 
     page10_strideLabel = new QLabel(tr("Frame stride"), page10);
     gLayout->addWidget(page10_strideLabel, 3, 0);
@@ -1637,8 +1611,8 @@ QvisSaveMovieWizard::CreateNumFramesPage()
 
     page10_initialFrameValueLineEdit = new QLineEdit(page10);
     gLayout->addWidget(page10_initialFrameValueLineEdit, 4, 1);
-    connect(page10_initialFrameValueLineEdit, SIGNAL(textChanged(const QString &)),
-            this, SLOT(page10_initialFrameValueChanged(const QString &)));
+    connect(page10_initialFrameValueLineEdit, SIGNAL(editingFinished()),
+            this, SLOT(page10_initialFrameValueChanged()));
 
     // Add the page.
     setPage(Page_NumFrames, page10);
@@ -1693,8 +1667,8 @@ QvisSaveMovieWizard::CreateFilenamePage()
     QHBoxLayout *oLayout = new QHBoxLayout(outputDirectoryParent);
     page11_outputDirectoryLineEdit = new QLineEdit(outputDirectoryParent);
     oLayout->addWidget(page11_outputDirectoryLineEdit);
-    connect(page11_outputDirectoryLineEdit, SIGNAL(textChanged(const QString &)),
-            this, SLOT(page11_processOutputDirectoryText(const QString &)));
+    connect(page11_outputDirectoryLineEdit, SIGNAL(editingFinished()),
+            this, SLOT(page11_processOutputDirectoryText()));
     QPushButton *outputSelectButton = new QPushButton("...", outputDirectoryParent);
     oLayout->addWidget(outputSelectButton);
 #if !defined(Q_OS_MAC)
@@ -1717,8 +1691,8 @@ QvisSaveMovieWizard::CreateFilenamePage()
     QLabel *filebaseLabel = new QLabel(tr("Base filename"), page11);
     gLayout->addWidget(filebaseLabel, 1, 0);
     page11_filebaseLineEdit = new QLineEdit(page11);
-    connect(page11_filebaseLineEdit, SIGNAL(textChanged(const QString &)),
-            this, SLOT(page11_processFilebaseText(const QString &)));
+    connect(page11_filebaseLineEdit, SIGNAL(editingFinished()),
+            this, SLOT(page11_processFilebaseText()));
     gLayout->addWidget(page11_filebaseLineEdit, 1, 1);
 
     // Add the page.
@@ -1764,13 +1738,8 @@ QvisSaveMovieWizard::CreateEmailPage()
     buttonLayout->addStretch(5);
     buttonLayout->setSpacing(5);
     page12_buttongroup = new QButtonGroup(this);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(page12_buttongroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(page12_emailNotificationChanged(int)));
-#else
     connect(page12_buttongroup, SIGNAL(idClicked(int)),
             this, SLOT(page12_emailNotificationChanged(int)));
-#endif
     QRadioButton *r1 = new QRadioButton(tr("Yes"), page12);
     page12_buttongroup->addButton(r1, 0);
     buttonLayout->addWidget(r1);
@@ -1785,8 +1754,8 @@ QvisSaveMovieWizard::CreateEmailPage()
     QHBoxLayout *emailLayout = new QHBoxLayout(0);
     pageLayout->addLayout(emailLayout);
     page12_emailLineEdit = new QLineEdit(page12);
-    connect(page12_emailLineEdit, SIGNAL(textChanged(const QString &)),
-            this, SLOT(page12_emailAddressChanged(const QString &)));
+    connect(page12_emailLineEdit, SIGNAL(editingFinished()),
+            this, SLOT(page12_emailAddressChanged()));
     page12_emailLabel = new QLabel(tr("E-mail address"), page12);
     page12_emailLabel->setBuddy(page12_emailLineEdit);
     emailLayout->addStretch(5);
@@ -1846,13 +1815,8 @@ QvisSaveMovieWizard::CreateGenerationMethodPage()
     hCenterLayout->addStretch(5);
     buttonLayout->setSpacing(5);
     page13_buttongroup = new QButtonGroup(this);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(page13_buttongroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(page13_generationMethodChanged(int)));
-#else
     connect(page13_buttongroup, SIGNAL(idClicked(int)),
             this, SLOT(page13_generationMethodChanged(int)));
-#endif
     QRadioButton *r1 = new QRadioButton(tr("Now, use currently allocated processors"),
         page13);
     page13_buttongroup->addButton(r1, 0);
@@ -1914,11 +1878,7 @@ QvisSaveMovieWizard::CreateYesNoPage(QWizardPage **page, QButtonGroup **bg,
     buttonLayout->addStretch(5);
 
     *bg = new QButtonGroup(this);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(*bg, SIGNAL(buttonClicked(int)), this, slot);
-#else
     connect(*bg, SIGNAL(idClicked(int)), this, slot);
-#endif
 
     QRadioButton *r1 = new QRadioButton(tr("Yes"), *page);
     (*bg)->addButton(r1, 0);
@@ -4190,10 +4150,11 @@ QvisSaveMovieWizard::page5_deleteSequenceClicked()
 // ****************************************************************************
 
 void
-QvisSaveMovieWizard::page5_typedNewSequenceName(const QString &newName)
+QvisSaveMovieWizard::page5_typedNewSequenceName()
 {
     int flags = 0;
 
+    QString newName(page5_sequenceName->text());
     if(newName.isNull())
     {
         // Don't allow NULL names
@@ -4328,9 +4289,9 @@ QvisSaveMovieWizard::page6_saveAsTemplateChanged(int val)
 //
 
 void
-QvisSaveMovieWizard::page7_templateNameChanged(const QString &s)
+QvisSaveMovieWizard::page7_templateNameChanged()
 {
-    templateSpec->SetTitle(s.toStdString());
+    templateSpec->SetTitle(page7_templateName->text().toStdString());
 }
 
 void
@@ -4648,9 +4609,10 @@ QvisSaveMovieWizard::page9_stereoTypeChanged(int val)
 // ****************************************************************************
 
 void
-QvisSaveMovieWizard::page10_fpsChanged(const QString &s)
+QvisSaveMovieWizard::page10_fpsChanged()
 {
     bool okay = true;
+    QString s(page10_fpsLineEdit->text());
     int newFPS = s.toInt(&okay);
     if (okay)
         movieAtts->SetFps(newFPS);
@@ -4672,9 +4634,10 @@ QvisSaveMovieWizard::page10_fpsChanged(const QString &s)
 // ****************************************************************************
 
 void
-QvisSaveMovieWizard::page10_startIndexChanged(const QString &s)
+QvisSaveMovieWizard::page10_startIndexChanged()
 {
     bool okay = true;
+    QString s(page10_startIndexLineEdit->text());
     int newStartIndex = s.toInt(&okay);
 
     if (okay)
@@ -4697,9 +4660,10 @@ QvisSaveMovieWizard::page10_startIndexChanged(const QString &s)
 // ****************************************************************************
 
 void
-QvisSaveMovieWizard::page10_endIndexChanged(const QString &s)
+QvisSaveMovieWizard::page10_endIndexChanged()
 {
     bool okay = true;
+    QString s(page10_endIndexLineEdit->text());
     int newEndIndex = s.toInt(&okay);
 
     if (okay)
@@ -4730,9 +4694,9 @@ QvisSaveMovieWizard::page10_strideChanged(int stride)
 //
 
 void
-QvisSaveMovieWizard::page11_processOutputDirectoryText(const QString &s)
+QvisSaveMovieWizard::page11_processOutputDirectoryText()
 {
-    std::string outDir(s.toStdString());
+    std::string outDir(page11_outputDirectoryLineEdit->text().toStdString());
     if(outDir.size() > 0 && outDir[outDir.size() - 1] != VISIT_SLASH_CHAR)
         outDir += VISIT_SLASH_STRING;
     movieAtts->SetOutputDirectory(outDir);
@@ -4752,9 +4716,10 @@ QvisSaveMovieWizard::page11_processOutputDirectoryText(const QString &s)
 // ****************************************************************************
 
 void
-QvisSaveMovieWizard::page10_initialFrameValueChanged(const QString &s)
+QvisSaveMovieWizard::page10_initialFrameValueChanged()
 {
     bool okay = true;
+    QString s(page10_initialFrameValueLineEdit->text());
     int newStartFrameValue = s.toInt(&okay);
 
     if (okay)
@@ -4816,9 +4781,9 @@ QvisSaveMovieWizard::page11_selectOutputDirectory()
 }
 
 void
-QvisSaveMovieWizard::page11_processFilebaseText(const QString &s)
+QvisSaveMovieWizard::page11_processFilebaseText()
 {
-    movieAtts->SetOutputName(s.toStdString());
+    movieAtts->SetOutputName(page11_filebaseLineEdit->text().toStdString());
     page11_UpdateButtons();
 }
 
@@ -4834,8 +4799,9 @@ QvisSaveMovieWizard::page12_emailNotificationChanged(int val)
 }
 
 void
-QvisSaveMovieWizard::page12_emailAddressChanged(const QString &val)
+QvisSaveMovieWizard::page12_emailAddressChanged()
 {
+    QString val(page12_emailLineEdit->text());
     movieAtts->SetEmailAddress(std::string(val.toStdString()));
     page12_UpdateButtons();
 }

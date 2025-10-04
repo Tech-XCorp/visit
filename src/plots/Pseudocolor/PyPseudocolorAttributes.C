@@ -5,6 +5,7 @@
 #include <PyPseudocolorAttributes.h>
 #include <ObserverToCallback.h>
 #include <stdio.h>
+#include <string.h>
 #include <Py2and3Support.h>
 #include <visit-config.h>
 #include <ColorAttribute.h>
@@ -29,7 +30,7 @@
 //
 // This struct contains the Python type information and a PseudocolorAttributes.
 //
-struct PseudocolorAttributesObject
+struct PyPseudocolorAttributesObject
 {
     PyObject_HEAD
     PseudocolorAttributes *data;
@@ -377,8 +378,18 @@ PyPseudocolorAttributes_ToString(const PseudocolorAttributes *atts, const char *
     const unsigned char *wireframeColor = atts->GetWireframeColor().GetColor();
     snprintf(tmpStr, 1000, "%swireframeColor = (%d, %d, %d, %d)\n", prefix, int(wireframeColor[0]), int(wireframeColor[1]), int(wireframeColor[2]), int(wireframeColor[3]));
     str += tmpStr;
+    if(atts->GetWireframeColorByVar())
+        snprintf(tmpStr, 1000, "%swireframeColorByVar = 1\n", prefix);
+    else
+        snprintf(tmpStr, 1000, "%swireframeColorByVar = 0\n", prefix);
+    str += tmpStr;
     const unsigned char *pointColor = atts->GetPointColor().GetColor();
     snprintf(tmpStr, 1000, "%spointColor = (%d, %d, %d, %d)\n", prefix, int(pointColor[0]), int(pointColor[1]), int(pointColor[2]), int(pointColor[3]));
+    str += tmpStr;
+    if(atts->GetPointColorByVar())
+        snprintf(tmpStr, 1000, "%spointColorByVar = 1\n", prefix);
+    else
+        snprintf(tmpStr, 1000, "%spointColorByVar = 0\n", prefix);
     str += tmpStr;
     return str;
 }
@@ -386,16 +397,44 @@ PyPseudocolorAttributes_ToString(const PseudocolorAttributes *atts, const char *
 static PyObject *
 PseudocolorAttributes_Notify(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     obj->data->Notify();
     Py_INCREF(Py_None);
     return Py_None;
 }
 
+static PyObject *
+PseudocolorAttributes_dir(PyObject *self, PyObject *args)
+{
+    static PseudocolorAttributes atts; // dummy to access field names
+
+    PyObject *dir_list = PyList_New(0);
+    if (!dir_list)
+    {
+        PyErr_NoMemory();
+        return NULL;
+    }
+
+    // Add methods from the methods table
+    for (PyMethodDef const *method = &PyPseudocolorAttributes_methods[0];
+         method && method->ml_name;
+         method++) {
+        if (!strncmp(method->ml_name, "__dir__", 7)) continue;
+        if (!strncmp(method->ml_name, "Notify", 6)) continue;
+        PyList_Append(dir_list, PyUnicode_FromString(method->ml_name));
+    }
+
+    // Add members using generic AttributeGroup interface
+    for (int i = 0; i < atts.NumAttributes(); i++) {
+        PyList_Append(dir_list, PyUnicode_FromString(atts.GetFieldName(i).c_str()));
+    }
+
+    return dir_list;
+}
 /*static*/ PyObject *
 PseudocolorAttributes_SetScaling(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -454,7 +493,7 @@ PseudocolorAttributes_SetScaling(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetScaling(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetScaling()));
     return retval;
 }
@@ -462,7 +501,7 @@ PseudocolorAttributes_GetScaling(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetSkewFactor(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -514,7 +553,7 @@ PseudocolorAttributes_SetSkewFactor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetSkewFactor(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetSkewFactor());
     return retval;
 }
@@ -522,7 +561,7 @@ PseudocolorAttributes_GetSkewFactor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetLimitsMode(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -580,7 +619,7 @@ PseudocolorAttributes_SetLimitsMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetLimitsMode(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetLimitsMode()));
     return retval;
 }
@@ -588,7 +627,7 @@ PseudocolorAttributes_GetLimitsMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetMinFlag(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -640,7 +679,7 @@ PseudocolorAttributes_SetMinFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetMinFlag(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetMinFlag()?1L:0L);
     return retval;
 }
@@ -648,7 +687,7 @@ PseudocolorAttributes_GetMinFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetMin(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -700,7 +739,7 @@ PseudocolorAttributes_SetMin(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetMin(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetMin());
     return retval;
 }
@@ -708,7 +747,7 @@ PseudocolorAttributes_GetMin(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetUseBelowMinColor(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -760,7 +799,7 @@ PseudocolorAttributes_SetUseBelowMinColor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetUseBelowMinColor(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetUseBelowMinColor()?1L:0L);
     return retval;
 }
@@ -768,7 +807,7 @@ PseudocolorAttributes_GetUseBelowMinColor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetBelowMinColor(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     int c[4];
     if(!PyArg_ParseTuple(args, "iiii", &c[0], &c[1], &c[2], &c[3]))
@@ -831,7 +870,7 @@ PseudocolorAttributes_SetBelowMinColor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetBelowMinColor(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the belowMinColor.
     PyObject *retval = PyTuple_New(4);
     const unsigned char *belowMinColor = obj->data->GetBelowMinColor().GetColor();
@@ -845,7 +884,7 @@ PseudocolorAttributes_GetBelowMinColor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetMaxFlag(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -897,7 +936,7 @@ PseudocolorAttributes_SetMaxFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetMaxFlag(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetMaxFlag()?1L:0L);
     return retval;
 }
@@ -905,7 +944,7 @@ PseudocolorAttributes_GetMaxFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetMax(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -957,7 +996,7 @@ PseudocolorAttributes_SetMax(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetMax(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetMax());
     return retval;
 }
@@ -965,7 +1004,7 @@ PseudocolorAttributes_GetMax(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetUseAboveMaxColor(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1017,7 +1056,7 @@ PseudocolorAttributes_SetUseAboveMaxColor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetUseAboveMaxColor(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetUseAboveMaxColor()?1L:0L);
     return retval;
 }
@@ -1025,7 +1064,7 @@ PseudocolorAttributes_GetUseAboveMaxColor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetAboveMaxColor(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     int c[4];
     if(!PyArg_ParseTuple(args, "iiii", &c[0], &c[1], &c[2], &c[3]))
@@ -1088,7 +1127,7 @@ PseudocolorAttributes_SetAboveMaxColor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetAboveMaxColor(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the aboveMaxColor.
     PyObject *retval = PyTuple_New(4);
     const unsigned char *aboveMaxColor = obj->data->GetAboveMaxColor().GetColor();
@@ -1102,7 +1141,7 @@ PseudocolorAttributes_GetAboveMaxColor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetCentering(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1161,7 +1200,7 @@ PseudocolorAttributes_SetCentering(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetCentering(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetCentering()));
     return retval;
 }
@@ -1169,7 +1208,7 @@ PseudocolorAttributes_GetCentering(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetColorTableName(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1210,7 +1249,7 @@ PseudocolorAttributes_SetColorTableName(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetColorTableName(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetColorTableName().c_str());
     return retval;
 }
@@ -1218,7 +1257,7 @@ PseudocolorAttributes_GetColorTableName(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetInvertColorTable(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1270,7 +1309,7 @@ PseudocolorAttributes_SetInvertColorTable(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetInvertColorTable(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetInvertColorTable()?1L:0L);
     return retval;
 }
@@ -1278,7 +1317,7 @@ PseudocolorAttributes_GetInvertColorTable(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetOpacityType(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1339,7 +1378,7 @@ PseudocolorAttributes_SetOpacityType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetOpacityType(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetOpacityType()));
     return retval;
 }
@@ -1347,7 +1386,7 @@ PseudocolorAttributes_GetOpacityType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetOpacityVariable(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1388,7 +1427,7 @@ PseudocolorAttributes_SetOpacityVariable(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetOpacityVariable(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetOpacityVariable().c_str());
     return retval;
 }
@@ -1396,7 +1435,7 @@ PseudocolorAttributes_GetOpacityVariable(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetOpacity(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1448,7 +1487,7 @@ PseudocolorAttributes_SetOpacity(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetOpacity(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetOpacity());
     return retval;
 }
@@ -1456,7 +1495,7 @@ PseudocolorAttributes_GetOpacity(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetOpacityVarMin(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1508,7 +1547,7 @@ PseudocolorAttributes_SetOpacityVarMin(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetOpacityVarMin(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetOpacityVarMin());
     return retval;
 }
@@ -1516,7 +1555,7 @@ PseudocolorAttributes_GetOpacityVarMin(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetOpacityVarMax(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1568,7 +1607,7 @@ PseudocolorAttributes_SetOpacityVarMax(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetOpacityVarMax(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetOpacityVarMax());
     return retval;
 }
@@ -1576,7 +1615,7 @@ PseudocolorAttributes_GetOpacityVarMax(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetOpacityVarMinFlag(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1628,7 +1667,7 @@ PseudocolorAttributes_SetOpacityVarMinFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetOpacityVarMinFlag(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetOpacityVarMinFlag()?1L:0L);
     return retval;
 }
@@ -1636,7 +1675,7 @@ PseudocolorAttributes_GetOpacityVarMinFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetOpacityVarMaxFlag(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1688,7 +1727,7 @@ PseudocolorAttributes_SetOpacityVarMaxFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetOpacityVarMaxFlag(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetOpacityVarMaxFlag()?1L:0L);
     return retval;
 }
@@ -1696,7 +1735,7 @@ PseudocolorAttributes_GetOpacityVarMaxFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetPointSize(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1748,7 +1787,7 @@ PseudocolorAttributes_SetPointSize(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetPointSize(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetPointSize());
     return retval;
 }
@@ -1756,7 +1795,7 @@ PseudocolorAttributes_GetPointSize(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetPointType(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     int ival = -999;
     if (PySequence_Check(args) && !PyArg_ParseTuple(args, "i", &ival))
@@ -1786,7 +1825,7 @@ PseudocolorAttributes_SetPointType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetPointType(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetPointType()));
     return retval;
 }
@@ -1794,7 +1833,7 @@ PseudocolorAttributes_GetPointType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetPointSizeVarEnabled(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1846,7 +1885,7 @@ PseudocolorAttributes_SetPointSizeVarEnabled(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetPointSizeVarEnabled(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetPointSizeVarEnabled()?1L:0L);
     return retval;
 }
@@ -1854,7 +1893,7 @@ PseudocolorAttributes_GetPointSizeVarEnabled(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetPointSizeVar(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1895,7 +1934,7 @@ PseudocolorAttributes_SetPointSizeVar(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetPointSizeVar(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetPointSizeVar().c_str());
     return retval;
 }
@@ -1903,7 +1942,7 @@ PseudocolorAttributes_GetPointSizeVar(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetPointSizePixels(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1955,7 +1994,7 @@ PseudocolorAttributes_SetPointSizePixels(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetPointSizePixels(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetPointSizePixels()));
     return retval;
 }
@@ -1963,7 +2002,7 @@ PseudocolorAttributes_GetPointSizePixels(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetLineType(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2022,7 +2061,7 @@ PseudocolorAttributes_SetLineType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetLineType(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetLineType()));
     return retval;
 }
@@ -2030,7 +2069,7 @@ PseudocolorAttributes_GetLineType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetLineWidth(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2082,7 +2121,7 @@ PseudocolorAttributes_SetLineWidth(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetLineWidth(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetLineWidth()));
     return retval;
 }
@@ -2090,7 +2129,7 @@ PseudocolorAttributes_GetLineWidth(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetTubeResolution(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2142,7 +2181,7 @@ PseudocolorAttributes_SetTubeResolution(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetTubeResolution(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetTubeResolution()));
     return retval;
 }
@@ -2150,7 +2189,7 @@ PseudocolorAttributes_GetTubeResolution(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetTubeRadiusSizeType(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2208,7 +2247,7 @@ PseudocolorAttributes_SetTubeRadiusSizeType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetTubeRadiusSizeType(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetTubeRadiusSizeType()));
     return retval;
 }
@@ -2216,7 +2255,7 @@ PseudocolorAttributes_GetTubeRadiusSizeType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetTubeRadiusAbsolute(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2268,7 +2307,7 @@ PseudocolorAttributes_SetTubeRadiusAbsolute(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetTubeRadiusAbsolute(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetTubeRadiusAbsolute());
     return retval;
 }
@@ -2276,7 +2315,7 @@ PseudocolorAttributes_GetTubeRadiusAbsolute(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetTubeRadiusBBox(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2328,7 +2367,7 @@ PseudocolorAttributes_SetTubeRadiusBBox(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetTubeRadiusBBox(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetTubeRadiusBBox());
     return retval;
 }
@@ -2336,7 +2375,7 @@ PseudocolorAttributes_GetTubeRadiusBBox(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetTubeRadiusVarEnabled(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2388,7 +2427,7 @@ PseudocolorAttributes_SetTubeRadiusVarEnabled(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetTubeRadiusVarEnabled(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetTubeRadiusVarEnabled()?1L:0L);
     return retval;
 }
@@ -2396,7 +2435,7 @@ PseudocolorAttributes_GetTubeRadiusVarEnabled(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetTubeRadiusVar(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2437,7 +2476,7 @@ PseudocolorAttributes_SetTubeRadiusVar(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetTubeRadiusVar(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetTubeRadiusVar().c_str());
     return retval;
 }
@@ -2445,7 +2484,7 @@ PseudocolorAttributes_GetTubeRadiusVar(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetTubeRadiusVarRatio(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2497,7 +2536,7 @@ PseudocolorAttributes_SetTubeRadiusVarRatio(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetTubeRadiusVarRatio(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetTubeRadiusVarRatio());
     return retval;
 }
@@ -2505,7 +2544,7 @@ PseudocolorAttributes_GetTubeRadiusVarRatio(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetTailStyle(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2564,7 +2603,7 @@ PseudocolorAttributes_SetTailStyle(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetTailStyle(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetTailStyle()));
     return retval;
 }
@@ -2572,7 +2611,7 @@ PseudocolorAttributes_GetTailStyle(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetHeadStyle(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2631,7 +2670,7 @@ PseudocolorAttributes_SetHeadStyle(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetHeadStyle(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetHeadStyle()));
     return retval;
 }
@@ -2639,7 +2678,7 @@ PseudocolorAttributes_GetHeadStyle(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetEndPointRadiusSizeType(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2697,7 +2736,7 @@ PseudocolorAttributes_SetEndPointRadiusSizeType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetEndPointRadiusSizeType(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetEndPointRadiusSizeType()));
     return retval;
 }
@@ -2705,7 +2744,7 @@ PseudocolorAttributes_GetEndPointRadiusSizeType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetEndPointRadiusAbsolute(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2757,7 +2796,7 @@ PseudocolorAttributes_SetEndPointRadiusAbsolute(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetEndPointRadiusAbsolute(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetEndPointRadiusAbsolute());
     return retval;
 }
@@ -2765,7 +2804,7 @@ PseudocolorAttributes_GetEndPointRadiusAbsolute(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetEndPointRadiusBBox(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2817,7 +2856,7 @@ PseudocolorAttributes_SetEndPointRadiusBBox(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetEndPointRadiusBBox(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetEndPointRadiusBBox());
     return retval;
 }
@@ -2825,7 +2864,7 @@ PseudocolorAttributes_GetEndPointRadiusBBox(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetEndPointResolution(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2877,7 +2916,7 @@ PseudocolorAttributes_SetEndPointResolution(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetEndPointResolution(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetEndPointResolution()));
     return retval;
 }
@@ -2885,7 +2924,7 @@ PseudocolorAttributes_GetEndPointResolution(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetEndPointRatio(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2937,7 +2976,7 @@ PseudocolorAttributes_SetEndPointRatio(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetEndPointRatio(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetEndPointRatio());
     return retval;
 }
@@ -2945,7 +2984,7 @@ PseudocolorAttributes_GetEndPointRatio(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetEndPointRadiusVarEnabled(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2997,7 +3036,7 @@ PseudocolorAttributes_SetEndPointRadiusVarEnabled(PyObject *self, PyObject *args
 /*static*/ PyObject *
 PseudocolorAttributes_GetEndPointRadiusVarEnabled(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetEndPointRadiusVarEnabled()?1L:0L);
     return retval;
 }
@@ -3005,7 +3044,7 @@ PseudocolorAttributes_GetEndPointRadiusVarEnabled(PyObject *self, PyObject *args
 /*static*/ PyObject *
 PseudocolorAttributes_SetEndPointRadiusVar(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3046,7 +3085,7 @@ PseudocolorAttributes_SetEndPointRadiusVar(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetEndPointRadiusVar(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyString_FromString(obj->data->GetEndPointRadiusVar().c_str());
     return retval;
 }
@@ -3054,7 +3093,7 @@ PseudocolorAttributes_GetEndPointRadiusVar(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetEndPointRadiusVarRatio(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3106,7 +3145,7 @@ PseudocolorAttributes_SetEndPointRadiusVarRatio(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetEndPointRadiusVarRatio(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetEndPointRadiusVarRatio());
     return retval;
 }
@@ -3114,7 +3153,7 @@ PseudocolorAttributes_GetEndPointRadiusVarRatio(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetRenderSurfaces(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3166,7 +3205,7 @@ PseudocolorAttributes_SetRenderSurfaces(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetRenderSurfaces(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetRenderSurfaces()));
     return retval;
 }
@@ -3174,7 +3213,7 @@ PseudocolorAttributes_GetRenderSurfaces(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetRenderWireframe(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3226,7 +3265,7 @@ PseudocolorAttributes_SetRenderWireframe(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetRenderWireframe(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetRenderWireframe()));
     return retval;
 }
@@ -3234,7 +3273,7 @@ PseudocolorAttributes_GetRenderWireframe(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetRenderPoints(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3286,7 +3325,7 @@ PseudocolorAttributes_SetRenderPoints(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetRenderPoints(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetRenderPoints()));
     return retval;
 }
@@ -3294,7 +3333,7 @@ PseudocolorAttributes_GetRenderPoints(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetSmoothingLevel(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3346,7 +3385,7 @@ PseudocolorAttributes_SetSmoothingLevel(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetSmoothingLevel(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetSmoothingLevel()));
     return retval;
 }
@@ -3354,7 +3393,7 @@ PseudocolorAttributes_GetSmoothingLevel(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetLegendFlag(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3406,7 +3445,7 @@ PseudocolorAttributes_SetLegendFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetLegendFlag(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetLegendFlag()?1L:0L);
     return retval;
 }
@@ -3414,7 +3453,7 @@ PseudocolorAttributes_GetLegendFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetLightingFlag(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -3466,7 +3505,7 @@ PseudocolorAttributes_SetLightingFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetLightingFlag(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetLightingFlag()?1L:0L);
     return retval;
 }
@@ -3474,7 +3513,7 @@ PseudocolorAttributes_GetLightingFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_SetWireframeColor(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     int c[4];
     if(!PyArg_ParseTuple(args, "iiii", &c[0], &c[1], &c[2], &c[3]))
@@ -3537,7 +3576,7 @@ PseudocolorAttributes_SetWireframeColor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetWireframeColor(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the wireframeColor.
     PyObject *retval = PyTuple_New(4);
     const unsigned char *wireframeColor = obj->data->GetWireframeColor().GetColor();
@@ -3549,9 +3588,78 @@ PseudocolorAttributes_GetWireframeColor(PyObject *self, PyObject *args)
 }
 
 /*static*/ PyObject *
+PseudocolorAttributes_SetWireframeColorByVar(PyObject *self, PyObject *args)
+{
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
+
+    PyObject *packaged_args = 0;
+
+    // Handle args packaged into a tuple of size one
+    // if we think the unpackaged args matches our needs
+    if (PySequence_Check(args) && PySequence_Size(args) == 1)
+    {
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PyNumber_Check(packaged_args))
+            args = packaged_args;
+    }
+
+    if (PySequence_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "expecting a single number arg");
+    }
+
+    if (!PyNumber_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "arg is not a number type");
+    }
+
+    long val = PyLong_AsLong(args);
+    bool cval = bool(val);
+
+    if (val == -1 && PyErr_Occurred())
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ bool");
+    }
+    if (fabs(double(val))>1.5E-7 && fabs((double(long(cval))-double(val))/double(val))>1.5E-7)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ bool");
+    }
+
+    if(cval && (cval != obj->data->GetWireframeColorByVar() &&
+                obj->data->GetRenderSurfaces()))
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        PyErr_WarnEx(PyExc_RuntimeWarning,
+                "Cannot color wireframes by var if also rendering surfaces.\n", 0);
+        return PyInt_FromLong(0);
+    }
+    Py_XDECREF(packaged_args);
+
+    // Set the wireframeColorByVar in the object.
+    obj->data->SetWireframeColorByVar(cval);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+/*static*/ PyObject *
+PseudocolorAttributes_GetWireframeColorByVar(PyObject *self, PyObject *args)
+{
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
+    PyObject *retval = PyInt_FromLong(obj->data->GetWireframeColorByVar()?1L:0L);
+    return retval;
+}
+
+/*static*/ PyObject *
 PseudocolorAttributes_SetPointColor(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
 
     int c[4];
     if(!PyArg_ParseTuple(args, "iiii", &c[0], &c[1], &c[2], &c[3]))
@@ -3614,7 +3722,7 @@ PseudocolorAttributes_SetPointColor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 PseudocolorAttributes_GetPointColor(PyObject *self, PyObject *args)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)self;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the pointColor.
     PyObject *retval = PyTuple_New(4);
     const unsigned char *pointColor = obj->data->GetPointColor().GetColor();
@@ -3625,10 +3733,80 @@ PseudocolorAttributes_GetPointColor(PyObject *self, PyObject *args)
     return retval;
 }
 
+/*static*/ PyObject *
+PseudocolorAttributes_SetPointColorByVar(PyObject *self, PyObject *args)
+{
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
+
+    PyObject *packaged_args = 0;
+
+    // Handle args packaged into a tuple of size one
+    // if we think the unpackaged args matches our needs
+    if (PySequence_Check(args) && PySequence_Size(args) == 1)
+    {
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PyNumber_Check(packaged_args))
+            args = packaged_args;
+    }
+
+    if (PySequence_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "expecting a single number arg");
+    }
+
+    if (!PyNumber_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "arg is not a number type");
+    }
+
+    long val = PyLong_AsLong(args);
+    bool cval = bool(val);
+
+    if (val == -1 && PyErr_Occurred())
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ bool");
+    }
+    if (fabs(double(val))>1.5E-7 && fabs((double(long(cval))-double(val))/double(val))>1.5E-7)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ bool");
+    }
+
+   if(cval && (cval != obj->data->GetPointColorByVar() &&
+                obj->data->GetRenderSurfaces()))
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        PyErr_WarnEx(PyExc_RuntimeWarning,
+                "Cannot color points by var if also rendering surfaces.\n", 0);
+        return PyInt_FromLong(0);
+    }
+    Py_XDECREF(packaged_args);
+
+    // Set the pointColorByVar in the object.
+    obj->data->SetPointColorByVar(cval);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+/*static*/ PyObject *
+PseudocolorAttributes_GetPointColorByVar(PyObject *self, PyObject *args)
+{
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)self;
+    PyObject *retval = PyInt_FromLong(obj->data->GetPointColorByVar()?1L:0L);
+    return retval;
+}
+
 
 
 PyMethodDef PyPseudocolorAttributes_methods[PSEUDOCOLORATTRIBUTES_NMETH] = {
-    {"Notify", PseudocolorAttributes_Notify, METH_VARARGS},
+    {"__dir__", PseudocolorAttributes_dir, METH_NOARGS},
+    {"Notify", PseudocolorAttributes_Notify, METH_NOARGS},
     {"SetScaling", PseudocolorAttributes_SetScaling, METH_VARARGS},
     {"GetScaling", PseudocolorAttributes_GetScaling, METH_VARARGS},
     {"SetSkewFactor", PseudocolorAttributes_SetSkewFactor, METH_VARARGS},
@@ -3733,8 +3911,12 @@ PyMethodDef PyPseudocolorAttributes_methods[PSEUDOCOLORATTRIBUTES_NMETH] = {
     {"GetLightingFlag", PseudocolorAttributes_GetLightingFlag, METH_VARARGS},
     {"SetWireframeColor", PseudocolorAttributes_SetWireframeColor, METH_VARARGS},
     {"GetWireframeColor", PseudocolorAttributes_GetWireframeColor, METH_VARARGS},
+    {"SetWireframeColorByVar", PseudocolorAttributes_SetWireframeColorByVar, METH_VARARGS},
+    {"GetWireframeColorByVar", PseudocolorAttributes_GetWireframeColorByVar, METH_VARARGS},
     {"SetPointColor", PseudocolorAttributes_SetPointColor, METH_VARARGS},
     {"GetPointColor", PseudocolorAttributes_GetPointColor, METH_VARARGS},
+    {"SetPointColorByVar", PseudocolorAttributes_SetPointColorByVar, METH_VARARGS},
+    {"GetPointColorByVar", PseudocolorAttributes_GetPointColorByVar, METH_VARARGS},
     {NULL, NULL}
 };
 
@@ -3743,19 +3925,22 @@ PyMethodDef PyPseudocolorAttributes_methods[PSEUDOCOLORATTRIBUTES_NMETH] = {
 //
 
 static void
-PseudocolorAttributes_dealloc(PyObject *v)
+PyPseudocolorAttributes_dealloc(PyObject *v)
 {
-   PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)v;
+   PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)v;
    if(obj->parent != 0)
        Py_DECREF(obj->parent);
    if(obj->owns)
        delete obj->data;
 }
 
-static PyObject *PseudocolorAttributes_richcompare(PyObject *self, PyObject *other, int op);
+static PyObject *PyPseudocolorAttributes_richcompare(PyObject *self, PyObject *other, int op);
 PyObject *
-PyPseudocolorAttributes_getattr(PyObject *self, char *name)
+PyPseudocolorAttributes_getattro(PyObject *self, PyObject *attr_name)
 {
+    const char *name = PyUnicode_AsUTF8(attr_name);
+    if (!name) return NULL;
+
     if(strcmp(name, "scaling") == 0)
         return PseudocolorAttributes_GetScaling(self, NULL);
     if(strcmp(name, "Linear") == 0)
@@ -3942,29 +4127,26 @@ PyPseudocolorAttributes_getattr(PyObject *self, char *name)
         return PseudocolorAttributes_GetLightingFlag(self, NULL);
     if(strcmp(name, "wireframeColor") == 0)
         return PseudocolorAttributes_GetWireframeColor(self, NULL);
+    if(strcmp(name, "wireframeColorByVar") == 0)
+        return PseudocolorAttributes_GetWireframeColorByVar(self, NULL);
     if(strcmp(name, "pointColor") == 0)
         return PseudocolorAttributes_GetPointColor(self, NULL);
+    if(strcmp(name, "pointColorByVar") == 0)
+        return PseudocolorAttributes_GetPointColorByVar(self, NULL);
 
+    PyObject *meth = Py_FindMethod(PyPseudocolorAttributes_methods, self, (char*)name);
+    if (meth) return meth;
 
-    // Add a __dict__ answer so that dir() works
-    if (!strcmp(name, "__dict__"))
-    {
-        PyObject *result = PyDict_New();
-        for (int i = 0; PyPseudocolorAttributes_methods[i].ml_meth; i++)
-            PyDict_SetItem(result,
-                PyString_FromString(PyPseudocolorAttributes_methods[i].ml_name),
-                PyString_FromString(PyPseudocolorAttributes_methods[i].ml_name));
-        return result;
-    }
-
-    return Py_FindMethod(PyPseudocolorAttributes_methods, self, name);
+    return PyObject_GenericGetAttr(self, attr_name);
 }
 
 int
-PyPseudocolorAttributes_setattr(PyObject *self, char *name, PyObject *args)
+PyPseudocolorAttributes_setattro(PyObject *self, PyObject *attr_name, PyObject *args)
 {
     PyObject NULL_PY_OBJ;
     PyObject *obj = &NULL_PY_OBJ;
+    const char *name = PyUnicode_AsUTF8(attr_name);
+    if (!name) return -1;
 
     if(strcmp(name, "scaling") == 0)
         obj = PseudocolorAttributes_SetScaling(self, args);
@@ -4070,8 +4252,18 @@ PyPseudocolorAttributes_setattr(PyObject *self, char *name, PyObject *args)
         obj = PseudocolorAttributes_SetLightingFlag(self, args);
     else if(strcmp(name, "wireframeColor") == 0)
         obj = PseudocolorAttributes_SetWireframeColor(self, args);
+    else if(strcmp(name, "wireframeColorByVar") == 0)
+        obj = PseudocolorAttributes_SetWireframeColorByVar(self, args);
     else if(strcmp(name, "pointColor") == 0)
         obj = PseudocolorAttributes_SetPointColor(self, args);
+    else if(strcmp(name, "pointColorByVar") == 0)
+        obj = PseudocolorAttributes_SetPointColorByVar(self, args);
+
+    if (obj == &NULL_PY_OBJ && PyObject_GenericSetAttr(self, attr_name, args) == 0)
+    {
+        Py_INCREF(Py_None);
+        obj = Py_None;
+    }
 
     if (obj != NULL && obj != &NULL_PY_OBJ)
         Py_DECREF(obj);
@@ -4087,78 +4279,45 @@ PyPseudocolorAttributes_setattr(PyObject *self, char *name, PyObject *args)
     return (obj != NULL) ? 0 : -1;
 }
 
-static int
-PseudocolorAttributes_print(PyObject *v, FILE *fp, int flags)
-{
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)v;
-    fprintf(fp, "%s", PyPseudocolorAttributes_ToString(obj->data, "",false).c_str());
-    return 0;
-}
-
 PyObject *
-PseudocolorAttributes_str(PyObject *v)
+PyPseudocolorAttributes_str(PyObject *v)
 {
-    PseudocolorAttributesObject *obj = (PseudocolorAttributesObject *)v;
+    PyPseudocolorAttributesObject *obj = (PyPseudocolorAttributesObject *)v;
     return PyString_FromString(PyPseudocolorAttributes_ToString(obj->data,"", false).c_str());
 }
 
 //
 // The doc string for the class.
 //
-#if PY_MAJOR_VERSION > 2 || (PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION >= 5)
-static const char *PseudocolorAttributes_Purpose = "Attributes for the pseudocolor plot";
-#else
-static char *PseudocolorAttributes_Purpose = "Attributes for the pseudocolor plot";
-#endif
+static char const *PyPseudocolorAttributes_purpose = "Attributes for the pseudocolor plot";
 
 //
-// Python Type Struct Def Macro from Py2and3Support.h
+// Initialize the python object type structure with default values.
+// If you need to do something custom, #undef VISIT_PY_TYPE_OBJ_TP_SLOTS,
+// which is defined with default values for our standard python objects
+// in src/visitpy/common/Py2and3Support.h. Then re-define it here AHEAD of
+// instantiating the type with VISIT_PY_TYPE_OBJ. Look for examples of
+// such customization in src/avt/PythonFilters or src/visitpy/common.
 //
-//         VISIT_PY_TYPE_OBJ( VPY_TYPE,
-//                            VPY_NAME,
-//                            VPY_OBJECT,
-//                            VPY_DEALLOC,
-//                            VPY_PRINT,
-//                            VPY_GETATTR,
-//                            VPY_SETATTR,
-//                            VPY_STR,
-//                            VPY_PURPOSE,
-//                            VPY_RICHCOMP,
-//                            VPY_AS_NUMBER)
-
-//
-// The type description structure
-//
-
-VISIT_PY_TYPE_OBJ(PseudocolorAttributesType,         \
-                  "PseudocolorAttributes",           \
-                  PseudocolorAttributesObject,       \
-                  PseudocolorAttributes_dealloc,     \
-                  PseudocolorAttributes_print,       \
-                  PyPseudocolorAttributes_getattr,   \
-                  PyPseudocolorAttributes_setattr,   \
-                  PseudocolorAttributes_str,         \
-                  PseudocolorAttributes_Purpose,     \
-                  PseudocolorAttributes_richcompare, \
-                  0); /* as_number*/
+VISIT_PY_TYPE_OBJ(PseudocolorAttributes);
 
 //
 // Helper function for comparing.
 //
 static PyObject *
-PseudocolorAttributes_richcompare(PyObject *self, PyObject *other, int op)
+PyPseudocolorAttributes_richcompare(PyObject *self, PyObject *other, int op)
 {
     // only compare against the same type 
-    if ( Py_TYPE(self) != &PseudocolorAttributesType
-         || Py_TYPE(other) != &PseudocolorAttributesType)
+    if ( Py_TYPE(self) != &PyPseudocolorAttributesType
+         || Py_TYPE(other) != &PyPseudocolorAttributesType)
     {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
 
     PyObject *res = NULL;
-    PseudocolorAttributes *a = ((PseudocolorAttributesObject *)self)->data;
-    PseudocolorAttributes *b = ((PseudocolorAttributesObject *)other)->data;
+    PseudocolorAttributes *a = ((PyPseudocolorAttributesObject *)self)->data;
+    PseudocolorAttributes *b = ((PyPseudocolorAttributesObject *)other)->data;
 
     switch (op)
     {
@@ -4187,8 +4346,8 @@ static PseudocolorAttributes *currentAtts = 0;
 static PyObject *
 NewPseudocolorAttributes(int useCurrent)
 {
-    PseudocolorAttributesObject *newObject;
-    newObject = PyObject_NEW(PseudocolorAttributesObject, &PseudocolorAttributesType);
+    PyPseudocolorAttributesObject *newObject;
+    newObject = PyObject_NEW(PyPseudocolorAttributesObject, &PyPseudocolorAttributesType);
     if(newObject == NULL)
         return NULL;
     if(useCurrent && currentAtts != 0)
@@ -4199,14 +4358,15 @@ NewPseudocolorAttributes(int useCurrent)
         newObject->data = new PseudocolorAttributes;
     newObject->owns = true;
     newObject->parent = 0;
+    PyType_Ready(&PyPseudocolorAttributesType);
     return (PyObject *)newObject;
 }
 
 static PyObject *
 WrapPseudocolorAttributes(const PseudocolorAttributes *attr)
 {
-    PseudocolorAttributesObject *newObject;
-    newObject = PyObject_NEW(PseudocolorAttributesObject, &PseudocolorAttributesType);
+    PyPseudocolorAttributesObject *newObject;
+    newObject = PyObject_NEW(PyPseudocolorAttributesObject, &PyPseudocolorAttributesType);
     if(newObject == NULL)
         return NULL;
     newObject->data = (PseudocolorAttributes *)attr;
@@ -4308,13 +4468,13 @@ PyPseudocolorAttributes_GetMethodTable(int *nMethods)
 bool
 PyPseudocolorAttributes_Check(PyObject *obj)
 {
-    return (obj->ob_type == &PseudocolorAttributesType);
+    return (obj->ob_type == &PyPseudocolorAttributesType);
 }
 
 PseudocolorAttributes *
 PyPseudocolorAttributes_FromPyObject(PyObject *obj)
 {
-    PseudocolorAttributesObject *obj2 = (PseudocolorAttributesObject *)obj;
+    PyPseudocolorAttributesObject *obj2 = (PyPseudocolorAttributesObject *)obj;
     return obj2->data;
 }
 
@@ -4333,7 +4493,7 @@ PyPseudocolorAttributes_Wrap(const PseudocolorAttributes *attr)
 void
 PyPseudocolorAttributes_SetParent(PyObject *obj, PyObject *parent)
 {
-    PseudocolorAttributesObject *obj2 = (PseudocolorAttributesObject *)obj;
+    PyPseudocolorAttributesObject *obj2 = (PyPseudocolorAttributesObject *)obj;
     obj2->parent = parent;
 }
 

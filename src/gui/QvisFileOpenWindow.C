@@ -137,12 +137,26 @@ QvisFileOpenWindow::SetHideFileFormat(bool value)
     hideFileFormat = value;
 }
 
+// ****************************************************************************
+// Method: QvisFileOpenWindow::SetFilename
+//
+// Modifications:
+//   Kathleen Biagas, Fri Jul 11, 2025
+//   Enable okButton if passed-in filename isn't empty.
+//
+// ****************************************************************************
+
 void
 QvisFileOpenWindow::SetFilename(const QString &f)
 {
     if(showFilename)
     {
         filenameEdit->setText(f);
+        // This could be managed by connecting the textChanged signal to the
+        // filenameEditChanged SLOT, but that signal is emitted with every
+        // keystroke as well as when the text is changed programatically as is
+        // done in this method.  Trying to avoid every keystroke round trips.
+        okButton->setEnabled(!f.isEmpty());
     }
 }
 
@@ -206,6 +220,9 @@ QvisFileOpenWindow::SetFilename(const QString &f)
 //   Replace `currentIndexChanged` signal for QComboBox with
 //   'currentTextChanged' as the former is not available in Qt 6.
 //
+//   Kathleen Biagas, Tue Mar 18, 2025
+//   Connect to 'editingFinished' instead of 'textChanged' for QLineEdits.
+//
 // ****************************************************************************
 
 void
@@ -228,11 +245,7 @@ QvisFileOpenWindow::CreateWindowContents()
 
     directoryList = new QListWidget(directoryWidget);
     directoryVBox->addWidget(directoryList);
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
     int minColumnWidth = fontMetrics().horizontalAdvance("X");
-#else
-    int minColumnWidth = fontMetrics().width("X");
-#endif
     directoryList->setMinimumWidth(minColumnWidth * 20);
     
     connect(directoryList, SIGNAL(itemActivated(QListWidgetItem *)),
@@ -301,7 +314,7 @@ QvisFileOpenWindow::CreateWindowContents()
         // Create the filename
         filenameEdit = new QLineEdit(central);
         connect(filenameEdit, SIGNAL(returnPressed()), this, SLOT(okClicked()));
-        connect(filenameEdit, SIGNAL(textChanged(const QString &)), this, SLOT(filenameEditChanged(const QString &)));
+        connect(filenameEdit, SIGNAL(editingFinished()), this, SLOT(filenameEditChanged()));
         filenameEdit->setFocus();
         QLabel *filenameLabel = new QLabel(tr("Filename"), central);
         pathLayout->addWidget(filenameLabel, 3, 0, Qt::AlignRight);
@@ -1028,10 +1041,11 @@ QvisFileOpenWindow::SetShowFilename(bool value)
 // ****************************************************************************
 
 void 
-QvisFileOpenWindow::filenameEditChanged(const QString &text)
+QvisFileOpenWindow::filenameEditChanged()
 {
     if(hideFileFormat)
         fileList->clearSelection();
+    QString text(filenameEdit->text());
     if(text.isEmpty())
         okButton->setEnabled(false);
     else

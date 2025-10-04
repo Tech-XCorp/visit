@@ -647,13 +647,8 @@ QvisCMFEWizard::CreateDonorTypePage(void)
 
 
     pageLayout->addStretch(10);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(donorTypeSelect, SIGNAL(buttonClicked(int)),
-            this, SLOT(donorTypeChanged(int)));
-#else
     connect(donorTypeSelect, SIGNAL(idClicked(int)),
             this, SLOT(donorTypeChanged(int)));
-#endif
 
     // Add the page.
     setPage(Page_DonorType, page0);
@@ -822,6 +817,9 @@ QvisCMFEWizard::CreateDonorAndTargetPage(void)
 //   Kathleen Biagas, Tue Apr 18 16:34:41 PDT 2023
 //   Support Qt6: buttonClicked -> idClicked.
 //
+//   Kathleen Biagas, Tue Mar 18, 2025
+//   Connect to 'editingFinished' instead of 'textChanged' for QLineEdits.
+//
 // ****************************************************************************
 
 void
@@ -850,13 +848,8 @@ QvisCMFEWizard::CreateTimeSpecificationPage(void)
     absVsRelTimeSelect->addButton(r2, 1);
     pageLayout->addWidget(r2);
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(absVsRelTimeSelect, SIGNAL(buttonClicked(int)),
-            this, SLOT(absVsRelTimeChanged(int)));
-#else
     connect(absVsRelTimeSelect, SIGNAL(idClicked(int)),
             this, SLOT(absVsRelTimeChanged(int)));
-#endif
 
     QFrame *hline2 = new QFrame(main_widget);
     hline2->setFrameStyle(QFrame::HLine | QFrame::Sunken);
@@ -877,8 +870,8 @@ QvisCMFEWizard::CreateTimeSpecificationPage(void)
     timeTxt->setText(tr("0"));
 
     glayout->addWidget(timeTxt, 0, 1);
-    connect(timeTxt, SIGNAL(textChanged(const QString &)),
-            this, SLOT(timeChanged(const QString &)));
+    connect(timeTxt, SIGNAL(editingFinished()),
+            this, SLOT(timeChanged()));
 
     QRadioButton *r22 = new QRadioButton(tr("Simulation cycle"), main_widget);
     timeTypeSelect->addButton(r22, 1);
@@ -887,8 +880,8 @@ QvisCMFEWizard::CreateTimeSpecificationPage(void)
     cycleTxt = new QLineEdit(main_widget);
     cycleTxt->setText(tr("0"));
     glayout->addWidget(cycleTxt, 1, 1);
-    connect(cycleTxt, SIGNAL(textChanged(const QString &)),
-            this, SLOT(cycleChanged(const QString &)));
+    connect(cycleTxt, SIGNAL(editingFinished()),
+            this, SLOT(cycleChanged()));
 
     QRadioButton *r23 = new QRadioButton(tr("Time index"), main_widget);
     r23->setChecked(true);
@@ -898,19 +891,14 @@ QvisCMFEWizard::CreateTimeSpecificationPage(void)
     indexTxt = new QLineEdit(main_widget);
     indexTxt->setText(tr("0"));
     glayout->addWidget(indexTxt, 2, 1);
-    connect(indexTxt, SIGNAL(textChanged(const QString &)),
-            this, SLOT(indexChanged(const QString &)));
+    connect(indexTxt, SIGNAL(editingFinished()),
+            this, SLOT(indexChanged()));
 
     QLabel *descLabel = new QLabel(tr("(Time index is the most robust and works in all circumstances)"), main_widget);
     pageLayout->addWidget(descLabel);
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(timeTypeSelect, SIGNAL(buttonClicked(int)),
-            this, SLOT(timeTypeChanged(int)));
-#else
     connect(timeTypeSelect, SIGNAL(idClicked(int)),
             this, SLOT(timeTypeChanged(int)));
-#endif
 
     QFrame *hline1 = new QFrame(main_widget);
     hline1->setFrameStyle(QFrame::HLine | QFrame::Sunken);
@@ -1001,13 +989,8 @@ QvisCMFEWizard::CreateInterpSelectionPage(void)
     posLabel4->setAlignment(Qt::AlignLeft);
     glayout->addWidget(posLabel4, 7, 1);
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(interpSelect, SIGNAL(buttonClicked(int)),
-            this, SLOT(interpChanged(int)));
-#else
     connect(interpSelect, SIGNAL(idClicked(int)),
             this, SLOT(interpChanged(int)));
-#endif
 
     QFrame *hline1 = new QFrame(main_widget);
     hline1->setFrameStyle(QFrame::HLine | QFrame::Sunken);
@@ -1027,8 +1010,8 @@ QvisCMFEWizard::CreateInterpSelectionPage(void)
     nonOverlapTxt = new QLineEdit(main_widget);
     nonOverlapTxt->setText(tr("0"));
     glayout2->addWidget(nonOverlapTxt, 0, 1);
-    connect(nonOverlapTxt, SIGNAL(textChanged(const QString &)),
-            this, SLOT(nonOverlapTxtChanged(const QString &)));
+    connect(nonOverlapTxt, SIGNAL(editingFinished()),
+            this, SLOT(nonOverlapTxtChanged()));
 
     QRadioButton *r12 = new QRadioButton(tr("Use a variable"));
     nonOverlapSelect->addButton(r12, 1);
@@ -1043,13 +1026,8 @@ QvisCMFEWizard::CreateInterpSelectionPage(void)
     connect(nonOverlapVar, SIGNAL(activated(const QString &)),
             this, SLOT(nonOverlapVarChanged(const QString &)));
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(nonOverlapSelect, SIGNAL(buttonClicked(int)),
-            this, SLOT(nonOverlapChanged(int)));
-#else
     connect(nonOverlapSelect, SIGNAL(idClicked(int)),
             this, SLOT(nonOverlapChanged(int)));
-#endif
 
     // Add the page.
     setPage(Page_InterpSelection, page3);
@@ -1075,6 +1053,9 @@ QvisCMFEWizard::CreateInterpSelectionPage(void)
 //   Kathleen Biagas, Tue Apr 18 16:34:41 PDT 2023
 //   Support Qt6: buttonClicked -> idClicked.
 //
+//   Kathleen Biagas, Tue Mar 18, 2025
+//   Connect to 'editingFinished' instead of 'textChanged' for QLineEdits.
+//
 // ****************************************************************************
 
 void
@@ -1096,8 +1077,8 @@ QvisCMFEWizard::CreateActivityPage(void)
     exprNameTxt = new QLineEdit(main_widget);
     exprNameTxt->setText(tr(decision_exprname.c_str()));
     glayout1->addWidget(exprNameTxt, 0, 1);
-    connect(exprNameTxt, SIGNAL(textChanged(const QString &)),
-            this, SLOT(exprNameChanged(const QString &)));
+    connect(exprNameTxt, SIGNAL(editingFinished()),
+            this, SLOT(exprNameChanged()));
 
     QFrame *hline2 = new QFrame(main_widget);
     hline2->setFrameStyle(QFrame::HLine | QFrame::Sunken);
@@ -1122,13 +1103,8 @@ QvisCMFEWizard::CreateActivityPage(void)
     exprTypeSelect->addButton(r1, 1);
     glayout2->addWidget(r1, 0, 0);
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(exprTypeSelect, SIGNAL(buttonClicked(int)),
-            this, SLOT(exprTypeChanged(int)));
-#else
     connect(exprTypeSelect, SIGNAL(idClicked(int)),
             this, SLOT(exprTypeChanged(int)));
-#endif
 
     exprDiffVar = new QvisVariableButton(false, false, false,
                                          QvisBaseVariableButton::Scalars |
@@ -1173,13 +1149,8 @@ QvisCMFEWizard::CreateActivityPage(void)
     exprDiffTypeSelect->addButton(r23, 7);
     glayout2->addWidget(r23, 3, 3);
 
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(exprDiffTypeSelect, SIGNAL(buttonClicked(int)),
-            this, SLOT(exprDiffTypeChanged(int)));
-#else
     connect(exprDiffTypeSelect, SIGNAL(idClicked(int)),
             this, SLOT(exprDiffTypeChanged(int)));
-#endif
 
     // Add the page.
     setPage(Page_ActivityDescription, page4);
@@ -1985,9 +1956,10 @@ QvisCMFEWizard::timeTypeChanged(int val)
 // ****************************************************************************
 
 void
-QvisCMFEWizard::timeChanged(const QString &s)
+QvisCMFEWizard::timeChanged()
 {
     bool okay = true;
+    QString s(timeTxt->text());
     decision_time = s.toDouble(&okay);
 }
 
@@ -2010,9 +1982,10 @@ QvisCMFEWizard::timeChanged(const QString &s)
 // ****************************************************************************
 
 void
-QvisCMFEWizard::cycleChanged(const QString &s)
+QvisCMFEWizard::cycleChanged()
 {
     bool okay = true;
+    QString s(cycleTxt->text());
     decision_cycle = s.toInt(&okay);
 }
 
@@ -2035,9 +2008,10 @@ QvisCMFEWizard::cycleChanged(const QString &s)
 // ****************************************************************************
 
 void
-QvisCMFEWizard::indexChanged(const QString &s)
+QvisCMFEWizard::indexChanged()
 {
     bool okay = true;
+    QString s(indexTxt->text());
     decision_index = s.toInt(&okay);
 }
 
@@ -2155,9 +2129,10 @@ QvisCMFEWizard::nonOverlapChanged(int val)
 // ****************************************************************************
 
 void 
-QvisCMFEWizard::nonOverlapTxtChanged(const QString &s)
+QvisCMFEWizard::nonOverlapTxtChanged()
 {
     bool okay = false;
+    QString s(nonOverlapTxt->text());
     decision_fillval = s.toDouble(&okay);
 }
 
@@ -2196,9 +2171,9 @@ QvisCMFEWizard::nonOverlapVarChanged(const QString &s)
 // ****************************************************************************
 
 void 
-QvisCMFEWizard::exprNameChanged(const QString &s)
+QvisCMFEWizard::exprNameChanged()
 {
-    decision_exprname = s.toStdString();
+    decision_exprname = exprNameTxt->text().toStdString();
 }
 
 // ****************************************************************************

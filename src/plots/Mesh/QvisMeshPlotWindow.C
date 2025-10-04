@@ -132,6 +132,9 @@ QvisMeshPlotWindow::~QvisMeshPlotWindow()
 //   Kathleen Biagas, Tue Apr 18 16:34:41 PDT 2023
 //   Support Qt6: buttonClicked -> idClicked.
 //
+//   Cyrus Harrison, Thu Jul 17 07:55:39 PDT 2025
+//   Added showGeneratedToggle.
+//
 // ****************************************************************************
 
 void
@@ -152,7 +155,13 @@ QvisMeshPlotWindow::CreateWindowContents()
     showInternalToggle = new QCheckBox(tr("Show internal zones"), central);
     connect(showInternalToggle, SIGNAL(toggled(bool)),
             this, SLOT(showInternalToggled(bool)));
-    zoneLayout->addWidget(showInternalToggle, 0, 0, 1, 2);
+    zoneLayout->addWidget(showInternalToggle, 0, 0, 1, 1);
+
+    // Create the showGenerated toggle
+    showGeneratedToggle = new QCheckBox(tr("Show generated zones"), central);
+    connect(showGeneratedToggle, SIGNAL(toggled(bool)),
+            this, SLOT(showGeneratedToggled(bool)));
+    zoneLayout->addWidget(showGeneratedToggle, 0, 1, 1, 1);
 
     //
     // Create the color stuff
@@ -182,13 +191,8 @@ QvisMeshPlotWindow::CreateWindowContents()
     colorLayout->addWidget(rb, 0, 3, Qt::AlignRight | Qt::AlignVCenter);
 
     // Each time a radio button is clicked, call the scale clicked slot.
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(meshColorButtons, SIGNAL(buttonClicked(int)),
-            this, SLOT(meshColorClicked(int)));
-#else
     connect(meshColorButtons, SIGNAL(idClicked(int)),
             this, SLOT(meshColorClicked(int)));
-#endif
 
     // Create the mesh color button.
     meshColor = new QvisColorButton(central);
@@ -214,13 +218,8 @@ QvisMeshPlotWindow::CreateWindowContents()
     colorLayout->addWidget(rb, 1, 3, Qt::AlignRight | Qt::AlignVCenter);
 
     // Each time a radio button is clicked, call the scale clicked slot.
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(opaqueColorButtons, SIGNAL(buttonClicked(int)),
-            this, SLOT(opaqueColorClicked(int)));
-#else
     connect(opaqueColorButtons, SIGNAL(idClicked(int)),
             this, SLOT(opaqueColorClicked(int)));
-#endif
 
     // Create the opaque color button.
     opaqueColor = new QvisColorButton(central);
@@ -231,13 +230,8 @@ QvisMeshPlotWindow::CreateWindowContents()
     // Create the opaque mode buttons
     colorLayout->addWidget(new QLabel(tr("Opaque mode"), central), 2, 0);
     opaqueModeGroup = new QButtonGroup(central);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(opaqueModeGroup, SIGNAL(buttonClicked(int)), this,
-            SLOT(opaqueModeChanged(int)));
-#else
     connect(opaqueModeGroup, SIGNAL(idClicked(int)), this,
             SLOT(opaqueModeChanged(int)));
-#endif
 
     QHBoxLayout *opaqueModeLayout = new QHBoxLayout();
     opaqueModeLayout->setContentsMargins(0,0,0,0);
@@ -322,13 +316,8 @@ QvisMeshPlotWindow::CreateWindowContents()
 
     // Create the smoothing level buttons
     smoothingLevelButtons = new QButtonGroup(central);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(smoothingLevelButtons, SIGNAL(buttonClicked(int)),
-            this, SLOT(smoothingLevelChanged(int)));
-#else
     connect(smoothingLevelButtons, SIGNAL(idClicked(int)),
             this, SLOT(smoothingLevelChanged(int)));
-#endif
 
     rb = new QRadioButton(tr("None"), central);
     smoothingLevelButtons->addButton(rb, 0);
@@ -605,6 +594,11 @@ QvisMeshPlotWindow::UpdateWindow(bool doAll)
             showInternalToggle->setChecked(meshAtts->GetShowInternal());
             showInternalToggle->blockSignals(false);
             break;
+        case MeshAttributes::ID_showGenerated:
+            showGeneratedToggle->blockSignals(true);
+            showGeneratedToggle->setChecked(meshAtts->GetShowGenerated());
+            showGeneratedToggle->blockSignals(false);
+            break;
         case MeshAttributes::ID_pointSizePixels:
             pointControl->blockSignals(true);
             pointControl->SetPointSizePixels(meshAtts->GetPointSizePixels());
@@ -689,7 +683,7 @@ QvisMeshPlotWindow::Apply(bool ignore)
 {
     if(AutoUpdate() || ignore)
     {
-        // Get the current aslice attributes and tell the other
+        // Get the current mesh plot attributes and tell the other
         // observers about them.
         GetCurrentValues(-1);
         meshAtts->Notify();
@@ -845,6 +839,33 @@ QvisMeshPlotWindow::showInternalToggled(bool val)
     SetUpdate(false);
     Apply();
 }
+
+
+// ****************************************************************************
+// Method: QvisMeshPlotWindow::showGenerated
+//
+// Purpose:
+//   This is a Qt slot function that is called when the showGenerated toggle is
+//   toggled.
+//
+// Arguments:
+//   val : The new showGenerated toggle state.
+//
+// Programmer: Cyrus Harrison
+// Creation:   Thu Jul 17 07:55:39 PDT 2025
+//
+// Modifications:
+//
+// ****************************************************************************
+
+void
+QvisMeshPlotWindow::showGeneratedToggled(bool val)
+{
+    meshAtts->SetShowGenerated(val);
+    SetUpdate(false);
+    Apply();
+}
+
 
 
 // ****************************************************************************

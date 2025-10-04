@@ -39,10 +39,10 @@ function bv_vtkm_initialize_vars
 
 function bv_vtkm_info
 {
-    export VTKM_VERSION=${VTKM_VERSION:-"v1.9.0"}
+    export VTKM_VERSION=${VTKM_VERSION:-"v2.3.0"}
     export VTKM_FILE=${VTKM_FILE:-"vtk-m-${VTKM_VERSION}.tar.gz"}
     export VTKM_BUILD_DIR=${VTKM_BUILD_DIR:-"vtk-m-${VTKM_VERSION}"}
-    export VTKM_SHA256_CHECKSUM="12355dea1a24ec32767260068037adeb71abb3df2f9f920c92ce483f35ff46e4"
+    export VTKM_SHA256_CHECKSUM="63f1a0273227463a1be38c046630ea6f606ed958543fe6ff64eb6bb6513a6013"
 }
 
 function bv_vtkm_print
@@ -74,7 +74,7 @@ function bv_vtkm_host_profile
 function bv_vtkm_ensure
 {
     if [[ "$DO_VTKM" == "yes" && "$USE_SYSTEM_VTKM" == "no" ]] ; then
-        ensure_built_or_ready "vtk-m" $VTKM_VERSION $VTKM_BUILD_DIR $VTKM_FILE $VTKM_URL
+        ensure_built_or_ready "vtkm" $VTKM_VERSION $VTKM_BUILD_DIR $VTKM_FILE $VTKM_URL
         if [[ $? != 0 ]] ; then
             ANY_ERRORS="yes"
             DO_VTKM="no"
@@ -228,10 +228,10 @@ function build_vtkm
     # Build vtkm
     #
     info "Building VTKm . . . (~2 minutes)"
-    $MAKE $MAKE_OPT_FLAGS || error "VTKm did not build correctly. Giving up."
+    ${CMAKE_COMMAND} --build . $MAKE_OPT_FLAGS || error "VTKm did not build correctly. Giving up."
 
     info "Installing VTKm . . . (~2 minutes)"
-    $MAKE install || error "VTKm did not install correctly."
+    ${CMAKE_COMMAND} --install . || error "VTKm did not install correctly."
 
     if [[ "$DO_GROUP" == "yes" ]] ; then
         chmod -R ug+w,a+rX "$VISITDIR/vtkm"

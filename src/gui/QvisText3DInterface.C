@@ -29,7 +29,7 @@
 
 // Relative scale will scale the text as a percentage of the bbox diagonal
 #define GetRelativeHeight GetOptions().GetEntry("relativeHeight")->AsInt
-#define SetRelativeHeight GetOptions().GetEntry("relatveHeight")->SetValue
+#define SetRelativeHeight GetOptions().GetEntry("relativeHeight")->SetValue
 
 // Fixed height in world coordinates.
 #define GetFixedHeight   GetOptions().GetEntry("fixedHeight")->AsDouble
@@ -75,7 +75,7 @@ QvisText3DInterface::QvisText3DInterface(QWidget *parent) :
 
     // Add controls for entering the text
     textLineEdit = new QLineEdit(this);
-    connect(textLineEdit, SIGNAL(returnPressed()),
+    connect(textLineEdit, SIGNAL(editingFinished()),
             this, SLOT(textChanged()));
     cLayout->addWidget(textLineEdit, row, 1, 1, 2);
     cLayout->addWidget(new QLabel(tr("Text"), this), row, 0);
@@ -83,7 +83,7 @@ QvisText3DInterface::QvisText3DInterface(QWidget *parent) :
 
     // Add controls for the position
     positionEdit = new QLineEdit(this);
-    connect(positionEdit, SIGNAL(returnPressed()),
+    connect(positionEdit, SIGNAL(editingFinished()),
             this, SLOT(positionChanged()));
     cLayout->addWidget(positionEdit, row, 1, 1, 2);
     cLayout->addWidget(new QLabel(tr("Position"), this), row, 0);
@@ -91,13 +91,8 @@ QvisText3DInterface::QvisText3DInterface(QWidget *parent) :
 
     // Add controls for the height.
     heightMode = new QButtonGroup(this);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(heightMode, SIGNAL(buttonClicked(int)),
-            this, SLOT(heightModeChanged(int)));
-#else
     connect(heightMode, SIGNAL(idClicked(int)),
             this, SLOT(heightModeChanged(int)));
-#endif
     cLayout->addWidget(new QLabel(tr("Height"), this), row, 0);
     QRadioButton *rb = new QRadioButton(tr("Relative"), this);
     heightMode->addButton(rb, 0);
@@ -119,7 +114,7 @@ QvisText3DInterface::QvisText3DInterface(QWidget *parent) :
     heightMode->addButton(rb, 1);
     cLayout->addWidget(rb, row, 1);
     fixedHeightEdit = new QLineEdit(this);
-    connect(fixedHeightEdit, SIGNAL(returnPressed()),
+    connect(fixedHeightEdit, SIGNAL(editingFinished()),
             this, SLOT(fixedHeightChanged()));
     cLayout->addWidget(fixedHeightEdit, row, 2);
     cLayout->setColumnStretch(2, 10);

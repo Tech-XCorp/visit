@@ -50,11 +50,7 @@ class QNarrowLineEdit : public QLineEdit
     {
         QSize size = QLineEdit::sizeHint();
         QFontMetrics fm(font());
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
         int w = fm.horizontalAdvance("x");
-#else
-        int w = fm.width("x");
-#endif
         size.setWidth(w * 4); // 4 characters
         return size;
     }
@@ -91,6 +87,9 @@ class QNarrowLineEdit : public QLineEdit
 //
 //    Kathleen Biagas, Tue Apr 18 16:34:41 PDT 2023
 //    Support Qt6: buttonClicked -> idClicked.
+//
+//    Kathleen Biagas, Fri Mar 21, 2025
+//    Change QLineEdit connections from 'textChanged' to 'editingFinished.'
 //
 // ****************************************************************************
 
@@ -187,13 +186,8 @@ XMLEditFields::XMLEditFields(QWidget *p)
     vnLayout->setSpacing(5);
     varNameButtons = new QButtonGroup(this);
     varNameButtons->setExclusive(false);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(varNameButtons, SIGNAL(buttonClicked(int)),
-            this, SLOT(variableTypeClicked(int)));
-#else
     connect(varNameButtons, SIGNAL(idClicked(int)),
             this, SLOT(variableTypeClicked(int)));
-#endif
     QCheckBox *cb = new QCheckBox(tr("Meshes"), variableNameGroup);
     varNameButtons->addButton(cb,0);
     vnLayout->addWidget(cb, 0, 0);
@@ -275,20 +269,20 @@ XMLEditFields::XMLEditFields(QWidget *p)
 
     connect(fieldlist, SIGNAL(currentRowChanged(int)),
             this, SLOT(UpdateWindowSingleItem()));
-    connect(name, SIGNAL(textChanged(const QString&)),
-            this, SLOT(nameTextChanged(const QString&)));
-    connect(label, SIGNAL(textChanged(const QString&)),
-            this, SLOT(labelTextChanged(const QString&)));
+    connect(name, SIGNAL(editingFinished()),
+            this, SLOT(nameTextChanged()));
+    connect(label, SIGNAL(editingFinished()),
+            this, SLOT(labelTextChanged()));
     connect(type, SIGNAL(activated(int)),
             this, SLOT(typeChanged(int)));
-    connect(subtype, SIGNAL(textChanged(const QString&)),
-            this, SLOT(subtypeTextChanged(const QString&)));
+    connect(subtype, SIGNAL(editingFinished()),
+            this, SLOT(subtypeTextChanged()));
     connect(enabler, SIGNAL(activated(int)),
             this, SLOT(enablerChanged(int)));
-    connect(enableval, SIGNAL(textChanged(const QString&)),
-            this, SLOT(enablevalTextChanged(const QString&)));
-    connect(length, SIGNAL(textChanged(const QString&)),
-            this, SLOT(lengthTextChanged(const QString&)));
+    connect(enableval, SIGNAL(editingFinished()),
+            this, SLOT(enablevalTextChanged()));
+    connect(length, SIGNAL(editingFinished()),
+            this, SLOT(lengthTextChanged()));
     connect(internal, SIGNAL(clicked()),
             this, SLOT(internalChanged()));
     connect(persistent, SIGNAL(clicked()),
@@ -307,13 +301,8 @@ XMLEditFields::XMLEditFields(QWidget *p)
             this, SLOT(fieldlistUp()));
     connect(downButton, SIGNAL(pressed()),
             this, SLOT(fieldlistDown()));
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(access, SIGNAL(buttonClicked(int)),
-            this, SLOT(accessChanged(int)));
-#else
     connect(access, SIGNAL(idClicked(int)),
             this, SLOT(accessChanged(int)));
-#endif
 }
 
 // ****************************************************************************
@@ -706,9 +695,12 @@ XMLEditFields::BlockAllSignals(bool block)
 //    Cyrus Harrison, Thu May 15 16:00:46 PDT 200
 //    First pass at porting to Qt 4.4.0
 //
+//    Kathleen Biagas, Fri Mar 21, 2025
+//    Removed QString arg as this slot is now connected to 'editingFinished'.
+//
 // ****************************************************************************
 void
-XMLEditFields::nameTextChanged(const QString &text)
+XMLEditFields::nameTextChanged()
 {
     Attribute *a = xmldoc->attribute;
     int index = fieldlist->currentRow();
@@ -716,7 +708,7 @@ XMLEditFields::nameTextChanged(const QString &text)
         return;
     Field *f = a->fields[index];
 
-    QString newname = text.trimmed();
+    QString newname = name->text().trimmed();
     f->name = newname;
 
     BlockAllSignals(true);
@@ -734,9 +726,12 @@ XMLEditFields::nameTextChanged(const QString &text)
 //    Cyrus Harrison, Thu May 15 16:00:46 PDT 200
 //    First pass at porting to Qt 4.4.0
 //
+//    Kathleen Biagas, Fri Mar 21, 2025
+//    Removed QString arg as this slot is now connected to 'editingFinished'.
+//
 // ****************************************************************************
 void
-XMLEditFields::labelTextChanged(const QString &text)
+XMLEditFields::labelTextChanged()
 {
     Attribute *a = xmldoc->attribute;
     int index = fieldlist->currentRow();
@@ -744,7 +739,7 @@ XMLEditFields::labelTextChanged(const QString &text)
         return;
     Field *f = a->fields[index];
 
-    f->label = text;
+    f->label = label->text();
 }
 
 // ****************************************************************************
@@ -815,9 +810,12 @@ XMLEditFields::typeChanged(int typeindex)
 //    Cyrus Harrison, Thu May 15 16:00:46 PDT 200
 //    First pass at porting to Qt 4.4.0
 //
+//    Kathleen Biagas, Fri Mar 21, 2025
+//    Removed QString arg as this slot is now connected to 'editingFinished'.
+//
 // ****************************************************************************
 void
-XMLEditFields::subtypeTextChanged(const QString &text)
+XMLEditFields::subtypeTextChanged()
 {
     Attribute *a = xmldoc->attribute;
     int index = fieldlist->currentRow();
@@ -825,7 +823,7 @@ XMLEditFields::subtypeTextChanged(const QString &text)
         return;
     Field *f = a->fields[index];
 
-    f->SetSubtype(text);
+    f->SetSubtype(subtype->text());
 }
 
 // ****************************************************************************
@@ -883,9 +881,12 @@ XMLEditFields::enablerChanged(int enablerindex)
 //    Cyrus Harrison, Thu May 15 16:00:46 PDT 200
 //    First pass at porting to Qt 4.4.0
 //
+//    Kathleen Biagas, Fri Mar 21, 2025
+//    Removed QString arg as this slot is now connected to 'editingFinished'.
+//
 // ****************************************************************************
 void
-XMLEditFields::enablevalTextChanged(const QString &text)
+XMLEditFields::enablevalTextChanged()
 {
     Attribute *a = xmldoc->attribute;
     int index = fieldlist->currentRow();
@@ -893,7 +894,7 @@ XMLEditFields::enablevalTextChanged(const QString &text)
         return;
     Field *f = a->fields[index];
 
-    f->enableval = SplitValues(text);
+    f->enableval = SplitValues(enableval->text());
 }
 
 // ****************************************************************************
@@ -906,9 +907,12 @@ XMLEditFields::enablevalTextChanged(const QString &text)
 //    Cyrus Harrison, Thu May 15 16:00:46 PDT 200
 //    First pass at porting to Qt 4.4.0
 //
+//    Kathleen Biagas, Fri Mar 21, 2025
+//    Removed QString arg as this slot is now connected to 'editingFinished'.
+//
 // ****************************************************************************
 void
-XMLEditFields::lengthTextChanged(const QString &text)
+XMLEditFields::lengthTextChanged()
 {
     Attribute *a = xmldoc->attribute;
     int index = fieldlist->currentRow();
@@ -916,7 +920,7 @@ XMLEditFields::lengthTextChanged(const QString &text)
         return;
     Field *f = a->fields[index];
 
-    f->length = text.toInt();
+    f->length = length->text().toInt();
 }
 
 // ****************************************************************************

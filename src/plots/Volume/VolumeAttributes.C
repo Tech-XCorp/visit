@@ -13,20 +13,21 @@
 
 static const char *Renderer_strings[] = {
 "Serial", "Parallel", "Composite",
-"Integration", "SLIVR"};
+"Integration", "SLIVR", "ANARI"
+};
 
 std::string
 VolumeAttributes::Renderer_ToString(VolumeAttributes::Renderer t)
 {
     int index = int(t);
-    if(index < 0 || index >= 5) index = 0;
+    if(index < 0 || index >= 6) index = 0;
     return Renderer_strings[index];
 }
 
 std::string
 VolumeAttributes::Renderer_ToString(int t)
 {
-    int index = (t < 0 || t >= 5) ? 0 : t;
+    int index = (t < 0 || t >= 6) ? 0 : t;
     return Renderer_strings[index];
 }
 
@@ -34,7 +35,7 @@ bool
 VolumeAttributes::Renderer_FromString(const std::string &s, VolumeAttributes::Renderer &val)
 {
     val = VolumeAttributes::Serial;
-    for(int i = 0; i < 5; ++i)
+    for(int i = 0; i < 6; ++i)
     {
         if(s == Renderer_strings[i])
         {
@@ -520,6 +521,7 @@ void VolumeAttributes::Copy(const VolumeAttributes &obj)
     for(int i = 0; i < 4; ++i)
         materialProperties[i] = obj.materialProperties[i];
 
+    anariAttributes = obj.anariAttributes;
 
     VolumeAttributes::SelectAll();
 }
@@ -733,7 +735,8 @@ VolumeAttributes::operator == (const VolumeAttributes &obj) const
             (lowGradientLightingReduction == obj.lowGradientLightingReduction) &&
             (lowGradientLightingClampFlag == obj.lowGradientLightingClampFlag) &&
             (lowGradientLightingClampValue == obj.lowGradientLightingClampValue) &&
-            materialProperties_equal);
+            materialProperties_equal &&
+            (anariAttributes == obj.anariAttributes));
 }
 
 // ****************************************************************************
@@ -922,6 +925,7 @@ VolumeAttributes::SelectAll()
     Select(ID_lowGradientLightingClampFlag,    (void *)&lowGradientLightingClampFlag);
     Select(ID_lowGradientLightingClampValue,   (void *)&lowGradientLightingClampValue);
     Select(ID_materialProperties,              (void *)materialProperties, 4);
+    Select(ID_anariAttributes,                 (void *)&anariAttributes);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1236,6 +1240,18 @@ VolumeAttributes::CreateNode(DataNode *parentNode, bool completeSave, bool force
         node->AddNode(new DataNode("materialProperties", materialProperties, 4));
     }
 
+    if(completeSave || !FieldsEqual(ID_anariAttributes, &defaultObject))
+    {
+        DataNode *anariAttributesNode = new DataNode("anariAttributes");
+        if(anariAttributes.CreateNode(anariAttributesNode, completeSave, false))
+        {
+            addToParent = true;
+            node->AddNode(anariAttributesNode);
+        }
+        else
+            delete anariAttributesNode;
+    }
+
 
     // Add the node to the parent node.
     if(addToParent || forceAdd)
@@ -1402,7 +1418,7 @@ VolumeAttributes::SetFromNode(DataNode *parentNode)
         if(node->GetNodeType() == INT_NODE)
         {
             int ival = node->AsInt();
-            if(ival >= 0 && ival < 5)
+            if(ival >= 0 && ival < 6)
                 SetRendererType(Renderer(ival));
         }
         else if(node->GetNodeType() == STRING_NODE)
@@ -1502,6 +1518,8 @@ VolumeAttributes::SetFromNode(DataNode *parentNode)
         SetLowGradientLightingClampValue(node->AsDouble());
     if((node = searchNode->GetNode("materialProperties")) != 0)
         SetMaterialProperties(node->AsDoubleArray());
+    if((node = searchNode->GetNode("anariAttributes")) != 0)
+        anariAttributes.SetFromNode(node);
     if(colorControlPoints.GetNumControlPoints() < 2)
          SetDefaultColorControlPoints();
 
@@ -1830,6 +1848,13 @@ VolumeAttributes::SetMaterialProperties(const double *materialProperties_)
     Select(ID_materialProperties, (void *)materialProperties, 4);
 }
 
+void
+VolumeAttributes::SetAnariAttributes(const AnariAttributes &anariAttributes_)
+{
+    anariAttributes = anariAttributes_;
+    Select(ID_anariAttributes, (void *)&anariAttributes);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Get property methods
 ///////////////////////////////////////////////////////////////////////////////
@@ -2134,6 +2159,18 @@ VolumeAttributes::GetMaterialProperties()
     return materialProperties;
 }
 
+const AnariAttributes &
+VolumeAttributes::GetAnariAttributes() const
+{
+    return anariAttributes;
+}
+
+AnariAttributes &
+VolumeAttributes::GetAnariAttributes()
+{
+    return anariAttributes;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Select property methods
 ///////////////////////////////////////////////////////////////////////////////
@@ -2166,6 +2203,12 @@ void
 VolumeAttributes::SelectMaterialProperties()
 {
     Select(ID_materialProperties, (void *)materialProperties, 4);
+}
+
+void
+VolumeAttributes::SelectAnariAttributes()
+{
+    Select(ID_anariAttributes, (void *)&anariAttributes);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2237,6 +2280,7 @@ VolumeAttributes::GetFieldName(int index) const
     case ID_lowGradientLightingClampFlag:    return "lowGradientLightingClampFlag";
     case ID_lowGradientLightingClampValue:   return "lowGradientLightingClampValue";
     case ID_materialProperties:              return "materialProperties";
+    case ID_anariAttributes:                 return "anariAttributes";
     default:  return "invalid index";
     }
 }
@@ -2306,6 +2350,7 @@ VolumeAttributes::GetFieldType(int index) const
     case ID_lowGradientLightingClampFlag:    return FieldType_bool;
     case ID_lowGradientLightingClampValue:   return FieldType_double;
     case ID_materialProperties:              return FieldType_doubleArray;
+    case ID_anariAttributes:                 return FieldType_att;
     default:  return FieldType_unknown;
     }
 }
@@ -2375,6 +2420,7 @@ VolumeAttributes::GetFieldTypeName(int index) const
     case ID_lowGradientLightingClampFlag:    return "bool";
     case ID_lowGradientLightingClampValue:   return "double";
     case ID_materialProperties:              return "doubleArray";
+    case ID_anariAttributes:                 return "att";
     default:  return "invalid index";
     }
 }
@@ -2636,6 +2682,11 @@ VolumeAttributes::FieldsEqual(int index_, const AttributeGroup *rhs) const
         retval = materialProperties_equal;
         }
         break;
+    case ID_anariAttributes:
+        {  // new scope
+        retval = (anariAttributes == obj.anariAttributes);
+        }
+        break;
     default: retval = false;
     }
 
@@ -2645,196 +2696,6 @@ VolumeAttributes::FieldsEqual(int index_, const AttributeGroup *rhs) const
 ///////////////////////////////////////////////////////////////////////////////
 // User-defined methods.
 ///////////////////////////////////////////////////////////////////////////////
-
-// ****************************************************************************
-// Method: VolumeAttributes::ProcessOldVersions
-//
-// Purpose:
-//   This method allows handling of older config/session files that may
-//   contain fields that are no longer present or have been modified/renamed.
-//
-// Programmer: Jeremy Meredith
-// Creation:   June 18, 2003
-//
-// ****************************************************************************
-
-#include <visit-config.h>
-#ifdef VIEWER
-#include <avtCallback.h>
-#endif
-
-void
-VolumeAttributes::ProcessOldVersions(DataNode *parentNode,
-                                     const char *configVersion)
-{
-    if(parentNode == 0)
-        return;
-
-    DataNode *searchNode = parentNode->GetNode("VolumeAttributes");
-    if(searchNode == 0)
-        return;
-
-#if VISIT_OBSOLETE_AT_VERSION(3,5,0)
-#error This code is obsolete in this version of VisIt and should be removed.
-#else
-    if (VersionLessThan(configVersion, "3.4.0"))
-    {
-        DataNode *dn = nullptr;
-        if (searchNode->GetNode("compactVariable") != nullptr)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("compactVariable", "3.5.0"));
-#endif
-            searchNode->RemoveNode("compactVariable", true);
-        }
-        if (searchNode->GetNode("renderMode") != nullptr)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("renderNode", "3.5.0"));
-#endif
-            searchNode->RemoveNode("renderMode", true);
-        }
-        if ((dn = searchNode->GetNode("resampleFlag")) != nullptr)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("resampleFlag", "resampleType", "3.5.0"));
-#endif
-            int intVal = dn->AsInt();
-
-            VolumeAttributes::ResampleType val = (intVal ? OnlyIfRequired : SingleDomain);
-
-            searchNode->RemoveNode("resampleFlag", true);
-            searchNode->AddNode(new DataNode("resampleType",
-                                              ResampleType_ToString(val)));
-        }
-        if ((dn = searchNode->GetNode("osprayShadowsEnabledFlag")) != nullptr)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("osprayShadowsEnabledFlag",
-                "OSPRayShadowsEnabledFlag", "3.5.0"));
-#endif
-            dn->SetKey("OSPRayShadowsEnabledFlag");
-        }
-        if ((dn = searchNode->GetNode("osprayUseGridAcceleratorFlag")) != nullptr)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("osprayUseGridAcceleratorFlag",
-                "OSPRayUseGridAcceleratorFlag", "3.5.0"));
-#endif
-            dn->SetKey("OSPRayUseGridAcceleratorFlag");
-        }
-        if ((dn = searchNode->GetNode("osprayPreIntegrationFlag")) != nullptr)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("osprayPreIntegrationFlag",
-                "OSPRayPreIntegrationFlag", "3.5.0"));
-#endif
-            dn->SetKey("OSPRayPreIntegrationFlag");
-        }
-        if ((dn = searchNode->GetNode("ospraySingleShadeFlag")) != nullptr)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("ospraySingleShadeFlag",
-                "OSPRaySingleShadeFlag", "3.5.0"));
-#endif
-            dn->SetKey("OSPRaySingleShadeFlag");
-        }
-        if ((dn = searchNode->GetNode("osprayOneSidedLightingFlag")) != nullptr)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("osprayOneSidedLightingFlag",
-                "OSPRayOneSidedLightingFlag", "3.5.0"));
-#endif
-            dn->SetKey("OSPRayOneSidedLightingFlag");
-        }
-        if ((dn = searchNode->GetNode("osprayAoTransparencyEnabledFlag")) != nullptr)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("osprayAoTransparencyEnabledFlag",
-                "OSPRayAOTransparencyEnabledFlag", "3.5.0"));
-#endif
-            dn->SetKey("OSPRayAOTransparencyEnabledFlag");
-        }
-        if ((dn = searchNode->GetNode("ospraySpp")) != nullptr)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("ospraySpp",
-                "OSPRaySPP", "3.5.0"));
-#endif
-            dn->SetKey("OSPRaySPP");
-        }
-        if ((dn = searchNode->GetNode("osprayAoSamples")) != nullptr)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("osprayAoSamples",
-                "OSPRayAOSamples", "3.5.0"));
-#endif
-            dn->SetKey("OSPRayAOSamples");
-        }
-        if ((dn = searchNode->GetNode("osprayAoDistance")) != nullptr)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("osprayAoDistance",
-                "OSPRayAODistance", "3.5.0"));
-#endif
-            dn->SetKey("OSPRayAODistance");
-        }
-        if ((dn = searchNode->GetNode("osprayMinContribution")) != nullptr)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("osprayMinContribution",
-                "OSPRayMinContribution", "3.5.0"));
-#endif
-            dn->SetKey("OSPRayMinContribution");
-        }
-        if ((dn = searchNode->GetNode("rendererType")) != nullptr)
-        {
-            std::string type = dn->AsString();
-            if (type == "Default")
-            {
-#ifdef VIEWER
-                avtCallback::IssueWarning(DeprecationMessage("Default",
-                    "Default", "3.5.0"));
-#endif
-                dn->SetString(Renderer_ToString(VolumeAttributes::Serial));
-            }
-            else if (type == "RayCasting")
-            {
-#ifdef VIEWER
-                avtCallback::IssueWarning(DeprecationMessage("RayCasting",
-                    "Composite", "3.5.0"));
-#endif
-                dn->SetString(Renderer_ToString(VolumeAttributes::Composite));
-            }
-            else if (type == "RayCastingIntegration")
-            {
-#ifdef VIEWER
-                avtCallback::IssueWarning(DeprecationMessage("RayCastingIntegration",
-                    "Integration", "3.5.0"));
-#endif
-                dn->SetString(Renderer_ToString(VolumeAttributes::Integration));
-            }
-            else if (type == "RayCastingSLIVR")
-            {
-#ifdef VIEWER
-                avtCallback::IssueWarning(DeprecationMessage("RayCastingSLIVR",
-                    "SLIVR", "3.5.0"));
-#endif
-                dn->SetString(Renderer_ToString(VolumeAttributes::SLIVR));
-            }
-            else if (type == "RayCastingOSPRay")
-            {
-#ifdef VIEWER
-                avtCallback::IssueWarning(DeprecationMessage("RayCastingOSPRay",
-                    "Parallel", "3.5.0"));
-#endif
-                dn->SetString(Renderer_ToString(VolumeAttributes::Parallel));
-                searchNode->AddNode(new DataNode("OSPRayEnabledFlag", true));
-            }
-        }
-    }
-#endif
-}
 
 // ****************************************************************************
 //  Method:  VolumeAttributes::ChangesRequireRecalculation

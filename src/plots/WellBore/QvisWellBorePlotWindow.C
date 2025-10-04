@@ -105,6 +105,9 @@ QvisWellBorePlotWindow::~QvisWellBorePlotWindow()
 //   Kathleen Biagas, Tue Apr 18 16:34:41 PDT 2023
 //   Support Qt6: buttonClicked -> idClicked.
 //
+//   Kathleen Biagas, Fri Mar 21, 2025
+//   Change QLineEdit connections from 'textChanged' to 'editingFinished.'
+//
 // ****************************************************************************
 
 void
@@ -157,8 +160,8 @@ QvisWellBorePlotWindow::CreateWindowContents()
     wellNameLabel = new QLabel(tr("Name"), f2);
     defLayout->addWidget(wellNameLabel,1,0);
     wellName = new QLineEdit(f2);
-    connect(wellName, SIGNAL(textChanged(const QString&)),
-            this, SLOT(wellNameTextChanged(const QString&)));
+    connect(wellName, SIGNAL(editingFinished()),
+            this, SLOT(wellNameTextChanged()));
     defLayout->addWidget(wellName, 1,1);
 
     wellDefinitionLabel = new QLabel(tr("Definition"), f2);
@@ -177,13 +180,8 @@ QvisWellBorePlotWindow::CreateWindowContents()
     // Create the mode buttons that determine if the window is in single,
     // multiple, or color table color mode.
     colorModeButtons = new QButtonGroup(0);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(colorModeButtons, SIGNAL(buttonClicked(int)),
-            this, SLOT(colorModeChanged(int)));
-#else
     connect(colorModeButtons, SIGNAL(idClicked(int)),
             this, SLOT(colorModeChanged(int)));
-#endif
     QGridLayout *colorLayout = new QGridLayout(wellColorGroup);
     colorLayout->setSpacing(10);
     colorLayout->setColumnStretch(2, 1000);
@@ -1513,14 +1511,21 @@ QvisWellBorePlotWindow::deleteWellButtonPressed()
 }
 
 
+// ****************************************************************************
+//  Modifications:
+//    Kathleen Biagas, Fri Mar 21, 2025
+//    Removed QString arg as this slot is now connected to 'editingFinished'.
+//
+// ****************************************************************************
+
 void
-QvisWellBorePlotWindow::wellNameTextChanged(const QString &text)
+QvisWellBorePlotWindow::wellNameTextChanged()
 {
     int index = wellListBox->currentRow();
     if (index <  0)
         return;
 
-    QString newname = text.trimmed();
+    QString newname = wellName->text().trimmed();
 
     std::vector<string> wellNames = atts->GetWellNames();
 

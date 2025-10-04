@@ -752,4 +752,3 @@ VisWinInteractions::SetOsprayRendering(bool enabled)
     if(hotPointInteractor)
         hotPointInteractor->SetOsprayRendering(enabled);
 }
-

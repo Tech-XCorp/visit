@@ -20,6 +20,7 @@
 #include <VisCallback.h>
 
 #include <AnnotationAttributes.h>
+#include <FXAAOptions.h>
 #include <InteractorAttributes.h>
 #include <LightList.h>
 
@@ -37,6 +38,10 @@
 #include <PickPointInfo.h>
 #include <LineoutInfo.h>
 #include <VisualCueInfo.h>
+
+#ifdef HAVE_ANARI
+#include <AnariAttributes.h>
+#endif
 
 class vtkCallbackCommand;
 class vtkRenderer;
@@ -441,6 +446,21 @@ class VisitInteractor;
 //    Incorporate ARSanderson's OSPRAY 2.8.0 work for VTK 9:
 //    add initialization of nullptr to pointer ivars.
 //
+//    Kathleen Biagas, Monday July 28, 2025
+//    Antialiasing is now an int (enum).
+//
+//    Kathleen Biagas, Thu Aug 14, 2025
+//    Add Set/Get MSAASamples and FXAAOptions.
+//
+//    Kathleen Biagas, Tue Aug 26, 2025
+//    Add MSAAAvailable.
+//
+//    Kathleen Biagas, Thu Aug 28 15:41:28 PDT 2025
+//    Remove Set/GetSurfaceRepresentation, no longer used.
+//
+//    Kevin Griffin, Tue Sep 9, 2025
+//    Added Set/Get AnariAttributes when built with ANARI support.
+//
 // ****************************************************************************
 
 class VISWINDOW_API VisWindow
@@ -664,8 +684,13 @@ public:
     // Rendering options.
     void                 SetRenderInfoCallback(VisCallback *cb, void *data);
     void                 SetRenderEventCallback(void (*cb)(void *, bool), void *data);
-    void                 SetAntialiasing(bool enabled);
-    bool                 GetAntialiasing() const;
+    void                 SetAntialiasing(int);
+    int                  GetAntialiasing() const;
+    void                 SetMSAASamples(int);
+    int                  GetMSAASamples() const;
+    bool                 MSAAAvailable() const;
+    void                 SetFXAAOptions(const FXAAOptions *);
+    const FXAAOptions   *GetFXAAOptions() const;
     void                 SetOrderComposite(bool enabled);
     bool                 GetOrderComposite() const;
     void                 SetDepthCompositeThreads(size_t n);
@@ -695,8 +720,6 @@ public:
     bool                 GetStereo() const;
     int                  GetStereoType() const;
     bool                 IsDirect(void);
-    void                 SetSurfaceRepresentation(int rep);
-    int                  GetSurfaceRepresentation() const;
     int                  GetNumPrimitives() const;
     void                 SetNotifyForEachRender(bool val);
     bool                 GetNotifyForEachRender() const;
@@ -720,6 +743,10 @@ public:
     int                  GetOsprayAO() const;
     void                 SetOsprayShadows(bool enabled);
     bool                 GetOsprayShadows() const;
+#endif
+#ifdef HAVE_ANARI
+    void                 SetAnariAttributes(const AnariAttributes &);
+    const AnariAttributes &GetAnariAttributes() const;
 #endif
     void                 SetSpecularProperties(bool,double,double,
                                                const ColorAttribute&);

@@ -90,10 +90,7 @@ function check_minimum_compiler_version()
    if [[ "$CXX_COMPILER" == "g++" ]] ; then
         VERSION=$(get_version_digits g++)
         echo "g++ version $VERSION"
-        gccv=7.3
-        if [[ "$DO_QT6" == "yes" ]] ; then
-            gccv=8.1
-        fi
+        gccv=8.1
         testvercomp $VERSION $gccv '<'
         if [[ $? == 0 ]] ; then
             echo "Need g++ version >= $gccv"
@@ -131,6 +128,11 @@ function check_minimum_compiler_version()
 
 # --------------------------------------------------------------------------- #
 #   checking opengl context creation (minimum required is 3.2)
+#
+#   Modifications:
+#     Kathleen Biagas, Fri Jul 11, 2025
+#     First try to compile with libOpenGL, fallback to libGL.
+#
 # --------------------------------------------------------------------------- #
 
 function check_opengl_context()
@@ -264,12 +266,19 @@ function check_opengl_context()
     echo "  return 0;" >> checkogl.cpp
     echo "}" >> checkogl.cpp
 
-    $CXX_COMPILER checkogl.cpp -Wl,-lGL -lSM -lICE -lX11 -lXext
+    # first try to compile with libOpenGL
+    $CXX_COMPILER checkogl.cpp -Wl,-lOpenGL -lGLX -lSM -lICE -lX11 -lXext
     if [[ $? != 0 ]]; then
-        echo "failed to compile checkogl.cpp"
-        rm -f checkogl.cpp
+        echo "failed to compile checkogl.cpp with libOpenGL, trying lGL"
         rm -f a.out
-        exit 1
+        # if libOpenGL not available, compile with libGL.
+        $CXX_COMPILER checkogl.cpp -Wl,-lGL -lSM -lICE -lX11 -lXext
+        if [[ $? != 0 ]]; then
+            echo "failed to compile checkogl.cpp"
+            rm -f checkogl.cpp
+            rm -f a.out
+            exit 1
+        fi
     fi
     ./a.out 
     if [[ $? != 0 ]]; then
@@ -285,13 +294,19 @@ function check_opengl_context()
 }
 
 
-# ************************************************************************** #
-#                       Section 1, setting up inputs                          #
-# --------------------------------------------------------------------------- #
-# This section sets up the inputs to the VisIt script.  This is where you can #
-# specify which compiler to use, which versions of the third party libraries, #
-# etc.  Note that this script is really only known to work with gcc.          #
-# *************************************************************************** #
+# *************************************************************************** 
+#                       Section 1, setting up inputs                          
+# --------------------------------------------------------------------------- 
+# This section sets up the inputs to the VisIt script.  This is where you can 
+# specify which compiler to use, which versions of the third party libraries, 
+# etc.  Note that this script is really only known to work with gcc.          
+#
+# Modifications:
+#   Kathleen Biagas, Monday May 12, 2025
+#   Process all groups in one loop when feasible, instead of duplicating
+#   logic for 'reqlibs' and 'optlibs' separately.
+#
+# *************************************************************************** 
 
 
 function initialize_build_visit()
@@ -418,7 +433,7 @@ function initialize_build_visit()
                 FCFLAGS="$FCFLAGS -qpic"
                 CXXFLAGS="$CXXFLAGS -qpic"
                 export CXX_COMPILER=${CXX_COMPILER-"xlC"}
-                QT_PLATFORM="linux-xlc" #aix-xlc"
+                QT_PLATFORM="linux-xlc"
             else
                 CFLAGS="$CFLAGS -fPIC"
                 FCFLAGS="$FCFLAGS -fPIC"
@@ -446,33 +461,6 @@ function initialize_build_visit()
         export FC_COMPILER=${FC_COMPILER:-$GFORTRAN}
         export C_OPT_FLAGS=${C_OPT_FLAGS:-"-O2"}
         export CXX_OPT_FLAGS=${CXX_OPT_FLAGS:-"-O2"}
-    elif [[ "$OPSYS" == "AIX" ]]; then
-        export ARCH="aix" # You can change this to say RHEL, SuSE, Fedora, etc.
-        export SO_EXT="a"
-        export C_COMPILER=${C_COMPILER:-"xlc"}
-        export FC_COMPILER=${FC_COMPILER:-$(which xlf | grep '^/')}
-        export CXX_COMPILER=${CXX_COMPILER:-"xlC"}
-        export C_OPT_FLAGS=${C_OPT_FLAGS:-"-O2"}
-        export CXX_OPT_FLAGS=${CXX_OPT_FLAGS:-"-O2"}
-        export MAKE=${MAKE:-"gmake"}
-    elif [[ "$OPSYS" == "IRIX64" ]]; then
-        export ARCH="irix64" # You can change this to say RHEL, SuSE, Fedora, etc.
-        export SO_EXT="so"
-        export C_COMPILER=${C_COMPILER:-"gcc"}
-        export FC_COMPILER=${FC_COMPILER:-$GFORTRAN}
-        export CXX_COMPILER=${CXX_COMPILER:-"g++"}
-        export C_OPT_FLAGS=${C_OPT_FLAGS:-"-O2"}
-        export CXX_OPT_FLAGS=${CXX_OPT_FLAGS:-"-O2"}
-        export MAKE=${MAKE:-"gmake"}
-    elif [[ "$OPSYS" == "SunOS" ]]; then
-        export ARCH=${ARCH:-"sunos5"}
-        export SO_EXT="so"
-        export C_COMPILER=${C_COMPILER:-"gcc"}
-        export FC_COMPILER=${FC_COMPILER:-$GFORTRAN}
-        export CXX_COMPILER=${CXX_COMPILER:-"g++"}
-        export C_OPT_FLAGS=${C_OPT_FLAGS:-"-O2"}
-        export CXX_OPT_FLAGS=${CXX_OPT_FLAGS:-"-O2"}
-        export MAKE=${MAKE:-"make"}
     else
         export ARCH=${ARCH:-"linux-$(uname -m)"} # You can change this to say RHEL, SuSE, Fedora.
         export SO_EXT="so"
@@ -525,18 +513,15 @@ function initialize_build_visit()
     #
     # OPTIONS
     #
-    #initialize required libraries..
+    #initialize all libraries..
 
-    for (( bv_i=0; bv_i<${#reqlibs[*]}; ++bv_i ))
+    for (( bv_i=0; bv_i < ${#grouplibs_name[*]}; ++bv_i ))
     do
-        initializeFunc="bv_${reqlibs[$bv_i]}_initialize"
-        $initializeFunc
-    done
-
-    for (( bv_i=0; bv_i<${#optlibs[*]}; ++bv_i ))
-    do
-        initializeFunc="bv_${optlibs[$bv_i]}_initialize"
-        $initializeFunc
+        for lib in `echo ${grouplibs_deps[$bv_i]}`;
+        do
+            initializeFunc="bv_${lib}_initialize"
+            $initializeFunc
+        done
     done
 
     export DO_HOSTCONF="yes"
@@ -558,9 +543,6 @@ function initialize_build_visit()
     export DO_PARADIS="no"
     export PREVENT_ICET="no"
     verify="no"
-    export DO_OPTIONAL="yes"
-    export DO_OPTIONAL2="no"
-    export DO_MORE="no"
     export DO_DBIO_ONLY="no"
     export DO_ENGINE_ONLY="no"
     export DO_SERVER_COMPONENTS_ONLY="no"
@@ -574,7 +556,6 @@ function initialize_build_visit()
     export CREATE_RPM="no"
     export DO_CONTEXT_CHECK="yes"
     export VISIT_INSTALL_NETWORK=""
-    export DO_QT510="no"
     export DO_VTK94="no"
     DOWNLOAD_ONLY="no"
     LIST_TPS="no"
@@ -613,15 +594,6 @@ function initialize_build_visit()
     #
     for arg in "$@" ; do
         case $arg in
-            --qt510) DO_QT510="yes"; DO_QT6="no"; DO_QT="yes";;
-        esac
-        case $arg in
-            --qt) DO_QT6="no"; DO_QT="yes";;
-        esac
-        case $arg in
-            --qt6) DO_QT6="yes"; DO_QT="no";;
-        esac
-        case $arg in
             --vtk94) DO_VTK94="yes"; DO_VTK="yes";;
         esac
     done
@@ -637,18 +609,14 @@ function initialize_build_visit()
     fi
     export VISIT_FILE=${VISIT_FILE:-"visit${VISIT_VERSION}.tar.gz"}
 
-    for (( bv_i=0; bv_i<${#reqlibs[*]}; ++bv_i ))
+    for (( bv_i=0; bv_i < ${#grouplibs_name[*]}; ++bv_i ))
     do
-        initializeFunc="bv_${reqlibs[$bv_i]}_info"
-        $initializeFunc
+        for lib in `echo ${grouplibs_deps[$bv_i]}`;
+        do
+            initializeFunc="bv_${lib}_info"
+            $initializeFunc
+        done
     done
-
-    for (( bv_i=0; bv_i<${#optlibs[*]}; ++bv_i ))
-    do
-        initializeFunc="bv_${optlibs[$bv_i]}_info"
-        $initializeFunc
-    done
-
 
     WRITE_UNIFIED_FILE=""
     VISIT_INSTALLATION_BUILD_DIR=""
@@ -727,10 +695,43 @@ function strip_quotes
     echo "${str}"
 }
 
+
+# *************************************************************************** 
+# Function: bv_enable_group
+#
+# Modifications:
+#   Kathleen Biagas, Monday May 12, 2025
+#   Modified to test for actual group names and return early if possible.
+#   Don't allow 'explicit' group to be 'enabled'. Print message and exit if so.
+#   Remove test for 'dbio-only'.
+#
+#   Kathleen Biagas, Monday May 19, 2025
+#   Allow --no-thirdparty as a way to disable required group. This preserves
+#   the purpose of the option even though the '--no-thirdparty' group no
+#   longer exists.
+#
+# *************************************************************************** 
+
 function bv_enable_group
 {
     local name=${1/--}
     local match=0
+
+    # don't want to allow enablement of 'explicit' group.
+    if [[ "$name" == "explicit" ]] ; then
+        info "Libraries in group 'explicit' cannot be enabled via '--explicit'. Each desired 'explicit' library should be added separately, e.g. '--llvm --osmesa'."
+        exit
+    fi
+
+    if [[ "$name" == "no-thirdparty" ]] ; then
+        name="no-required"
+    fi
+
+    # can terminate early if $name isn't 'optional' or 'required'.
+    if [[ "$name" != "optional" && "$name" != "required" &&
+          "$name" != "no-required" ]] ; then
+        return 0
+    fi
 
     for (( bv_i=0; bv_i < ${#grouplibs_name[*]}; ++bv_i ))
     do
@@ -741,22 +742,20 @@ function bv_enable_group
         do
             if [[ "$group" == "$name" ]]; then
                 echo "executing group $name"
-                if [[ "$group" == "dbio-only" ]]; then
-                    DO_DBIO_ONLY="yes"
-                fi
                 match=1
                 for group_dep in `echo ${grouplibs_deps[$bv_i]}`;
                 do
-                    if [[ "$group_dep" == no-* ]]; then
-                        group_dep=${group_dep/no-}
-                        #info "disabling $group_dep"
-                        initializeFunc="bv_${group_dep}_disable"
-                        $initializeFunc
-                    else
-                        #info "enabling $group_dep"
-                        initializeFunc="bv_${group_dep}_enable"
-                        $initializeFunc
-                    fi
+                    info "bv_enable_group enabling $group_dep"
+                    initializeFunc="bv_${group_dep}_enable"
+                    $initializeFunc
+                done
+            elif [[ "no-$group" == "$name" ]]; then
+                match=1
+                for group_dep in `echo ${grouplibs_deps[$bv_i]}`;
+                do
+                   info "bv_enable_group disabling $group_dep"
+                   initializeFunc="bv_${group_dep}_disable"
+                   $initializeFunc
                 done
             fi
         done
@@ -765,99 +764,83 @@ function bv_enable_group
     return $match
 }
 
+# *************************************************************************** 
+# Function: enable_dependent_libraries
+#
+# Modifications:
+#   Kathleen Biagas, Monday May 12, 2025
+#   Process all groups in one loop, instead of duplicating
+#   logic for 'reqlibs' and 'optlibs' separately.
+#
+# *************************************************************************** 
+
 function enable_dependent_libraries
 {
     local depends_on=""
 
-    for (( bv_i=0; bv_i<${#reqlibs[*]}; ++bv_i ))
+    for (( bv_i=0; bv_i < ${#grouplibs_name[*]}; ++bv_i ))
     do
-        $"bv_${reqlibs[$bv_i]}_is_enabled"
-
-        #if not enabled then skip
-        if [[ $? == 0 ]]; then
-            continue
-        fi
-
-        #enabled library, check dependencies..
-        depends_on=$("bv_${reqlibs[$bv_i]}_depends_on")
-
-        #replace commas with spaces if there are any..
-        depends_on=${depends_on//,/ }
-
-        for depend_lib in `echo $depends_on`;
+        for lib in `echo ${grouplibs_deps[$bv_i]}`;
         do
-            $"bv_${depend_lib}_is_enabled"
+            $"bv_${lib}_is_enabled"
+
+            #if not enabled then skip
             if [[ $? == 0 ]]; then
-                error "ERROR: library ${depend_lib} was not set ${reqlibs[$bv_i]} depends on it, please enable"
-                #echo "library ${depend_lib} was not set but another library depends on it, enabling it"
-                #$"bv_${depend_lib}_enable"
+                continue
             fi
-        done
-    done
 
-    for (( bv_i=0; bv_i<${#optlibs[*]}; ++bv_i ))
-    do
-        $"bv_${optlibs[$bv_i]}_is_enabled"
+            #enabled library, check dependencies..
+            depends_on=$("bv_${lib}_depends_on")
 
-        #if not enabled then skip
-        if [[ $? == 0 ]]; then
-            continue
-        fi
+            #replace commas with spaces if there are any..
+            depends_on=${depends_on//,/ }
 
-        #enabled library, check dependencies..
-        depends_on=$("bv_${optlibs[$bv_i]}_depends_on")
-
-        #replace commas with spaces if there are any..
-        depends_on=${depends_on//,/ }
-
-        for depend_lib in `echo $depends_on`;
-        do
-            $"bv_${depend_lib}_is_enabled"
-            if [[ $? == 0 ]]; then
-                error "ERROR: library ${depend_lib} was not set ${optlibs[$bv_i]} depends on it, please enable"
-                echo "library ${depend_lib} was not set but another library depends on it, enabling it"
-                $"bv_${depend_lib}_enable"
-            fi
+            for depend_lib in `echo $depends_on`;
+            do
+                $"bv_${depend_lib}_is_enabled"
+                if [[ $? == 0 ]]; then
+                    error "ERROR: library ${depend_lib} was not set ${lib} depends on it, please enable"
+                    #echo "library ${depend_lib} was not set but another library depends on it, enabling it"
+                    #$"bv_${depend_lib}_enable"
+                fi
+            done
         done
     done
 }
 
+# *************************************************************************** 
+# Function: initialize_module_variables
+#
+# Modifications:
+#   Kathleen Biagas, Monday May 12, 2025
+#   Process all groups in one loop, instead of duplicating
+#   logic for 'reqlibs' and 'optlibs' separately.
+#
+# *************************************************************************** 
 #TODO: enable this feature and remove this from ensure..
 function initialize_module_variables
 {
     info "initializing module variables"
-    for (( bv_i=0; bv_i<${#reqlibs[*]}; ++bv_i ))
+
+    for (( bv_i=0; bv_i < ${#grouplibs_name[*]}; ++bv_i ))
     do
-        $"bv_${reqlibs[$bv_i]}_is_enabled"
+        groupname=${grouplibs_name[$bv_i]}
+        for lib in `echo ${grouplibs_deps[$bv_i]}`;
+        do
+            $"bv_${lib}_is_enabled"
 
-        #if not enabled then skip
-        if [[ $? == 0 ]]; then
-            continue
-        fi
+            #if not enabled then skip
+            if [[ $? == 0 ]]; then
+                continue
+            fi
 
-        declare -F "bv_${reqlibs[$bv_i]}_initialize_vars" &>/dev/null
+            declare -F "bv_${lib}_initialize_vars" &>/dev/null
 
-        if [[ $? == 0 ]]; then
-            info "initialize module variables for ${reqlibs[$bv_i]}"
-            $"bv_${reqlibs[$bv_i]}_initialize_vars"
-        fi
-    done
-
-    for (( bv_i=0; bv_i<${#optlibs[*]}; ++bv_i ))
-    do
-        $"bv_${optlibs[$bv_i]}_is_enabled"
-
-        #if not enabled then skip
-        if [[ $? == 0 ]]; then
-            continue
-        fi
-
-        declare -F "bv_${optlibs[$bv_i]}_initialize_vars" &>/dev/null
-
-        if [[ $? == 0 ]]; then
-            info "initialize module variables for ${optlibs[$bv_i]}"
-            $"bv_${optlibs[$bv_i]}_initialize_vars"
-        fi
+            if [[ $? == 0 ]]; then
+                info "initialize module variables for ${lib}"
+                $"bv_${lib}_initialize_vars"
+            fi
+        done
     done
 }
 
@@ -900,133 +883,99 @@ function build_library
     $"bv_${build_lib}_build"
 }
 
+# *************************************************************************** 
+# Function: build_libraries_serial
+#
+# Modifications:
+#   Kathleen Biagas, Monday May 12, 2025
+#   Process all groups in one loop, instead of duplicating
+#   logic for 'reqlibs' and 'optlibs' separately.
+#
+# *************************************************************************** 
+
 function build_libraries_serial
 {
-    info "building required libraries"
-    for (( bv_i=0; bv_i<${#reqlibs[*]}; ++bv_i ))
+    for (( bv_i=0; bv_i < ${#grouplibs_name[*]}; ++bv_i ))
     do
-        $"bv_${reqlibs[$bv_i]}_is_enabled"
+        groupname=${grouplibs_name[$bv_i]}
+        info "Building ${groupname} libraries"
+        for lib in `echo ${grouplibs_deps[$bv_i]}`;
+        do
+            $"bv_${lib}_is_enabled"
 
-        if [[ $? == 0 ]]; then
-            continue
-        fi
+            if [[ $? == 0 ]]; then
+                continue
+            fi
 
-        $"bv_${reqlibs[$bv_i]}_is_installed"
+            $"bv_${lib}_is_installed"
 
-        if [[ $? == 0 ]]; then
-            cd "$START_DIR"
-            build_library ${reqlibs[$bv_i]}
-        else
-            info "${reqlibs[$bv_i]} already installed, skipping"
-        fi
-    done
-
-    info "building optional libraries"
-    for (( bv_i=0; bv_i<${#optlibs[*]}; ++bv_i ))
-    do
-        $"bv_${optlibs[$bv_i]}_is_enabled"
-
-        if [[ $? == 0 ]]; then
-            continue
-        fi
-
-        $"bv_${optlibs[$bv_i]}_is_installed"
-
-        if [[ $? == 0 ]]; then
-            cd "$START_DIR"
-            build_library ${optlibs[$bv_i]}
-        else
-            info "${optlibs[$bv_i]} already installed, skipping"
-        fi
+            if [[ $? == 0 ]]; then
+                cd "$START_DIR"
+                build_library ${lib}
+            else
+                info "${lib} already installed, skipping"
+            fi
+        done
     done
 }
+
+# *************************************************************************** 
+# Function: build_libraries_parallel
+#
+# Modifications:
+#   Kathleen Biagas, Monday May 12, 2025
+#   Process all groups in one loop, instead of duplicating
+#   logic for 'reqlibs' and 'optlibs' separately.
+#
+# *************************************************************************** 
 
 function build_libraries_parallel
 {
     #launch all non dependent libraries in parallel..
-    info "building parallel required libraries"
-    for (( bv_i=0; bv_i<${#reqlibs[*]}; ++bv_i ))
+
+    for (( bv_i=0; bv_i < ${#grouplibs_name[*]}; ++bv_i ))
     do
-        $"bv_${reqlibs[$bv_i]}_is_enabled"
+        groupname=${grouplibs_name[$bv_i]}
+        info "Building parallel ${groupname} libraries"
+        for lib in `echo ${grouplibs_deps[$bv_i]}`;
+        do
+            $"bv_${lib}_is_enabled"
 
-        if [[ $? == 0 ]]; then
-            continue
-        fi
-
-        $"bv_${reqlibs[$bv_i]}_is_installed"
-        if [[ $? == 0 ]]; then
-
-            depends_on=$("bv_${reqlibs[$bv_i]}_depends_on")
-            if [[ "$depends_on" == "" ]]; then
-                (cd "$START_DIR" && build_library ${reqlibs[$bv_i]}) &
+            if [[ $? == 0 ]]; then
+                continue
             fi
-        else
-            info "${reqlibs[$bv_i]} already installed, skipping"
-        fi
-    done
 
-    wait
-
-    #load the serial ones..
-    for (( bv_i=0; bv_i<${#reqlibs[*]}; ++bv_i ))
-    do
-        $"bv_${reqlibs[$bv_i]}_is_enabled"
-
-        if [[ $? == 0 ]]; then
-            continue
-        fi
-
-        $"bv_${reqlibs[$bv_i]}_is_installed"
-
-        if [[ $? == 0 ]]; then
-            cd "$START_DIR"
-            build_library ${reqlibs[$bv_i]}
-        else
-            info "${reqlibs[$bv_i]} already installed, skipping"
-        fi
-    done
-
-    info "building parallel optional libraries"
-    for (( bv_i=0; bv_i<${#optlibs[*]}; ++bv_i ))
-    do
-        $"bv_${optlibs[$bv_i]}_is_enabled"
-
-        if [[ $? == 0 ]]; then
-            continue
-        fi
-        $"bv_${optlibs[$bv_i]}_is_installed"
-        if [[ $? == 0 ]]; then
-
-            depends_on=$("bv_${optlibs[$bv_i]}_depends_on")
-            if [[ "$depends_on" == "" ]]; then
-                (cd "$START_DIR" && build_library ${optlibs[$bv_i]}) &
+            $"bv_${lib}_is_installed"
+            if [[ $? == 0 ]]; then
+                depends_on=$("bv_${lib}_depends_on")
+                if [[ "$depends_on" == "" ]]; then
+                    (cd "$START_DIR" && build_library ${lib}) &
+                fi
+            else
+                info "${lib} already installed, skipping"
             fi
-        else
-            info "${optlibs[$bv_i]} already installed, skipping"
-        fi
+        done
+
+        wait
+
+        for lib in `echo ${grouplibs_deps[$bv_i]}`;
+        do
+            $"bv_${lib}_is_enabled"
+
+            if [[ $? == 0 ]]; then
+                continue
+            fi
+
+            $"bv_${lib}_is_installed"
+
+            if [[ $? == 0 ]]; then
+                cd "$START_DIR"
+                build_library ${lib}
+            else
+                info "${lib} already installed, skipping"
+            fi
+        done
     done
-
-    wait
-
-    #load serial
-    for (( bv_i=0; bv_i<${#optlibs[*]}; ++bv_i ))
-    do
-        $"bv_${optlibs[$bv_i]}_is_enabled"
-
-        if [[ $? == 0 ]]; then
-            continue
-        fi
-
-        $"bv_${optlibs[$bv_i]}_is_installed"
-
-        if [[ $? == 0 ]]; then
-            cd "$START_DIR"
-            build_library ${optlibs[$bv_i]}
-        else
-            info "${optlibs[$bv_i]} already installed, skipping"
-        fi
-    done
-
 }
 
 # *************************************************************************** #
@@ -1224,12 +1173,7 @@ function run_build_visit()
             --thirdparty-path) next_arg="thirdparty-path";;
             --version) next_arg="version";;
             --xdb) DO_XDB="yes";;
-            # "--qt510" is actually handled elsewhere, but it is also here
-            # to prevent it triggering an "Urecognized option" error.
-            --qt510) ;;
             --skip-opengl-context-check) DO_CONTEXT_CHECK="no";;
-            # want to disable this check with VTK-94 (or write a new version)
-            --vtk94) DO_CONTEXT_CHECK="no";;
             *)
                 echo "Unrecognized option '${arg}'."
                 ANY_ERRORS="yes";;
@@ -1302,19 +1246,6 @@ function run_build_visit()
     if [[ "$OPSYS" != "Darwin" && $DO_MESAGL == "no" && $DO_CONTEXT_CHECK != "no"  && $DO_DBIO_ONLY == "no" ]] ; then 
         if [[ $DO_VTK == "yes" || $DO_VISIT == "yes" ]] ; then
             check_opengl_context
-        fi
-    fi
-
-    #
-    # If we are AIX, make sure we are using GNU tar.
-    #
-    if [[ "$OPSYS" == "AIX" ]]; then
-        TARVERSION=$($TAR --version >/dev/null 2>&1)
-        if [[ $? != 0 ]] ; then
-            echo "Error in build process. You are using the system tar on AIX."
-            echo "Change the TAR variable in the script to the location of the"
-            echo "GNU tar command."
-            exit 1
         fi
     fi
 
@@ -1440,6 +1371,22 @@ function run_build_visit()
     # be set by now..
     initialize_module_variables
 
+
+    # OSMESA is on by default (required), so that it can serve as fallback
+    # at runtime for offscreen rendering if VTK cannot otherwise generate
+    # a good context.  However, if user needs MESAGL for on-screen context
+    # (opengl_context_check tests this), then we want to turn off OSMESA
+    # since it will be available with the MESGL build.
+    if [[ "$DO_MESAGL" == "yes" && "$DO_OSMESA" == "yes" ]] ; then
+        bv_osmesa_disable
+    fi
+
+    # LLVM is on by default (since OSMESA is required),
+    # If neither OSMESA nor MESAGL are being used, disable LLVM
+    if [[ "$DO_MESAGL" == "no" &&  "$DO_OSMESA" == "no" ]] ; then
+        bv_llvm_disable
+    fi
+
     #
     # Disable qt,qwt if it is not needed
     #
@@ -1452,27 +1399,7 @@ function run_build_visit()
            info "disabling qt, qwt because --server-components-only used"
         fi
         bv_qt_disable
-        bv_qt6_disable
         bv_qwt_disable
-    fi
-
-    #
-    # Later we will build Qt.  We are going to bypass their licensing agreement,
-    # so echo it here.
-    #
-    if [[ "$USE_SYSTEM_QT" != "yes" && "$DO_QT" == "yes" ]]; then
-        BYPASS_QT_LICENSE="no"
-        check_if_installed "qt" $QT_VERSION
-        if [[ $? == 0 ]] ; then
-            BYPASS_QT_LICENSE="yes"
-        fi
-
-        if [[ "$BYPASS_QT_LICENSE" == "no" && "$DOWNLOAD_ONLY" == "no" ]] ; then
-            qt_license_prompt
-            if [[ $? != 0 ]] ;then
-                error "Qt4 Open Source Edition License Declined. Bailing out."
-            fi
-        fi
     fi
 
     #

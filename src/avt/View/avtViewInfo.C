@@ -47,6 +47,12 @@ avtViewInfo::avtViewInfo()
 //    Kathleen Biagas, Wed Aug 17, 2022
 //    Add useOSPRay.
 //
+//    Kevin Griffin, Wed Apr 02, 2025
+//    Add useAnari.
+//
+//    Kevin Griffin, Thu Aug 14, 2025
+//    Removed useAnari.
+//
 // ****************************************************************************
 
 avtViewInfo &
@@ -75,7 +81,6 @@ avtViewInfo::operator=(const avtViewInfo &vi)
     shear[1]     = vi.shear[1];
     shear[2]     = vi.shear[2];
     useOSPRay    = vi.useOSPRay;
-
     return *this;
 }
 
@@ -101,6 +106,12 @@ avtViewInfo::operator=(const avtViewInfo &vi)
 //
 //    Kathleen Biagas, Wed Aug 17, 2022
 //    Add useOSPRay.
+//
+//    Kevin Griffin, Wed Apr 02, 2025
+//    Add useAnari.
+//
+//    Kevin Griffin, Thu Aug 14, 2025
+//    Removed useAnari.
 //
 // ****************************************************************************
 
@@ -192,6 +203,12 @@ avtViewInfo::operator==(const avtViewInfo &vi)
 //
 //    Kathleen Biagas, Wed Aug 17, 2022
 //    Add useOSPRay.
+//
+//    Kevin Griffin, Wed Apr 02, 2025
+//    Add useAnari.
+//
+//    Kevin Griffin, Thu Aug 14, 2025
+//    Removed useAnari.
 //
 // ****************************************************************************
 
@@ -294,6 +311,15 @@ avtViewInfo::SetViewFromCamera(vtkCamera *vtkcam)
 //    It will be true only if HAVE_OSPRAY is true and ospray rendering is
 //    currently being used.
 //
+//    Kevin Griffin, Wed Apr 02, 2025
+//    Test useAnari to determine if anari-path should be used.
+//    It will be true only if HAVE_ANARI is true and anari rendering is
+//    currently being used.
+//
+//    Kevin Griffin, Wed Aug 13 2025
+//    Removed useAnari. ANARI rendering supports the SetUserTransform used by
+//    the VTK camera. No longer need to zoom the camera instead of the image.
+//
 // ****************************************************************************
 #include<vtkMatrix4x4.h>
 #include<vtkTransform.h>
@@ -319,9 +345,9 @@ avtViewInfo::SetCameraFromView(vtkCamera *vtkcam) const
     if (useOSPRay)
     {
         // Currently the SetWindowCenter and SetUserTransform do not get
-        // used in the vtkOSPRayCameraNode so instead use the Zoom here and
-        // in the Navigate3D.C and Zoom3D.C pan the camera rather than the
-        // image.
+        // used in the vtkOSPRayCameraNode so instead use
+        // the Zoom here and in the Navigate3D.C and Zoom3D.C pan the camera
+        // rather than the image.
         vtkcam->Zoom(imageZoom);
     }
     else

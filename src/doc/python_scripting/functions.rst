@@ -84,8 +84,10 @@ argument : string
 
 ::
 
+  import visit_launcher
+  visit_launcher.AddArgument("-nowin") # Add the -nowin argument to the viewer.
+  visit_launcher.Launch()
   import visit
-  visit.AddArgument("-nowin") # Add the -nowin argument to the viewer.
 
 
 AddMachineProfile
@@ -235,8 +237,9 @@ AddWindow
 
 ::
 
+  import visit_launcher
+  visit_launcher.Launch()
   import visit
-  visit.Launch()
   visit.AddWindow() # Create window #2
   visit.AddWindow() # Create window #3
 
@@ -866,8 +869,9 @@ Close
 
 ::
 
+  import visit_launcher
+  visit_launcher.Launch()
   import visit
-  visit.Launch()
   visit.Close() # Close the viewer
 
 
@@ -1507,11 +1511,11 @@ DefineArrayExpression
   DefineArrayExpression(variableName, expression) -> integer
 
 
-variableName : string
-    The name of the variable to be created.
+variableName : string or list of strings
+    The name of the variable to create or a list of names of variables to create.
 
-expression : string
-    The expression definition as a string.
+expression : string or list of strings
+    The expression definition or a list of expression definitions.
 
 return type : CLI_return_t
     The DefineArrayExpression function returns 1 on success and 0 on failure.
@@ -1520,20 +1524,19 @@ return type : CLI_return_t
 **Description:**
 
     DefineArrayExpression creates new array variables.
-    Array variables are a collection of scalar variables that are grouped
-    together. All the variables must have the same centering and only scalar
-    variables are supported, for example, no vector, tensor or material variables.
+    Array variables are a collection of scalar variables that are grouped together.
+    All the variables must have the same centering and only scalar variables are supported, for example, no vector, tensor or material variables.
     Array variables are used in the Label plot.
 
-    The variableName argument is a string that contains the name of the new
-    variable. You can pass the name of an existing expression if you want to
-    provide a new expression definition. The expression argument is a string
-    that contains the definition of the new variable in terms of
-    :ref:`built-in expressions <Built-in_expressions>` and pre-existing
-    variable names using VisIt_'s :ref:`expression grammar <Expression_grammar>`.
-    If you run into problems defining your expression you might want to read
-    the section on
-    :ref:`expression compatibility gotchas <Expression_Compatibility_Gotchas>`.
+    The variableName argument is either a string that contains the name of the variable to define or a list of strings with the names of the variables to define.
+    If you are going to define more than about a hundred expressions you should use the list version to get good performance.
+    If you use the list version the number of variable names must match the number of definitions.
+    If you pass the name of an existing expression it will replace the current definition.
+    The expression argument is a string that contains the definition of the new variable in terms of :ref:`built-in expressions <Built-in_expressions>` and pre-existing variable names using VisIt_'s :ref:`expression grammar <Expression_grammar>`.
+    If you run into problems defining your expression you might want to read the section on :ref:`expression compatibility gotchas <Expression_Compatibility_Gotchas>`.
+
+    The function will throw an exception if the list of strings is incorrectly formed or when the number of variable names does not match the number of definitions.
+
 
 **Example:**
 
@@ -1541,19 +1544,18 @@ return type : CLI_return_t
 
   #% visit -cli
   OpenDatabase("/usr/gapps/visit/data/curv3d.silo")
-  DefineScalarExpression("d1", 'recenter(d, "zonal")')
-  DefineScalarExpression("p1", 'recenter(p, "zonal")')
   # Define 2 array variables, each from 2 scalars. Here, we
   # reuse the same scalars twice for illustrative purposes
   # only. Normally, the scalars are different.
-  DefineArrayExpression("da", "array_compose(d1, d1)")
-  DefineArrayExpression("pa", "array_compose(p1, p1)")
+  DefineArrayExpression("da", "array_compose(d, d)")
+  DefineArrayExpression("pa", "array_compose(p, p)")
   # Create a plot to use for performing an XRay Image query.
-  AddPlot("Pseudocolor", "d1")
+  AddPlot("Pseudocolor", "d")
   DrawPlots()
   # Do the query.
-  params = GetQueryParameters("XRay Image")
-  params['output_type'] ="png"
+  params = dict()
+  params['output_type'] = "png"
+  params['output_dir'] = "."
   params['divide_emis_by_absorb'] = 1
   params['origin'] = (0.0, 2.5, 10.0)
   params['up_vector'] = (0, 1, 0)
@@ -1565,6 +1567,17 @@ return type : CLI_return_t
   params['vars'] = ("da", "pa")
   Query("XRay Image", params)
 
+  # Repeat the query using lists of variables and definitions.
+  myvars = []
+  mydefs = []
+  myvars.append("da")
+  mydefs.append("array_compose(d, d)")
+  myvars.append("pa")
+  mydefs.append("array_compose(p, p)")
+  DefineArrayExpression(myvars, mydefs)
+  Query("XRay Image", params)
+
+
 DefineCurveExpression
 ---------------------
 
@@ -1575,11 +1588,11 @@ DefineCurveExpression
   DefineCurveExpression(variableName, expression) -> integer
 
 
-variableName : string
-    The name of the variable to be created.
+variableName : string or list of strings
+    The name of the variable to create or a list of names of variables to create.
 
-expression : string
-    The expression definition as a string.
+expression : string or list of strings
+    The expression definition or a list of expression definitions.
 
 return type : CLI_return_t
     The DefineCurveExpression function returns 1 on success and 0 on failure.
@@ -1589,18 +1602,16 @@ return type : CLI_return_t
 
     DefineCurveExpression creates new curve variables.
     Curve variables are a collection of X - Y coordinates that form a curve.
-    Curve variables are used in the Curve, Parallel Coordinates, Scatter and
-    Spreadsheet plots.
+    Curve variables are used in the Curve, Parallel Coordinates, Scatter and Spreadsheet plots.
 
-    The variableName argument is a string that contains the name of the new
-    variable. You can pass the name of an existing expression if you want to
-    provide a new expression definition. The expression argument is a string
-    that contains the definition of the new variable in terms of
-    :ref:`built-in expressions <Built-in_expressions>` and pre-existing
-    variable names using VisIt_'s :ref:`expression grammar <Expression_grammar>`.
-    If you run into problems defining your expression you might want to read
-    the section on
-    :ref:`expression compatibility gotchas <Expression_Compatibility_Gotchas>`.
+    The variableName argument is either a string that contains the name of the variable to define or a list of strings with the names of the variables to define.
+    If you are going to define more than about a hundred expressions you should use the list version to get good performance.
+    If you use the list version the number of variable names must match the number of definitions.
+    If you pass the name of an existing expression it will replace the current definition.
+    The expression argument is a string that contains the definition of the new variable in terms of :ref:`built-in expressions <Built-in_expressions>` and pre-existing variable names using VisIt_'s :ref:`expression grammar <Expression_grammar>`.
+    If you run into problems defining your expression you might want to read the section on :ref:`expression compatibility gotchas <Expression_Compatibility_Gotchas>`.
+
+    The function will throw an exception if the list of strings is incorrectly formed or when the number of variable names does not match the number of definitions.
 
 
 **Example:**
@@ -1615,6 +1626,18 @@ return type : CLI_return_t
   AddPlot("Curve", "myvar")
   DrawPlots()
 
+  # Define more expressions using lists of variables and definitions.
+  myvars = []
+  mydefs = []
+  myvars.append("myvar1")
+  mydefs.append("3 * curve1")
+  myvars.append("myvar2")
+  mydefs.append("4 * curve1")
+  DefineCurveExpression(myvars, mydefs)
+  AddPlot("Curve", "myvar1")
+  AddPlot("Curve", "myvar2")
+  DrawPlots()
+
 
 DefineMaterialExpression
 ------------------------
@@ -1626,11 +1649,11 @@ DefineMaterialExpression
   DefineMaterialExpression(variableName, expression) -> integer
 
 
-variableName : string
-    The name of the variable to be created.
+variableName : string or list of strings
+    The name of the variable to create or a list of names of variables to create.
 
-expression : string
-    The expression definition as a string.
+expression : string or list of strings
+    The expression definition or a list of expression definitions.
 
 return type : CLI_return_t
     The DefineMaterialExpression function returns 1 on success and 0 on failure.
@@ -1639,10 +1662,16 @@ return type : CLI_return_t
 **Description:**
 
     DefineMaterialExpression creates new material variables.
-    Material variables are special variables that store material information for
-    mesh and scalar variables. Material variables are used by the Boundary and
-    Filled Boundary plots. Currently there are no built-in expressions that create
-    material variables.
+    Material variables are special variables that store material information for mesh and scalar variables.
+    Material variables are used by the Boundary and Filled Boundary plots.
+
+    The variableName argument is either a string that contains the name of the variable to define or a list of strings with the names of the variables to define.
+    If you are going to define more than about a hundred expressions you should use the list version to get good performance.
+    If you use the list version the number of variable names must match the number of definitions.
+    If you pass the name of an existing expression it will replace the current definition.
+    Currently there are no built-in expressions that create material variables.
+
+    The function will throw an exception if the list of strings is incorrectly formed or when the number of variable names does not match the number of definitions.
 
 
 DefineMeshExpression
@@ -1655,11 +1684,11 @@ DefineMeshExpression
   DefineMeshExpression(variableName, expression) -> integer
 
 
-variableName : string
-    The name of the variable to be created.
+variableName : string or list of strings
+    The name of the variable to create or a list of names of variables to create.
 
-expression : string
-    The expression definition as a string.
+expression : string or list of strings
+    The expression definition or a list of expression definitions.
 
 return type : CLI_return_t
     The DefineMeshExpression function returns 1 on success and 0 on failure.
@@ -1670,7 +1699,14 @@ return type : CLI_return_t
     DefineMeshExpression creates new mesh variables.
     Mesh variables define the coordinates and connectivity of a mesh.
     Mesh variables are used by the Label, Mesh and Subset plots.
+
+    The variableName argument is either a string that contains the name of the variable to define or a list of strings with the names of the variables to define.
+    If you are going to define more than about a hundred expressions you should use the list version to get good performance.
+    If you use the list version the number of variable names must match the number of definitions.
+    If you pass the name of an existing expression it will replace the current definition.
     Currently there are no built-in expressions that create mesh variables.
+
+    The function will throw an exception if the list of strings is incorrectly formed or when the number of variable names does not match the number of definitions.
 
 
 DefinePythonExpression
@@ -1721,11 +1757,11 @@ DefineScalarExpression
   DefineScalarExpression(variableName, expression) -> integer
 
 
-variableName : string
-    The name of the variable to be created.
+variableName : string or list of strings
+    The name of the variable to create or a list of names of variables to create.
 
-expression : string
-    The expression definition as a string.
+expression : string or list of strings
+    The expression definition or a list of expression definitions.
 
 return type : CLI_return_t
     The DefineScalarExpression function returns 1 on success and 0 on failure.
@@ -1734,17 +1770,17 @@ return type : CLI_return_t
 **Description:**
 
     DefineScalarExpression creates new scalar variables.
-    Scalar variables define a scalar field over a mesh and are used by plots
-    that take scalar variables.
+    Scalar variables define a scalar field over a mesh and are used by plots that take scalar variables.
 
-    The variableName argument is a string that contains the name of the new
-    variable. You can pass the name of an existing expression if you want to
-    provide a new expression definition. The expression argument is a string
-    that contains the definition of the new variable in terms of
-    :ref:`built-in expressions <Built-in_expressions>` and pre-existing
-    variable names using VisIt_'s :ref:`expression grammar <Expression_grammar>`.
-    If you run into problems defining your expression you might want to read
-    the section on
+    The variableName argument is either a string that contains the name of the variable to define or a list of strings with the names of the variables to define.
+    If you are going to define more than about a hundred expressions you should use the list version to get good performance.
+    If you use the list version the number of variable names must match the number of definitions.
+    If you pass the name of an existing expression it will replace the current definition.
+    The expression argument is a string that contains the definition of the new variable in terms of :ref:`built-in expressions <Built-in_expressions>` and pre-existing variable names using VisIt_'s :ref:`expression grammar <Expression_grammar>`.
+    If you run into problems defining your expression you might want to read the section on :ref:`expression compatibility gotchas <Expression_Compatibility_Gotchas>`.
+
+    The function will throw an exception if the list of strings is incorrectly formed or when the number of variable names does not match the number of definitions.
+
 
 **Example:**
 
@@ -1755,6 +1791,18 @@ return type : CLI_return_t
   DefineScalarExpression("myvar", "sin(u) + cos(w)")
   # Plot the scalar variable.
   AddPlot("Pseudocolor", "myvar")
+  DrawPlots()
+
+  # Define more expressions using lists of variables and definitions.
+  myvars = []
+  mydefs = []
+  myvars.append("myvar1")
+  mydefs.append("nodal_constant(mesh1, 2.) * (sin(u) + cos(w))")
+  myvars.append("myvar2")
+  mydefs.append("nodal_constant(mesh1, 3.) * (sin(u) + cos(w))")
+  DefineScalarExpression(myvars, mydefs)
+  AddPlot("Pseudocolor", "myvar1")
+  AddPlot("Pseudocolor", "myvar2")
   DrawPlots()
 
 
@@ -1768,11 +1816,11 @@ DefineSpeciesExpression
   DefineSpeciesExpression(variableName, expression) -> integer
 
 
-variableName : string
-    The name of the variable to be created.
+variableName : string or list of strings
+    The name of the variable to create or a list of names of variables to create.
 
-expression : string
-    The expression definition as a string.
+expression : string or list of strings
+    The expression definition or a list of expression definitions.
 
 return type : CLI_return_t
     The DefineSpeciesExpression function returns 1 on success and 0 on failure.
@@ -1781,9 +1829,15 @@ return type : CLI_return_t
 **Description:**
 
     DefineSpeciesExpression creates new species variables.
-    Species variables are special variables that are associated with material
-    variables that store species information for scalar variables.
+    Species variables are special variables that are associated with material variables that store species information for scalar variables.
+
+    The variableName argument is either a string that contains the name of the variable to define or a list of strings with the names of the variables to define.
+    If you are going to define more than about a hundred expressions you should use the list version to get good performance.
+    If you use the list version the number of variable names must match the number of definitions.
+    If you pass the name of an existing expression it will replace the current definition.
     Currently there are no built-in expressions that create species variables.
+
+    The function will throw an exception if the list of strings is incorrectly formed or when the number of variable names does not match the number of definitions.
 
 
 DefineTensorExpression
@@ -1796,11 +1850,11 @@ DefineTensorExpression
   DefineTensorExpression(variableName, expression) -> integer
 
 
-variableName : string
-    The name of the variable to be created.
+variableName : string or list of strings
+    The name of the variable to create or a list of names of variables to create.
 
-expression : string
-    The expression definition as a string.
+expression : string or list of strings
+    The expression definition or a list of expression definitions.
 
 return type : CLI_return_t
     The DefineTensorExpression function returns 1 on success and 0 on failure.
@@ -1809,23 +1863,22 @@ return type : CLI_return_t
 **Description:**
 
     DefineTensorExpression creates new tensor variables.
-    Tensor variables define a tensor field over a mesh and are used by
-    the Tensor plot. A 2D tensor would consist of a vector of 2 2-component
-    vectors. A 3D tensor would consist of a vector of 3 3-component vectors.
-    A symmetric tensor would need to provide 4 or 9 components even though a
-    2D tensor has 3 unique values and a 3D tensor has 6 unique values.
-    For a 2D symmetric tensor, the components would be supplied as
-    {{Sxx, Syx}, {Syx, Syy}}. For a 3D symmetric tensor, the components would
-    be supplied as {{Sxx, Syx, Szx}, {Syx, Syy, Szy}, {Szx, Szy, Szz}}.
+    Tensor variables define a tensor field over a mesh and are used by the Tensor plot.
+    A 2D tensor would consist of a vector of 2 2-component vectors.
+    A 3D tensor would consist of a vector of 3 3-component vectors.
+    A symmetric tensor would need to provide 4 or 9 components even though a 2D tensor has 3 unique values and a 3D tensor has 6 unique values.
+    For a 2D symmetric tensor, the components would be supplied as {{Sxx, Syx}, {Syx, Syy}}.
+    For a 3D symmetric tensor, the components would be supplied as {{Sxx, Syx, Szx}, {Syx, Syy, Szy}, {Szx, Szy, Szz}}.
 
-    The variableName argument is a string that contains the name of the new
-    variable. You can pass the name of an existing expression if you want to
-    provide a new expression definition. The expression argument is a string
-    that contains the definition of the new variable in terms of
-    :ref:`built-in expressions <Built-in_expressions>` and pre-existing
-    variable names using VisIt_'s :ref:`expression grammar <Expression_grammar>`.
-    If you run into problems defining your expression you might want to read
-    the section on
+    The variableName argument is either a string that contains the name of the variable to define or a list of strings with the names of the variables to define.
+    If you are going to define more than about a hundred expressions you should use the list version to get good performance.
+    If you use the list version the number of variable names must match the number of definitions.
+    If you pass the name of an existing expression it will replace the current definition.
+    The expression argument is a string that contains the definition of the new variable in terms of :ref:`built-in expressions <Built-in_expressions>` and pre-existing variable names using VisIt_'s :ref:`expression grammar <Expression_grammar>`.
+    If you run into problems defining your expression you might want to read the section on :ref:`expression compatibility gotchas <Expression_Compatibility_Gotchas>`.
+
+    The function will throw an exception if the list of strings is incorrectly formed or when the number of variable names does not match the number of definitions.
+
 
 **Example:**
 
@@ -1836,6 +1889,27 @@ return type : CLI_return_t
   # Plot a tensor variable.
   DefineTensorExpression("myten", "{{u,v,w},{u,v,w},{u,v,w}}")
   AddPlot("Tensor", "myten")
+  DrawPlots()
+
+  # Define more expressions using lists of variables and definitions.
+  myvars = []
+  mydefs = []
+  myvars.append("zero")
+  mydefs.append("nodal_constant(mesh1, 0.)")
+  myvars.append("one")
+  mydefs.append("nodal_constant(mesh1, 1.)")
+  myvars.append("two")
+  mydefs.append("nodal_constant(mesh1, 2.)")
+  DefineScalarExpression(myvars, mydefs)
+  myvars2 = []
+  mydefs2 = []
+  myvars2.append("myten1")
+  mydefs2.append("{{one, zero, zero},{zero, one, zero},{zero, zero, one}}")
+  myvars2.append("myten2")
+  mydefs2.append("{{one, zero, zero},{zero, two, zero},{zero, zero, one}}")
+  DefineTensorExpression(myvars2, mydefs2)
+  AddPlot("Tensor", "myten1")
+  AddPlot("Tensor", "myten2")
   DrawPlots()
 
 
@@ -1849,11 +1923,11 @@ DefineVectorExpression
   DefineVectorExpression(variableName, expression) -> integer
 
 
-variableName : string
-    The name of the variable to be created.
+variableName : string or list of strings
+    The name of the variable to create or a list of names of variables to create.
 
-expression : string
-    The expression definition as a string.
+expression : string or list of strings
+    The expression definition or a list of expression definitions.
 
 return type : CLI_return_t
     The DefineVectorExpression function returns 1 on success and 0 on failure.
@@ -1862,20 +1936,19 @@ return type : CLI_return_t
 **Description:**
 
     DefineVectorExpression creates new vector variables.
-    Vector variables define a vector field over a mesh and are used by the
-    Vector plot.
+    Vector variables define a vector field over a mesh and are used by the Vector plot.
     A 2D vector would consist of 2 components.
     A 3D vector would consist of 3 components.
 
-    The variableName argument is a string that contains the name of the new
-    variable. You can pass the name of an existing expression if you want to
-    provide a new expression definition. The expression argument is a string
-    that contains the definition of the new variable in terms of
-    :ref:`built-in expressions <Built-in_expressions>` and pre-existing
-    variable names using VisIt_'s :ref:`expression grammar <Expression_grammar>`.
-    If you run into problems defining your expression you might want to read
-    the section on
-    :ref:`expression compatibility gotchas <Expression_Compatibility_Gotchas>`.
+    The variableName argument is either a string that contains the name of the variable to define or a list of strings with the names of the variables to define.
+    If you are going to define more than about a hundred expressions you should use the list version to get good performance.
+    If you use the list version the number of variable names must match the number of definitions.
+    If you pass the name of an existing expression it will replace the current definition.
+    The expression argument is a string that contains the definition of the new variable in terms of :ref:`built-in expressions <Built-in_expressions>` and pre-existing variable names using VisIt_'s :ref:`expression grammar <Expression_grammar>`.
+    If you run into problems defining your expression you might want to read the section on :ref:`expression compatibility gotchas <Expression_Compatibility_Gotchas>`.
+
+    The function will throw an exception if the list of strings is incorrectly formed or when the number of variable names does not match the number of definitions.
+
 
 **Example:**
 
@@ -1886,6 +1959,27 @@ return type : CLI_return_t
   # Plot a vector variable.
   DefineVectorExpression("myvec", "{u,v,w}")
   AddPlot("Vector", "myvec")
+  DrawPlots()
+
+  # Define more expressions using lists of variables and definitions.
+  myvars = []
+  mydefs = []
+  myvars.append("zero")
+  mydefs.append("nodal_constant(mesh1, 0.)")
+  myvars.append("one")
+  mydefs.append("nodal_constant(mesh1, 1.)")
+  myvars.append("two")
+  mydefs.append("nodal_constant(mesh1, 2.)")
+  DefineScalarExpression(myvars, mydefs)
+  myvars2 = []
+  mydefs2 = []
+  myvars2.append("myvec1")
+  mydefs2.append("{one, zero, zero}")
+  myvars2.append("myvec2")
+  mydefs2.append("{zero, two, zero}")
+  DefineVectorExpression(myvars2, mydefs2)
+  AddPlot("Vector", "myvec1")
+  AddPlot("Vector", "myvec2")
   DrawPlots()
 
 
@@ -2349,7 +2443,7 @@ return type : CLI_return_t
 **Description:**
 
     The DeleteWindow function deletes the active visualization window and
-    makes the visualization window with the smallest window index the new
+    makes the visualization window with the smallest window identifier the new
     active window. This function has no effect when there is only one remaining
     visualization window.
 
@@ -4906,26 +5000,6 @@ return type : tuple of strings
   print("The list of time sliders is: ", GetTimeSliders())
 
 
-GetUltraScript
---------------
-
-**Synopsis:**
-
-::
-
-  GetUltraScript() -> string
-
-
-return type : string
-    The GetUltraScript function returns a filename.
-
-
-**Description:**
-
-    Return the name of the file in use by the LoadUltra function. Normal users do
-    not need to use this function.
-
-
 GetView2D
 ---------
 
@@ -5328,10 +5402,11 @@ return type : CLI_return_t
 
 ::
 
+  import visit_launcher
+  visit_launcher.AddArgument("-nowin")
+  visit_launcher.Launch()
   import visit
-  import visit
-  visit.AddArgument("-nowin")
-  visit.Launch()
+
 
 
 LaunchNowin
@@ -5367,10 +5442,11 @@ return type : CLI_return_t
 
 ::
 
+  import visit_launcher
+  visit_launcher.AddArgument("-geometry")
+  visit_launcher.AddArgument("1024x1024")
+  visit_launcher.LaunchNowin()
   import visit
-  visit.AddArgument("-geometry")
-  visit.AddArgument("1024x1024")
-  visit.LaunchNowin()
 
 
 Lineout
@@ -5616,39 +5692,6 @@ return type : CLI_return_t
   ApplyNamedSelection("selection_from_previous_session")
 
 
-LoadUltra
----------
-
-**Synopsis:**
-
-::
-
-  LoadUltra()
-
-
-**Description:**
-
-    LoadUltra launches the Ultra command parser, allowing you to enter Ultra
-    commands and have VisIt process them.  A new command prompt is presented,
-    and only Ultra commands will be allowed until 'end' or 'quit' is entered,
-    at which time, you will be returned to VisIt's cli prompt.  For information
-    on currently supported commands, type 'help' at the Ultra prompt
-    Please note that filenames/paths must be surrounded by quotes, unlike with
-    Ultra.
-
-
-**Example:**
-
-::
-
-  #% visit -cli
-  #>>> LoadUltra()
-  #U-> rd "../../data/distribution.ultra"
-  #U-> select 1
-  #U-> end
-  #>>>
-
-
 LocalNameSpace
 --------------
 
@@ -5672,9 +5715,10 @@ LocalNameSpace
 
 ::
 
+  import visit_launcher
+  visit_launcher.LocalNameSpace()
+  visit_launcher.Launch()
   import visit
-  visit.LocalNameSpace()
-  visit.Launch()
 
 
 LongFileName
@@ -8222,15 +8266,10 @@ return type : CLI_return_t
 
 **Description:**
 
-    The RestoreSession function is important for setting up complex
-    visualizations because you can design a VisIt session file, which is an XML
-    file that describes exactly how plots are set up, using the VisIt GUI and
-    then use that same session file in the CLI to generate movies in batch. The
-    RestoreSession function takes 2 arguments. The first argument specifies the
-    filename that contains the VisIt session to be restored. The second
-    argument determines whether the session file is assumed to be in the user's
-    VisIt directory. If the visitDir argument is set to 0 then the filename
-    argument must contain the absolute path to the session file.
+    The RestoreSession function is useful for setting up complex visualizations
+    because you can design a VisIt session file, which is an XML file that
+    describes exactly how plots are set up, using the VisIt GUI and then use
+    that same session file in the CLI to generate movies in batch.
 
 
 **Example:**
@@ -8240,7 +8279,7 @@ return type : CLI_return_t
   #% visit -cli
   # Restore my session file for a time-varying database from
   # my .visit directory.
-  RestoreSessionFile("visit.session", 1)
+  RestoreSession("visit.session", 1)
   for state in range(TimeSliderGetNStates()):
       SetTimeSliderState(state)
       SaveWindow()
@@ -8266,10 +8305,13 @@ visitDir : integer
     otherwise the filename must contain an absolute path.
 
 mapping : tuple
-    A tuple of strings representing the maping from sources as specified
+    A tuple of strings representing the mapping from sources as specified
     in the original session file to new sources. Sources in the original
     session file are numbered starting from 0. So, this tuple of strings
-    simply contains the new names for each of the sources, in order.
+    simply contains the new names for each of the sources, in order. The
+    order that the sources are numbered in the session file is not obvious,
+    so it is best to look at the list of sources in the "SourceMap" in the
+    session file to see the actual order.
 
 return type : CLI_return_t
     RestoreSession returns 1 on success and 0 on failure.
@@ -8277,15 +8319,11 @@ return type : CLI_return_t
 
 **Description:**
 
-    The RestoreSession function is important for setting up complex
-    visualizations because you can design a VisIt session file, which is an XML
-    file that describes exactly how plots are set up, using the VisIt GUI and
-    then use that same session file in the CLI to generate movies in batch. The
-    RestoreSession function takes 2 arguments. The first argument specifies the
-    filename that contains the VisIt session to be restored. The second
-    argument determines whether the session file is assumed to be in the user's
-    VisIt directory. If the visitDir argument is set to 0 then the filename
-    argument must contain the absolute path to the session file.
+    The RestoreSessionWithDifferentSources function is useful for setting up
+    complex visualizations because you can design a VisIt session file, which
+    is an XML file that describes exactly how plots are set up, using the
+    VisIt GUI and then use that same session file in the CLI as a template
+    for generating the same visualizations from other data files.
 
 
 **Example:**
@@ -8293,12 +8331,15 @@ return type : CLI_return_t
 ::
 
   #% visit -cli
-  # Restore my session file for a time-varying database from
-  # my .visit directory.
-  RestoreSessionFile("visit.session", 1)
-  for state in range(TimeSliderGetNStates()):
-      SetTimeSliderState(state)
-      SaveWindow()
+  # Restore a session file with a single source with a new source where the
+  # session file is in my .visit directory.
+  RestoreSessionWithDifferentSources("visit0000.session", 1, "rect3d.silo")
+  SaveWindow()
+
+  # Restore a session file with a two sources with two new sources where the
+  # session file is in my .visit directory.
+  RestoreSessionWithDifferentSources("visit0001.session", 1, ("noise.silo", "globe.silo"))
+  SaveWindow()
 
 
 SaveAttribute
@@ -8695,16 +8736,11 @@ SetActiveWindow
 
 ::
 
-  SetActiveWindow(windowIndex) -> integer
-  SetActiveWindow(windowIndex, raiseWindow) -> integer
+  SetActiveWindow(windowId) -> integer
 
 
-windowIndex : integer
-    An integer window index starting at 1.
-
-raiseWindow : integer
-    This is an optional integer argument that raises and activates the window if
-    set to 1. If omitted, the default behavior is to raise and activate the window.
+windowId : integer
+    An integer window identifier.
 
 return type : CLI_return_t
     The SetActiveWindow function returns an integer value of 1 for success and
@@ -8713,13 +8749,14 @@ return type : CLI_return_t
 
 **Description:**
 
-    Most of the functions in the VisIt Python Interface operate on the
-    contents of the active window. If there is more than one window, it is very
-    important to be able to set the active window. To set the active window,
-    use the SetActiveWindow function. The SetActiveWindow function takes a
-    single integer argument which is the index of the new active window. The
-    new window index must be an integer greater than zero and less than or
-    equal to the number of open windows.
+    Most of the functions in the VisIt Python Interface operate on the contents of the *active* window.
+    If there is more than one window, it is very important to be able to set the active window.
+    Use the SetActiveWindow function to do this.
+    This function takes a single integer argument which is the *identifier* of the new active window.
+    As windows are added with ``AddWindow()`` and deleted with ``DeleteWindow()``, the list of available windows (which can be obtained with ``GetGlobalAttributes().windows`` can wind up looking like an arbitrary set of positive integers such as ``(1,2,4,7,8)``.
+    These numbers are also the same numbers that appear in window title strings in the window manager.
+    The *active* window is **NOT** a 0-based index over the number of available windows.
+    The *active* window is identified as one of the numbers in this list.
 
 
 **Example:**
@@ -8727,11 +8764,39 @@ return type : CLI_return_t
 ::
 
   #% visit -cli
-  SetWindowLayout(2)
-  SetActiveWindow(2)
+  SetWindowLayout(4) # Creates a 2x2 arrangement of 4 windows numbered 1,2,3,4
+  SetActiveWindow(2) # Sets active window to the upper-right of the 4.
   OpenDatabase("/usr/gapps/visit/data/globe.silo")
   AddPlot("Mesh", "mesh1")
   DrawPlots()
+
+
+GetActiveWindow
+---------------
+
+**Synopsis:**
+
+::
+
+  GetActiveWindow() -> integer
+
+return type : CLI_return_t
+    The GetActiveWindow function returns a positive integer on success and 0 on failure.
+
+
+**Description:**
+
+    See ``SetActiveWindow()``.
+
+**Example:**
+
+::
+
+  #% visit -cli
+  SetWindowLayout(4) # creates a 2x2 arrangement of 4 windows numbered 1,2,3,4
+  SetActiveWindow(2)
+  DeleteWindow()     # After this call, the list of available windows is 1,3,4
+  GetActiveWindow()  # Will return 1
 
 
 SetAnimationTimeout
@@ -10891,29 +10956,6 @@ return type : CLI_return_t
   SetTryHarderCyclesTimes(0) # Turn this feature off
 
 
-SetUltraScript
---------------
-
-**Synopsis:**
-
-::
-
-  SetUltraScript(filename) -> integer
-
-
-filename : string
-    The name of the file to be used as the ultra script when LoadUltra is called.
-
-return type : CLI_return_t
-    The SetUltraScript function returns 1.
-
-
-**Description:**
-
-    Set the path to the script to be used by the LoadUltra command. Normal users do
-    not need to use this function.
-
-
 SetView2D
 ---------
 
@@ -11267,8 +11309,9 @@ return type : CLI_return_t
 
 ::
 
+  import visit_launcher
+  visit_launcher.Launch()
   import visit
-  visit.Launch()
   visit.SetWindowArea(0, 0, 600, 600)
   visit.SetWindowLayout(4)
 
@@ -11379,8 +11422,9 @@ return type : CLI_return_t
 ::
 
   #% python
+  import visit_launcher
+  visit_launcher.Launch()
   import visit
-  visit.Launch()
   visit.ShowAllWindows()
 
 

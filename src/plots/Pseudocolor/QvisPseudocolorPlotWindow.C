@@ -275,13 +275,8 @@ QvisPseudocolorPlotWindow::CreateDataTab(QWidget *pageData)
     dataLayout->addWidget(rb, 0, 3);
 
     // Each time a radio button is clicked, call the scale clicked slot.
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(scalingButtons, SIGNAL(buttonClicked(int)),
-            this, SLOT(scaleClicked(int)));
-#else
     connect(scalingButtons, SIGNAL(idClicked(int)),
             this, SLOT(scaleClicked(int)));
-#endif
 
     // Create the skew factor line edit
     skewLineEdit = new QLineEdit(central);
@@ -371,13 +366,8 @@ QvisPseudocolorPlotWindow::CreateDataTab(QWidget *pageData)
     dataLayout->addWidget(rb, 3, 3);
     centeringButtons->addButton(rb, 2);
     // Each time a radio button is clicked, call the centeringClicked slot.
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(centeringButtons, SIGNAL(buttonClicked(int)),
-            this, SLOT(centeringClicked(int)));
-#else
     connect(centeringButtons, SIGNAL(idClicked(int)),
             this, SLOT(centeringClicked(int)));
-#endif
     //
     // Create the color stuff
     //
@@ -481,13 +471,8 @@ QvisPseudocolorPlotWindow::CreateDataTab(QWidget *pageData)
     // colorLayout->addWidget(rb, gRow, 2);
 
     // // Each time a radio button is clicked, call the scale clicked slot.
-//#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    // connect(opacityButtons, SIGNAL(buttonClicked(int)),
-    //         this, SLOT(setOpaacityClicked(int)));
-//#else 
     // connect(opacityButtons, SIGNAL(idClicked(int)),
     //         this, SLOT(setOpaacityClicked(int)));
-//#endif 
 
     // gRow++;
 
@@ -585,11 +570,6 @@ QvisPseudocolorPlotWindow::CreateGeometryTab(QWidget *pageGeometry)
     lineType->addItem(tr("Ribbons"), 2);
     connect(lineType, SIGNAL(activated(int)), this, SLOT(lineTypeChanged(int)));
     lineLayout->addWidget(lineType, 0, 1);
-
-    // ARS - FIX ME  - FIX ME  - FIX ME  - FIX ME  - FIX ME
-    // lineTypeLabel->hide();
-    // lineType->hide();
-
 
     // Create the lineSyle widget.
     lineWidthLabel = new QLabel(tr("Line width"), central);
@@ -757,58 +737,70 @@ QvisPseudocolorPlotWindow::CreateGeometryTab(QWidget *pageGeometry)
     QGridLayout *renderingLayout = new QGridLayout(renderingGroup);
     renderingLayout->setContentsMargins(5,5,5,5);
     renderingLayout->setSpacing(10);
-
+    int row = 0;
 
     // Create the rendering style options
     renderLabel = new QLabel(tr("Draw objects as"), central);
-    renderingLayout->addWidget(renderLabel, 0,0);
+    renderingLayout->addWidget(renderLabel, row,0);
 
     // Create the rendering buttons
     renderSurfaces = new QCheckBox(tr("Surfaces"), central);
-    renderingLayout->addWidget( renderSurfaces, 0,1);
+    renderingLayout->addWidget( renderSurfaces, row,1);
     connect(renderSurfaces, SIGNAL(toggled(bool)),
             this, SLOT(renderSurfacesChanged(bool)));
 
+    row++;
+
     renderWireframe = new QCheckBox(tr("Wireframe"), central);
-    renderingLayout->addWidget( renderWireframe, 0,2);
+    renderingLayout->addWidget( renderWireframe, row,1);
     connect(renderWireframe, SIGNAL(toggled(bool)),
             this, SLOT(renderWireframeChanged(bool)));
+
     wireframeRenderColor = new QvisColorButton(central);
-    renderingLayout->addWidget(wireframeRenderColor, 0,3);
+    renderingLayout->addWidget(wireframeRenderColor, row,2);
     connect(wireframeRenderColor, SIGNAL(selectedColor(const QColor &)),
             this, SLOT(wireframeColorChanged(const QColor &)));
 
+    wireframeRenderColorByVar = new QCheckBox(tr("Use default var for wireframe color"));
+    renderingLayout->addWidget(wireframeRenderColorByVar, row,3);
+    connect(wireframeRenderColorByVar, SIGNAL(toggled(bool)),
+            this, SLOT(wireframeColorByVarToggled(bool)));
+
+    row++;
+
     renderPoints = new QCheckBox(tr("Points"), central);
-    renderingLayout->addWidget( renderPoints, 0,4);
+    renderingLayout->addWidget( renderPoints, row,1);
     connect(renderPoints, SIGNAL(toggled(bool)),
             this, SLOT(renderPointsChanged(bool)));
+
     pointsRenderColor = new QvisColorButton(central);
-    renderingLayout->addWidget(pointsRenderColor, 0,5);
+    renderingLayout->addWidget(pointsRenderColor, row,2);
     connect(pointsRenderColor, SIGNAL(selectedColor(const QColor &)),
             this, SLOT(pointColorChanged(const QColor &)));
 
+    pointsRenderColorByVar = new QCheckBox(tr("Use default var for point color"));
+    renderingLayout->addWidget(pointsRenderColorByVar, row,3);
+    connect(pointsRenderColorByVar, SIGNAL(toggled(bool)),
+            this, SLOT(pointColorByVarToggled(bool)));
+
+    row++;
     // Create the smoothing options
-    renderingLayout->addWidget(new QLabel(tr("Smoothing"), central), 1,0);
+    renderingLayout->addWidget(new QLabel(tr("Smoothing"), central), row,0);
 
     // Create the smoothing level buttons
     smoothingLevelButtons = new QButtonGroup(central);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(smoothingLevelButtons, SIGNAL(buttonClicked(int)),
-            this, SLOT(smoothingLevelChanged(int)));
-#else
     connect(smoothingLevelButtons, SIGNAL(idClicked(int)),
             this, SLOT(smoothingLevelChanged(int)));
-#endif
 
     QRadioButton* rb = new QRadioButton(tr("None"), central);
     smoothingLevelButtons->addButton(rb, 0);
-    renderingLayout->addWidget(rb, 1, 1);
+    renderingLayout->addWidget(rb, row, 1);
     rb = new QRadioButton(tr("Fast"), central);
     smoothingLevelButtons->addButton(rb, 1);
-    renderingLayout->addWidget(rb, 1, 2);
+    renderingLayout->addWidget(rb, row, 2);
     rb = new QRadioButton(tr("High"), central);
     smoothingLevelButtons->addButton(rb, 2);
-    renderingLayout->addWidget(rb, 1, 3);
+    renderingLayout->addWidget(rb, row, 3);
 }
 
 
@@ -1342,7 +1334,20 @@ QvisPseudocolorPlotWindow::UpdateWindow(bool doAll)
             wireframeRenderColor->blockSignals(true);
             wireframeRenderColor->setButtonColor(temp);
             wireframeRenderColor->blockSignals(false);
-            wireframeRenderColor->setEnabled(pcAtts->GetRenderWireframe());
+            wireframeRenderColor->setEnabled(pcAtts->GetRenderWireframe() && !pcAtts->GetWireframeColorByVar());
+            }
+            break;
+        case PseudocolorAttributes::ID_wireframeColorByVar:
+            { // new scope
+            disconnect(wireframeRenderColorByVar, SIGNAL(toggled(bool)),
+                       this, SLOT(wireframeColorByVarToggled(bool)));
+            wireframeRenderColorByVar->setChecked(pcAtts->GetWireframeColorByVar());
+            connect(wireframeRenderColorByVar, SIGNAL(toggled(bool)),
+                    this, SLOT(wireframeColorByVarToggled(bool)));
+            wireframeRenderColorByVar->setEnabled(pcAtts->GetRenderWireframe());
+            wireframeRenderColor->setEnabled(
+                pcAtts->GetRenderWireframe() && 
+                !pcAtts->GetWireframeColorByVar());
             }
             break;
 
@@ -1361,6 +1366,19 @@ QvisPseudocolorPlotWindow::UpdateWindow(bool doAll)
             pointsRenderColor->blockSignals(true);
             pointsRenderColor->setButtonColor(temp);
             pointsRenderColor->blockSignals(false);
+            }
+            break;
+        case PseudocolorAttributes::ID_pointColorByVar:
+            { // new scope
+            disconnect(pointsRenderColorByVar, SIGNAL(toggled(bool)),
+                       this, SLOT(pointColorByVarToggled(bool)));
+            pointsRenderColorByVar->setChecked(pcAtts->GetPointColorByVar());
+            connect(pointsRenderColorByVar, SIGNAL(toggled(bool)),
+                    this, SLOT(pointColorByVarToggled(bool)));
+            pointsRenderColorByVar->setEnabled(pcAtts->GetRenderPoints());
+            pointsRenderColor->setEnabled(
+                pcAtts->GetRenderPoints() && 
+                !pcAtts->GetPointColorByVar());
             }
             break;
 
@@ -2280,10 +2298,23 @@ QvisPseudocolorPlotWindow::smoothingLevelChanged(int level)
     Apply();
 }
 
+
 void
 QvisPseudocolorPlotWindow::renderSurfacesChanged(bool val)
 {
     pcAtts->SetRenderSurfaces(val);
+    if(val)
+    {
+        wireframeRenderColorByVar->setChecked(false);
+        wireframeRenderColorByVar->setEnabled(false);
+        pointsRenderColorByVar->setChecked(false);
+        pointsRenderColorByVar->setEnabled(false);
+    }
+    else
+    {
+        wireframeRenderColorByVar->setEnabled(renderWireframe->isChecked());
+        pointsRenderColorByVar->setEnabled(renderPoints->isChecked());
+    }
     SetUpdate(false);
     Apply();
 }
@@ -2293,6 +2324,7 @@ QvisPseudocolorPlotWindow::renderWireframeChanged(bool val)
 {
     pcAtts->SetRenderWireframe(val);
     wireframeRenderColor->setEnabled(val);
+    wireframeRenderColorByVar->setEnabled(val && !renderSurfaces->isChecked());
     SetUpdate(false);
     Apply();
 }
@@ -2302,6 +2334,7 @@ QvisPseudocolorPlotWindow::renderPointsChanged(bool val)
 {
     pcAtts->SetRenderPoints(val);
     pointsRenderColor->setEnabled(val);
+    pointsRenderColorByVar->setEnabled(val && !renderSurfaces->isChecked());
     SetUpdate(false);
     Apply();
 }
@@ -2330,6 +2363,15 @@ QvisPseudocolorPlotWindow::wireframeColorChanged(const QColor &color)
 }
 
 void
+QvisPseudocolorPlotWindow::wireframeColorByVarToggled(bool val)
+{
+    pcAtts->SetWireframeColorByVar(val);
+    wireframeRenderColor->setEnabled(pcAtts->GetRenderWireframe() && !val);
+    SetUpdate(false);
+    Apply();
+}
+
+void
 QvisPseudocolorPlotWindow::pointColorChanged(const QColor &color)
 {
     ColorAttribute temp(color.red(), color.green(), color.blue());
@@ -2337,6 +2379,16 @@ QvisPseudocolorPlotWindow::pointColorChanged(const QColor &color)
     SetUpdate(false);
     Apply();
 }
+
+void
+QvisPseudocolorPlotWindow::pointColorByVarToggled(bool val)
+{
+    pcAtts->SetPointColorByVar(val);
+    pointsRenderColor->setEnabled(pcAtts->GetRenderPoints() && !val);
+    SetUpdate(false);
+    Apply();
+}
+
 
 // change visibility of certain controls based on
 // rendering type(s) in effect.

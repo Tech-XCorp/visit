@@ -28,6 +28,10 @@
 #undef max
 #endif
 
+#ifdef HAVE_ANARI
+#include <AnariVolumeWidget.h>
+#endif
+
 #include <QvisOpacitySlider.h>
 #include <QvisSpectrumBar.h>
 #include <QvisColorSelectionWidget.h>
@@ -273,11 +277,7 @@ QvisVolumePlotWindow::CreateWindowContents()
 {
     // Figure out the max width that we want to allow for some simple
     // line edit widgets.
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 11, 0))
     int maxWidth = fontMetrics().horizontalAdvance("0");
-#else
-    int maxWidth = fontMetrics().width("0");
-#endif
 
     // Create a tab widget so we can put the transfer functions on their
     // own tabs.
@@ -549,13 +549,8 @@ QvisVolumePlotWindow::CreateColorGroup(QWidget *parent, QVBoxLayout *pLayout,
     dataLayout->addWidget(rb, 0, 3);
 
     // Each time a radio button is clicked, call the scale clicked slot.
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(scalingButtons, SIGNAL(buttonClicked(int)),
-            this, SLOT(scaleClicked(int)));
-#else
     connect(scalingButtons, SIGNAL(idClicked(int)),
             this, SLOT(scaleClicked(int)));
-#endif
 
     // Create the skew factor line edit
     skewLineEdit = new QLineEdit(central);
@@ -657,13 +652,8 @@ QvisVolumePlotWindow::CreateOpacityGroup(QWidget *parent, QVBoxLayout *pLayout,
 
     // Create the interaction mode button group.
     modeButtonGroup = new QButtonGroup(opacityWidgetGroup);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(modeButtonGroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(interactionModeChanged(int)));
-#else
     connect(modeButtonGroup, SIGNAL(idClicked(int)),
             this, SLOT(interactionModeChanged(int)));
-#endif
 
     QRadioButton *rb= new QRadioButton(tr("Freeform"), opacityWidgetGroup);
     modeButtonGroup->addButton(rb, 0);
@@ -990,6 +980,12 @@ void QvisVolumePlotWindow::CreateSamplingGroups(QWidget *parent, QLayout *pLayou
 
     //ospray group
     CreateOSPRayGroups(parent, pLayout);
+    
+    // ANARI Group
+    #ifdef HAVE_ANARI
+        this->anariVolumeWidget = new AnariVolumeWidget(this, volumeAtts);
+        pLayout->addWidget(this->anariVolumeWidget);
+    #endif
 
     //raycasting group
     {
@@ -1030,11 +1026,7 @@ void QvisVolumePlotWindow::CreateSamplingGroups(QWidget *parent, QLayout *pLayou
         rendererSamplesLabel->setBuddy(rendererSamples);
         connect(rendererSamples,     SIGNAL(valueChanged(double)),  this, SLOT(rendererSamplesChanged(double)));
         connect(samplesPerRay,       SIGNAL(valueChanged(int)),     this, SLOT(samplesPerRayChanged(int)));
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-        connect(samplingButtonGroup, SIGNAL(buttonClicked(int)),    this, SLOT(samplingTypeChanged(int)));
-#else
         connect(samplingButtonGroup, SIGNAL(idClicked(int)),    this, SLOT(samplingTypeChanged(int)));
-#endif
         rsLayout->addWidget(rendererSamplesLabel);
         rsLayout->addWidget(rendererSamples,Qt::AlignLeft);
         rsLayout->addStretch(QSizePolicy::Maximum);
@@ -1093,10 +1085,14 @@ void QvisVolumePlotWindow::UpdateSamplingGroup()
     defaultGroup->setVisible(false);
     raycastingGroup->setVisible(false);
     methodsGroup->setVisible(true);
+    #ifdef HAVE_ANARI
+    anariVolumeWidget->setVisible(false);
+    #endif
 
     tfTabs->setTabEnabled(1, true);
 
     //lighting and material properties group, enabled for all but RayCastingIntegration
+    lightMaterialPropGroup->setVisible(true);
     lightMaterialPropGroup->setEnabled(true);
     lightingToggle->setEnabled(true);
 
@@ -1128,6 +1124,7 @@ void QvisVolumePlotWindow::UpdateSamplingGroup()
     {
     case VolumeAttributes::Serial:
         EnableDefaultGroup();
+        lowGradientGroup->setVisible(false);
         UpdateLowGradientGroup(false);
         centeredDiffButton->setEnabled(false);
         sobelButton->setEnabled(false);
@@ -1141,6 +1138,7 @@ void QvisVolumePlotWindow::UpdateSamplingGroup()
     case VolumeAttributes::Composite:
         resampleGroup->setEnabled(false);
         raycastingGroup->setVisible(true);
+        lowGradientGroup->setVisible(true);
         UpdateLowGradientGroup(true);
         materialProperties->setEnabled(volumeAtts->GetSampling()==VolumeAttributes::Trilinear && volumeAtts->GetLightingFlag());
         EnableSamplingMethods(true);
@@ -1151,8 +1149,9 @@ void QvisVolumePlotWindow::UpdateSamplingGroup()
     case VolumeAttributes::Integration:
         resampleGroup->setEnabled(false);
         raycastingGroup->setVisible(true);
+        lowGradientGroup->setVisible(false);
         UpdateLowGradientGroup(false);
-        lightMaterialPropGroup->setEnabled(false);
+        lightMaterialPropGroup->setVisible(false);
         colorWidgetGroup->setEnabled(false);
         opacityWidgetGroup->setEnabled(false);
         centeredDiffButton->setEnabled(false);
@@ -1167,6 +1166,7 @@ void QvisVolumePlotWindow::UpdateSamplingGroup()
 #ifdef VISIT_SLIVR
     case VolumeAttributes::SLIVR:
         raycastingGroup->setVisible(true);
+        lowGradientGroup->setVisible(false);
         UpdateLowGradientGroup(false);
         materialProperties->setEnabled(volumeAtts->GetLightingFlag());
         EnableSamplingMethods(false);
@@ -1179,12 +1179,22 @@ void QvisVolumePlotWindow::UpdateSamplingGroup()
         sobelButton->setEnabled(false);
         break;
 #endif
+#ifdef HAVE_ANARI
+    case VolumeAttributes::ANARI:
+        raycastingGroup->setVisible(false);
+        lowGradientGroup->setVisible(false);
+        UpdateLowGradientGroup(false);
+        lightMaterialPropGroup->setVisible(false);
+        methodsGroup->setVisible(false);        
+        smoothDataToggle->setEnabled(false);
+    
+        anariVolumeWidget->setVisible(true);
+        anariVolumeWidget->setEnabled(true);
+        break;
+#endif 
 
     case VolumeAttributes::Parallel:
-        resampleGroup->setVisible(true);
-        resampleGroup->setEnabled(true);
-        osprayGroup->setVisible(true);
-        osprayGroup->setEnabled(true);
+        EnableDefaultGroup();
 
         // raycastingGroup->setVisible(true);
         EnableSamplingMethods(false);
@@ -1197,7 +1207,6 @@ void QvisVolumePlotWindow::UpdateSamplingGroup()
         methodsGroup->setVisible(false);
         centeredDiffButton->setEnabled(false);
         sobelButton->setEnabled(false);
-        lightingToggle->setEnabled(true);
         materialProperties->setEnabled(volumeAtts->GetLightingFlag());
 
         lowGradientGroup->setVisible(false);
@@ -1244,6 +1253,9 @@ QvisVolumePlotWindow::CreateRendererOptionsGroup(int maxWidth)
 #ifdef VISIT_SLIVR
     rendererTypesComboBox->addItem(tr("SLIVR"));
 #endif
+#ifdef HAVE_ANARI
+    rendererTypesComboBox->addItem(tr("ANARI"));
+#endif
     connect(rendererTypesComboBox, SIGNAL(activated(int)),
             this, SLOT(rendererTypeChanged(int)));
 
@@ -1266,13 +1278,8 @@ QvisVolumePlotWindow::CreateRendererOptionsGroup(int maxWidth)
     QHBoxLayout *methodsLayout = new QHBoxLayout(methodsGroup);
     methodsLayout->addWidget(new QLabel(tr("Gradient method")));
     gradientButtonGroup = new QButtonGroup(methodsGroup);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(gradientButtonGroup, SIGNAL(buttonClicked(int)),
-            this, SLOT(gradientTypeChanged(int)));
-#else
     connect(gradientButtonGroup, SIGNAL(idClicked(int)),
             this, SLOT(gradientTypeChanged(int)));
-#endif
     centeredDiffButton = new QRadioButton(tr("Centered differences"),methodsGroup);
     gradientButtonGroup->addButton(centeredDiffButton, 0);
     methodsLayout->addWidget(centeredDiffButton);
@@ -2043,6 +2050,18 @@ QvisVolumePlotWindow::UpdateWindow(bool doAll)
                 rendererTypesComboBox->setCurrentIndex(4);
             }
 #endif
+#ifdef HAVE_ANARI
+            else if (volumeAtts->GetRendererType() == VolumeAttributes::ANARI)
+            {
+                int currentIdx = 4;
+                
+                #ifdef VISIT_SLIVR
+                    ++currentIdx;
+                #endif
+                
+                rendererTypesComboBox->setCurrentIndex(currentIdx);
+            }
+#endif
 
             opacityVariable->setEnabled(true);
             rendererTypesComboBox->blockSignals(false);
@@ -2224,6 +2243,11 @@ QvisVolumePlotWindow::UpdateWindow(bool doAll)
             osprayMaxContribution->setValue(volumeAtts->GetOSPRayMaxContribution());
             osprayMaxContribution->blockSignals(false);
             break;
+#ifdef HAVE_ANARI
+        case VolumeAttributes::ID_anariAttributes:
+            anariVolumeWidget->UpdateAnariAttributes(volumeAtts->GetAnariAttributes());
+            break;
+#endif
         }
     }
 
@@ -3050,6 +3074,11 @@ QvisVolumePlotWindow::controlPointMoved(int, float)
 //   Kathleen Biagas, Wed Apr  5 13:04:35 PDT 2023
 //   Replace obosolete desktop() with primaryScreen().
 //
+//   Kathleen Biagas, Mon Aug 18, 2025 
+//   Replace 'primaryScreen()->geometry()' with
+//   'primaryScreen()->availableGeometry()' since the latter takes into
+//   account window manager reserved space like the Windows taskbar. 
+//
 // ****************************************************************************
 
 void
@@ -3069,14 +3098,14 @@ QvisVolumePlotWindow::popupColorSelect(int index, const QPoint &p)
     // Fix the X dimension.
     if(menuX < 0)
         menuX = 0;
-    else if(menuX + menuW > QApplication::primaryScreen()->geometry().width())
+    else if(menuX + menuW > QApplication::primaryScreen()->availableGeometry().width())
         menuX -= (menuW + 5);
 
     // Fix the Y dimension.
     if(menuY < 0)
         menuY = 0;
-    else if(menuY + menuH > QApplication::primaryScreen()->geometry().height())
-        menuY -= ((menuY + menuH) - QApplication::primaryScreen()->geometry().height());
+    else if(menuY + menuH > QApplication::primaryScreen()->availableGeometry().height())
+        menuY -= ((menuY + menuH) - QApplication::primaryScreen()->availableGeometry().height());
 
     // Show the popup menu.
     colorSelect->move(menuX, menuY);
@@ -3936,6 +3965,15 @@ QvisVolumePlotWindow::rendererTypeChanged(int val)
 #ifdef VISIT_SLIVR
       case 4:
         volumeAtts->SetRendererType(VolumeAttributes::SLIVR);
+        break;
+#endif
+#if defined(HAVE_ANARI) && !defined(VISIT_SLIVR)
+      case 4:
+        volumeAtts->SetRendererType(VolumeAttributes::ANARI);
+        break;
+#elif defined(HAVE_ANARI)
+      case 5:
+        volumeAtts->SetRendererType(VolumeAttributes::ANARI);
         break;
 #endif
       default:

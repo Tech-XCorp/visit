@@ -2365,6 +2365,15 @@ ViewerWindow::InvertBackgroundColor()
 //   Kathleen Biagas, Wed Aug 17, 2022
 //   Incorporate ARSanderson's OSPRAY 2.8.0 work for VTK 9.
 //
+//   Kevin Griffin, Thu Mar 6 15:51:48 CST 2025
+//   Added ANARI
+//
+//   Kathleen Biagas, Thu Aug 14, 2025
+//   Added new RenderingAttributes items: MSAASamples, FXAAOptions.
+//
+//   Kathleen Biagas, Thu Aug 28 15:46:01 PDT 2025
+//   Removed call to SetSurfaceRepresentation, no longer used.
+//
 // ****************************************************************************
 
 void
@@ -2379,6 +2388,8 @@ ViewerWindow::CopyGeneralAttributes(const ViewerWindow *source)
     // If new rendering attributes are introduced ALL of the above
     // classes (in multiple places) must be updated.
     SetAntialiasing(source->GetAntialiasing());
+    SetMSAASamples(source->GetMSAASamples());
+    SetFXAAOptions(source->GetFXAAOptions());
     SetOrderComposite(source->GetOrderComposite());
     SetDepthCompositeThreads(source->GetDepthCompositeThreads());
     SetAlphaCompositeThreads(source->GetAlphaCompositeThreads());
@@ -2390,7 +2401,6 @@ ViewerWindow::CopyGeneralAttributes(const ViewerWindow *source)
     SetMultiresolutionMode(source->GetMultiresolutionMode());
     SetMultiresolutionCellSize(source->GetMultiresolutionCellSize());
     SetStereoRendering(source->GetStereo(), source->GetStereoType());
-    SetSurfaceRepresentation(source->GetSurfaceRepresentation());
     SetNotifyForEachRender(source->GetNotifyForEachRender());
     SetScalableAutoThreshold(source->GetScalableAutoThreshold());
     SetScalableActivationMode(source->GetScalableActivationMode());
@@ -2411,6 +2421,10 @@ ViewerWindow::CopyGeneralAttributes(const ViewerWindow *source)
     SetOsprayShadows(source->GetOsprayShadows());
     SetOspraySPP(source->GetOspraySPP());
     SetOsprayAO(source->GetOsprayAO());
+#endif
+
+#ifdef HAVE_ANARI
+    SetAnariAttributes(source->GetAnariAttributes());
 #endif
 
     //
@@ -6167,8 +6181,8 @@ ViewerWindow::ChooseCenterOfRotation(double sx, double sy)
 //   Set the imagePan to zero so that plot is centered on the pick point
 //   even if the image is panned. Added a call to UpdateViewAtts so that
 //   the view attributes displayed in the GUI are updated as well as
-//   handling locked views. 
-//   
+//   handling locked views.
+//
 // ****************************************************************************
 
 void
@@ -6446,11 +6460,23 @@ RotateAroundY(const avtView3D &curView, double angle,
 //   Jeremy Meredith, Fri Apr 30 14:39:07 EDT 2010
 //   Added automatic depth cueing mode.
 //
-//    Dave Pugmire, Tue Aug 24 11:32:12 EDT 2010
-//    Add compact domain options.
+//   Dave Pugmire, Tue Aug 24 11:32:12 EDT 2010
+//   Add compact domain options.
 //
-//    Eric Brugger, Thu Oct 27 15:47:36 PDT 2011
-//    I added a multi resolution display capability for 2d.
+//   Eric Brugger, Thu Oct 27 15:47:36 PDT 2011
+//   I added a multi resolution display capability for 2d.
+//
+//   Kevin Griffin, Thu Mar 6 15:51:48 CST 2025
+//   Added ANARI
+//
+//   Kathleen Biagas, Monday July 28, 2025.
+//   Antialiasing is now an int (enum).
+//
+//   Kathleen Biagas, Thu Aug 14, 2025
+//   Added new RenderingAttributes items: MSAASamples, FXAAOptions.
+//
+//    Kathleen Biagas, Thu Aug 28 15:46:38 PDT 2025
+//    Removed renderAtts.SetGeometryRepresentation, it no longer exists.
 //
 // ****************************************************************************
 
@@ -6533,7 +6559,10 @@ debug5 << "GetWindowAttributes: size=" << size[0] << ", " << size[1] << endl;
     renderAtts.SetCompactDomainsAutoThreshold(GetCompactDomainsAutoThreshold());
     renderAtts.SetCompactDomainsActivationMode((RenderingAttributes::TriStateMode) GetCompactDomainsActivationMode());
 
-    renderAtts.SetAntialiasing(GetAntialiasing());
+    renderAtts.SetAntialiasing((RenderingAttributes::AAMode) GetAntialiasing());
+    renderAtts.SetMSAASamples(GetMSAASamples());
+    renderAtts.SetMSAAAvailable(MSAAAvailable());
+    renderAtts.SetFXAAOpt(*(GetFXAAOptions()));
 
     renderAtts.SetOrderComposite(GetOrderComposite());
 
@@ -6548,9 +6577,6 @@ debug5 << "GetWindowAttributes: size=" << size[0] << ", " << size[1] << endl;
 
     renderAtts.SetMultiresolutionMode(GetMultiresolutionMode());
     renderAtts.SetMultiresolutionCellSize(GetMultiresolutionCellSize());
-
-    renderAtts.SetGeometryRepresentation(
-       (RenderingAttributes::GeometryRepresentation) GetSurfaceRepresentation());
 
     renderAtts.SetSpecularFlag(GetSpecularFlag());
     renderAtts.SetSpecularCoeff(GetSpecularCoeff());
@@ -6578,6 +6604,10 @@ debug5 << "GetWindowAttributes: size=" << size[0] << ", " << size[1] << endl;
     renderAtts.SetOsprayShadows(GetOsprayShadows());
     renderAtts.SetOspraySPP(GetOspraySPP());
     renderAtts.SetOsprayAO(GetOsprayAO());
+#endif
+
+#ifdef HAVE_ANARI
+    renderAtts.SetAnariAttributes(GetAnariAttributes());
 #endif
 
     winAtts.SetRenderAtts(renderAtts);
@@ -7331,8 +7361,7 @@ ViewerWindow::UpdateVisualCueList(VisualCueList& visCues) const
 //   Sets the window's AA mode.
 //
 // Arguments:
-//   enabled : Whether or not AA is enabled.
-//   frames  : The number of frames to use.
+//   aaMode :  The AA mode to use.
 //
 // Programmer: Brad Whitlock
 // Creation:   Mon Sep 23 14:38:31 PST 2002
@@ -7341,12 +7370,15 @@ ViewerWindow::UpdateVisualCueList(VisualCueList& visCues) const
 //   Kathleen Bonnell, Wed Dec  4 17:38:27 PST 2002
 //   Removed frames argument, no longer needed.
 //
+//   Kathleen Biagas, Monday July 28, 2025.
+//   Antialiasing is now an int (enum).
+//
 // ****************************************************************************
 
 void
-ViewerWindow::SetAntialiasing(bool enabled)
+ViewerWindow::SetAntialiasing(int aaMode)
 {
-    visWindow->SetAntialiasing(enabled);
+    visWindow->SetAntialiasing(aaMode);
 }
 
 // ****************************************************************************
@@ -7359,13 +7391,121 @@ ViewerWindow::SetAntialiasing(bool enabled)
 // Creation:   Mon Sep 23 14:39:11 PST 2002
 //
 // Modifications:
+//    Kathleen Biagas, Monday July 28, 2025.
+//    Antialiasing is now an int (enum).
+//
+// ****************************************************************************
+
+int
+ViewerWindow::GetAntialiasing() const
+{
+    return visWindow->GetAntialiasing();
+}
+
+// ****************************************************************************
+// Method: ViewerWindow::SetMSAASamples
+//
+// Purpose:
+//   Sets the window's MSAASamples.
+//
+// Arguments:
+//   numSamp : The number of MSAASamples to use.
+//
+// Programmer: Kathleen Biagas
+// Creation:   August 14, 2025
+//
+// Modifications:
+//
+// ****************************************************************************
+
+void
+ViewerWindow::SetMSAASamples(int numSamp)
+{
+    visWindow->SetMSAASamples(numSamp);
+}
+
+// ****************************************************************************
+// Method: ViewerWindow::GetMSAASamples
+//
+// Purpose:
+//   Returns the window's MSAASamples.
+//
+// Programmer: Kathleen Biagas
+// Creation:   August 14, 2025
+//
+// Modifications:
+//
+// ****************************************************************************
+
+int
+ViewerWindow::GetMSAASamples() const
+{
+    return visWindow->GetMSAASamples();
+}
+
+
+// ****************************************************************************
+// Method: ViewerWindow::MSAAAvailable
+//
+// Purpose:
+//   Returns the availablility of MSAA.
+//
+// Programmer: Kathleen Biagas
+// Creation:   August 26, 2025
+//
+// Modifications:
 //
 // ****************************************************************************
 
 bool
-ViewerWindow::GetAntialiasing() const
+ViewerWindow::MSAAAvailable() const
 {
-    return visWindow->GetAntialiasing();
+    return visWindow->MSAAAvailable();
+}
+
+
+// ****************************************************************************
+//  Method: ViewerWindow::SetFXAAOptions
+//
+//  Purpose:
+//    Set the FXAAoptions of the window.
+//
+//  Arguments:
+//    atts      The FXAAOptions for this window.
+//
+//  Programmer: Kathleen Biagas
+//  Creation:   August 14, 2025
+//
+//  Modifications:
+//
+// ****************************************************************************
+
+void
+ViewerWindow::SetFXAAOptions(const FXAAOptions *atts)
+{
+    visWindow->SetFXAAOptions(atts);
+}
+
+// ****************************************************************************
+// Method: ViewerWindow::GetFXAAOptions
+//
+// Purpose:
+//   Returns a pointer to the VisWindow's FXAAOptions.
+//
+// Note:       Note that the pointer returned by this method cannot be used
+//             to set attributes of the fxaaOptions attributes.
+//
+// Programmer: Kathleen Biagas
+// Creation:   August 14, 2025
+//
+// Modifications:
+//
+// ****************************************************************************
+
+const FXAAOptions *
+ViewerWindow::GetFXAAOptions() const
+{
+    return (const FXAAOptions *)visWindow->GetFXAAOptions();
 }
 
 
@@ -7738,44 +7878,6 @@ int
 ViewerWindow::GetStereoType() const
 {
     return visWindow->GetStereoType();
-}
-
-// ****************************************************************************
-// Method: ViewerWindow::SetSurfaceRepresentation
-//
-// Purpose:
-//   Sets the window's surface representation.
-//
-// Programmer: Brad Whitlock
-// Creation:   Mon Sep 23 14:41:42 PST 2002
-//
-// Modifications:
-//
-// ****************************************************************************
-
-void
-ViewerWindow::SetSurfaceRepresentation(int rep)
-{
-    visWindow->SetSurfaceRepresentation(rep);
-}
-
-// ****************************************************************************
-// Method: ViewerWindow::GetSurfaceRepresentation
-//
-// Purpose:
-//   Returns the window's surface representation.
-//
-// Programmer: Brad Whitlock
-// Creation:   Mon Sep 23 14:41:59 PST 2002
-//
-// Modifications:
-//
-// ****************************************************************************
-
-int
-ViewerWindow::GetSurfaceRepresentation() const
-{
-    return visWindow->GetSurfaceRepresentation();
 }
 
 // ****************************************************************************
@@ -8702,6 +8804,40 @@ ViewerWindow::GetOsprayShadows() const
 }
 #endif
 
+#ifdef HAVE_ANARI
+// ****************************************************************************
+// Method:  ViewerWindow::SetAnariAttributes
+//
+// Purpose: Set ANARI rendering attributes
+//
+// Programmer:  Kevin Griffin
+// Creation:    Fri 01 Apr 2022 10:47:52 AM PDT
+//
+// ****************************************************************************
+
+void
+ViewerWindow::SetAnariAttributes(const AnariAttributes &atts)
+{
+    visWindow->SetAnariAttributes(atts);
+}
+
+// ****************************************************************************
+// Method:  ViewerWindow::GetAnariAttributes
+//
+// Purpose: Get ANARI rendering attributes
+//
+// Programmer:  Kevin Griffin
+// Creation:    Fri 01 Apr 2022 10:47:52 AM PDT
+//
+// ****************************************************************************
+
+const AnariAttributes &
+ViewerWindow::GetAnariAttributes() const
+{
+    return visWindow->GetAnariAttributes();
+}
+#endif
+
 // ****************************************************************************
 // Method: ViewerWindow::CreateNode
 //
@@ -8796,6 +8932,15 @@ ViewerWindow::GetOsprayShadows() const
 //   Kathleen Biagas, Wed Aug 17, 2022
 //   Incorporate ARSanderson's OSPRAY 2.8.0 work for VTK 9.
 //
+//   Kevin Griffin, Fri Mar 6 15:51:48 CST 2025
+//   Added ANARI
+//
+//   Kathleen Biagas, Thu Aug 14, 2025
+//   Added new RenderingAttributes items: MSAASamples, FXAAOptions.
+//
+//   Kathleen Biagas, Thu Aug 28 15:46:38 PDT 2025
+//   Removed surfaceRepresentation, no longer used.
+//
 // ****************************************************************************
 
 void
@@ -8878,6 +9023,10 @@ ViewerWindow::CreateNode(DataNode *parentNode,
         // classes (in multiple places) must be updated.
 
         windowNode->AddNode(new DataNode("antialiasing", GetAntialiasing()));
+        windowNode->AddNode(new DataNode("MSAASamples", GetMSAASamples()));
+        FXAAOptions fxaaOpt(*visWindow->GetFXAAOptions());
+        fxaaOpt.CreateNode(windowNode, true, true);
+
         windowNode->AddNode(new DataNode("orderComposite", GetOrderComposite()));
 
         windowNode->AddNode(new DataNode("depthCompositeThreads", GetDepthCompositeThreads()));
@@ -8891,8 +9040,6 @@ ViewerWindow::CreateNode(DataNode *parentNode,
         windowNode->AddNode(new DataNode("multiresolutionMode", GetMultiresolutionMode()));
         windowNode->AddNode(new DataNode("multiresolutionCellSize", GetMultiresolutionCellSize()));
 
-        // AKA geometryRepresentation in the rendering attrbiutes.
-        windowNode->AddNode(new DataNode("surfaceRepresentation", GetSurfaceRepresentation()));
         windowNode->AddNode(new DataNode("stereoRendering", GetStereo()));
         windowNode->AddNode(new DataNode("stereoType", GetStereoType()));
         windowNode->AddNode(new DataNode("notifyForEachRender", GetNotifyForEachRender()));
@@ -8924,6 +9071,10 @@ ViewerWindow::CreateNode(DataNode *parentNode,
         windowNode->AddNode(new DataNode("osprayShadows", GetOsprayShadows()));
 #endif
 
+#ifdef HAVE_ANARI
+        AnariAttributes anariAtts(visWindow->GetAnariAttributes());
+        anariAtts.CreateNode(windowNode, true, true);
+#endif   
         //
         // View
         //
@@ -9117,6 +9268,18 @@ ViewerWindow::CreateNode(DataNode *parentNode,
 //   Kathleen Biagas, Wed Aug 17, 2022
 //   Incorporate ARSanderson's OSPRAY 2.8.0 work for VTK 9.
 //
+//   Kevin Griffin, Thu Mar 6 15:51:48 CST 2025
+//   Added ANARI
+//
+//   Kathleen Biagas, Monday July 28, 2025.
+//   Antialiasing is now an int (enum).
+//
+//   Kathleen Biagas, Thu Aug 14, 2025
+//   Added new RenderingAttributes items: MSAASamples, FXAAOptions.
+//
+//   Kathleen Biagas, Thu Aug 28 15:46:38 PDT 2025
+//   Removed surfaceRepresentation, no longer used.
+//
 // ****************************************************************************
 
 bool
@@ -9246,7 +9409,20 @@ ViewerWindow::SetFromNode(DataNode *parentNode,
     // classes (in multiple places) must be updated.
 
     if((node = windowNode->GetNode("antialiasing")) != 0)
-        SetAntialiasing(node->AsBool());
+        SetAntialiasing(node->AsInt());
+    if((node = windowNode->GetNode("MSAASamples")) != 0)
+        SetMSAASamples(node->AsInt());
+    //
+    // Read in and set the FXAAOptions
+    //
+    if((node = windowNode->GetNode("FXAAOptions")) != 0)
+    {
+        FXAAOptions fxaaOpt;
+        fxaaOpt.ProcessOldVersions(windowNode, configVersion.c_str());
+        fxaaOpt.SetFromNode(windowNode);
+        SetFXAAOptions(&fxaaOpt);
+    }
+
     if((node = windowNode->GetNode("orderComposite")) != 0)
         SetOrderComposite(node->AsBool());
     if((node = windowNode->GetNode("depthCompositeThreads")) != 0)
@@ -9267,8 +9443,6 @@ ViewerWindow::SetFromNode(DataNode *parentNode,
         SetMultiresolutionMode(node->AsBool());
     if((node = windowNode->GetNode("multiresolutionCellSize")) != 0)
         SetMultiresolutionCellSize(node->AsDouble());
-    if((node = windowNode->GetNode("surfaceRepresentation")) != 0)
-        SetSurfaceRepresentation(node->AsInt());
     int stereoType = 0;
     if((node = windowNode->GetNode("stereoType")) != 0)
         stereoType = node->AsInt();
@@ -9395,6 +9569,16 @@ ViewerWindow::SetFromNode(DataNode *parentNode,
         SetOsprayAO(node->AsInt());
     if((node = windowNode->GetNode("osprayShadows")) != 0)
         SetOsprayShadows(node->AsBool());
+#endif
+
+#ifdef HAVE_ANARI
+    if((node = windowNode->GetNode("AnariAttributes")) != 0)
+    {
+        AnariAttributes anariAtts;
+        anariAtts.ProcessOldVersions(windowNode, configVersion.c_str());
+        anariAtts.SetFromNode(windowNode);
+        SetAnariAttributes(anariAtts);
+    }
 #endif
 
     //

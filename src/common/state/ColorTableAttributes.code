@@ -37,31 +37,10 @@ constexpr int REMOVETAG = 1;
 Postfix:
 
 Target: xml2python
-Code: PyColorTableAttributes_getattr
+Code: PyColorTableAttributes_getattro
 Prefix:
 #include <visit-config.h>
 Postfix:
-#if VISIT_OBSOLETE_AT_VERSION(3,5,0)
-#error This code is obsolete in this version. Please remove it.
-#else
-    // Try and handle legacy fields in ColorTableAttributes
-
-    //
-    // Removed in 3.3.0
-    //
-    if(strcmp(name, "activeContinuous") == 0)
-    {
-        ColorTableAttributesObject *ColorTableObj = (ColorTableAttributesObject *)self;
-        std::string defaultContinuous = ColorTableObj->data->GetDefaultContinuous();
-        return PyString_FromString(defaultContinuous.c_str());
-    }
-    if(strcmp(name, "activeDiscrete") == 0)
-    {
-        ColorTableAttributesObject *ColorTableObj = (ColorTableAttributesObject *)self;
-        std::string defaultDiscrete = ColorTableObj->data->GetDefaultDiscrete();
-        return PyString_FromString(defaultDiscrete.c_str());
-    }
-#endif
 #if VISIT_OBSOLETE_AT_VERSION(3,6,0)
 #error This code is obsolete in this version. Please remove it.
 #else
@@ -80,39 +59,10 @@ Postfix:
     }
 #endif
 
-Code: PyColorTableAttributes_setattr
+Code: PyColorTableAttributes_setattro
 Prefix:
 #include <visit-config.h>
 Postfix:
-#if VISIT_OBSOLETE_AT_VERSION(3,5,0)
-#error This code is obsolete in this version. Please remove it.
-#else
-   // Try and handle legacy fields in ColorTableAttributes
-    if(obj == &NULL_PY_OBJ)
-    {
-        ColorTableAttributesObject *ColorTableObj = (ColorTableAttributesObject *)self;
-
-        //
-        // Removed in 3.3.0
-        //
-        if(strcmp(name, "activeContinuous") == 0)
-        {
-            const std::string defaultCont = PyString_AsString(args);
-            PyErr_WarnEx(NULL, "'activeContinuous' is obsolete. Use 'defaultContinuous'.", 3);
-            ColorTableObj->data->SetDefaultContinuous(defaultCont);
-            Py_INCREF(Py_None);
-            obj = Py_None;
-        }
-        if(strcmp(name, "activeDiscrete") == 0)
-        {
-            const std::string defaultDisc = PyString_AsString(args);
-            PyErr_WarnEx(NULL, "'activeDiscrete' is obsolete. Use 'defaultDiscrete'.", 3);
-            ColorTableObj->data->SetDefaultDiscrete(defaultDisc);
-            Py_INCREF(Py_None);
-            obj = Py_None;
-        }
-    }
-#endif
 #if VISIT_OBSOLETE_AT_VERSION(3,6,0)
 #error This code is obsolete in this version. Please remove it.
 #else
@@ -1011,15 +961,21 @@ Definition:
 //    Justin Privitera, Wed Jun 29 17:50:24 PDT 2022
 //    Added guard to prevent index out of bound errors.
 // 
-//   Justin Privitera, Mon Aug 21 15:54:50 PDT 2023
-//   Changed ColorTableAttributes `active` to `colorTableActiveFlags`.
+//    Justin Privitera, Mon Aug 21 15:54:50 PDT 2023
+//    Changed ColorTableAttributes `active` to `colorTableActiveFlags`.
+// 
+//    Justin Privitera, Tue Jul 15 14:04:58 PDT 2025
+//    Select the colorTableActiveFlags since it has changed.
 // ****************************************************************************
 
 void
 ColorTableAttributes::SetColorTableActiveFlag(int index, bool val)
 {
     if (index >= 0 && index < colorTableActiveFlags.size())
+    {
         colorTableActiveFlags[index] = val;
+        Select(ID_colorTableActiveFlags, (void *)&colorTableActiveFlags);
+    }
 }
 
 Function: GetColorTableActiveFlag
@@ -1374,6 +1330,8 @@ Definition:
 // Creation:   08/10/23
 //
 // Modifications:
+//    Justin Privitera, Tue Jul 15 14:04:58 PDT 2025
+//    Explicitly cast the return value.
 //
 // ****************************************************************************
 int
@@ -1382,7 +1340,9 @@ ColorTableAttributes::GetIndexOfTag(const std::string tagname)
     for (size_t i = 0; i < tagListNames.size(); i ++)
     {
         if (tagListNames[i] == tagname)
-            return i;
+        {
+            return static_cast<int>(i);
+        }
     }
     return -1;
 }
@@ -2056,14 +2016,18 @@ Definition:
 // Creation:   06/27/23
 //
 // Modifications:
+//    Justin Privitera, Tue Jul 15 14:04:58 PDT 2025
+//    Add `const` and explicitly cast the return value.
 //
 // ****************************************************************************
 bool
 ColorTableAttributes::GetTagTableItemFlag(const std::string tagname)
 {
-    int index = GetIndexOfTag(tagname);
+    const int index = GetIndexOfTag(tagname);
     if (index >= 0 && index < tagListTableItemFlag.size())
-        return tagListTableItemFlag[index];
+    {
+        return static_cast<bool>(tagListTableItemFlag[index]);
+    }
     // the tag is unlikely to have a tag table item if it doesn't exist
     return false;
 }
@@ -2151,6 +2115,8 @@ Definition:
 // Creation:   06/27/23
 //
 // Modifications:
+//    Justin Privitera, Tue Jul 15 14:04:58 PDT 2025
+//    Select the tag list if it has been changed.
 //
 // ****************************************************************************
 std::vector<std::string>
@@ -2186,6 +2152,11 @@ ColorTableAttributes::RemoveUnusedTagsFromTagTable()
             numrefsItr ++;
             tableitemflagItr ++;
         }
+    }
+
+    if (!removedTags.empty())
+    {
+        SelectTagList();
     }
 
     return removedTags;
@@ -2377,38 +2348,6 @@ void
 ColorTableAttributes::ProcessOldVersions(DataNode *parentNode,
                                          const char *configVersion)
 {
-#if VISIT_OBSOLETE_AT_VERSION(3,5,0)
-#error This code is obsolete in this version. Please remove it.
-#else
-    if(parentNode == 0)
-        return;
-
-    DataNode *searchNode = parentNode->GetNode("ColorTableAttributes");
-    if(searchNode == 0)
-        return;
-
-    if (VersionLessThan(configVersion, "3.3.0"))
-    {
-        DataNode *k = 0;
-        if ((k = searchNode->GetNode("activeContinuous")) != 0)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("activeContinuous", "3.5.0"));
-#endif
-            searchNode->AddNode(new DataNode("defaultContinuous", k->AsString()));
-            searchNode->RemoveNode(k);
-        }
-        if ((k = searchNode->GetNode("activeDiscrete")) != 0)
-        {
-#ifdef VIEWER
-            avtCallback::IssueWarning(DeprecationMessage("activeDiscrete", "3.5.0"));
-#endif
-            searchNode->AddNode(new DataNode("defaultDiscrete", k->AsString()));
-            searchNode->RemoveNode(k);
-        }
-    }
-#endif
-
 #if VISIT_OBSOLETE_AT_VERSION(3,6,0)
 #error This code is obsolete in this version. Please remove it.
 #else

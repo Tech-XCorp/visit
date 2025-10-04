@@ -5,6 +5,7 @@
 #include <PyView3DAttributes.h>
 #include <ObserverToCallback.h>
 #include <stdio.h>
+#include <string.h>
 #include <Py2and3Support.h>
 
 // ****************************************************************************
@@ -23,7 +24,7 @@
 //
 // This struct contains the Python type information and a View3DAttributes.
 //
-struct View3DAttributesObject
+struct PyView3DAttributesObject
 {
     PyObject_HEAD
     View3DAttributes *data;
@@ -36,7 +37,7 @@ struct View3DAttributesObject
 //
 static PyObject *NewView3DAttributes(int);
 std::string
-PyView3DAttributes_ToString(const View3DAttributes *atts, const char *prefix)
+PyView3DAttributes_ToString(const View3DAttributes *atts, const char *prefix, const bool forLogging)
 {
     std::string str;
     char tmpStr[1000];
@@ -191,46 +192,99 @@ PyView3DAttributes_ToString(const View3DAttributes *atts, const char *prefix)
 static PyObject *
 View3DAttributes_Notify(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     obj->data->Notify();
     Py_INCREF(Py_None);
     return Py_None;
 }
 
+static PyObject *
+View3DAttributes_dir(PyObject *self, PyObject *args)
+{
+    static View3DAttributes atts; // dummy to access field names
+
+    PyObject *dir_list = PyList_New(0);
+    if (!dir_list)
+    {
+        PyErr_NoMemory();
+        return NULL;
+    }
+
+    // Add methods from the methods table
+    for (PyMethodDef const *method = &PyView3DAttributes_methods[0];
+         method && method->ml_name;
+         method++) {
+        if (!strncmp(method->ml_name, "__dir__", 7)) continue;
+        if (!strncmp(method->ml_name, "Notify", 6)) continue;
+        PyList_Append(dir_list, PyUnicode_FromString(method->ml_name));
+    }
+
+    // Add members using generic AttributeGroup interface
+    for (int i = 0; i < atts.NumAttributes(); i++) {
+        PyList_Append(dir_list, PyUnicode_FromString(atts.GetFieldName(i).c_str()));
+    }
+
+    return dir_list;
+}
 /*static*/ PyObject *
 View3DAttributes_SetViewNormal(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    double *dvals = obj->data->GetViewNormal();
-    if(!PyArg_ParseTuple(args, "ddd", &dvals[0], &dvals[1], &dvals[2]))
+    PyObject *packaged_args = 0;
+    double *vals = obj->data->GetViewNormal();
+
+    if (!PySequence_Check(args) || PyUnicode_Check(args))
+        return PyErr_Format(PyExc_TypeError, "Expecting a sequence of numeric args");
+
+    // break open args seq. if we think it matches this API's needs
+    if (PySequence_Size(args) == 1)
     {
-        PyObject     *tuple;
-        if(!PyArg_ParseTuple(args, "O", &tuple))
-            return NULL;
-
-        if(PyTuple_Check(tuple))
-        {
-            if(PyTuple_Size(tuple) != 3)
-                return NULL;
-
-            PyErr_Clear();
-            for(int i = 0; i < PyTuple_Size(tuple); ++i)
-            {
-                PyObject *item = PyTuple_GET_ITEM(tuple, i);
-                if(PyFloat_Check(item))
-                    dvals[i] = PyFloat_AS_DOUBLE(item);
-                else if(PyInt_Check(item))
-                    dvals[i] = double(PyInt_AS_LONG(item));
-                else if(PyLong_Check(item))
-                    dvals[i] = PyLong_AsDouble(item);
-                else
-                    dvals[i] = 0.;
-            }
-        }
-        else
-            return NULL;
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PySequence_Check(packaged_args) && !PyUnicode_Check(packaged_args) &&
+            PySequence_Size(packaged_args) == 3)
+            args = packaged_args;
     }
+
+    if (PySequence_Size(args) != 3)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "Expecting 3 numeric args");
+    }
+
+    for (Py_ssize_t i = 0; i < PySequence_Size(args); i++)
+    {
+        PyObject *item = PySequence_GetItem(args, i);
+
+        if (!PyNumber_Check(item))
+        {
+            Py_DECREF(item);
+            Py_XDECREF(packaged_args);
+            return PyErr_Format(PyExc_TypeError, "arg %d is not a number type", (int) i);
+        }
+
+        double val = PyFloat_AsDouble(item);
+        double cval = double(val);
+
+        if (val == -1 && PyErr_Occurred())
+        {
+            Py_XDECREF(packaged_args);
+            Py_DECREF(item);
+            PyErr_Clear();
+            return PyErr_Format(PyExc_TypeError, "arg %d not interpretable as C++ double", (int) i);
+        }
+        if (fabs(double(val))>1.5E-7 && fabs((double(double(cval))-double(val))/double(val))>1.5E-7)
+        {
+            Py_XDECREF(packaged_args);
+            Py_DECREF(item);
+            return PyErr_Format(PyExc_ValueError, "arg %d not interpretable as C++ double", (int) i);
+        }
+        Py_DECREF(item);
+
+        vals[i] = cval;
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Mark the viewNormal in the object as modified.
     obj->data->SelectViewNormal();
@@ -242,7 +296,7 @@ View3DAttributes_SetViewNormal(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetViewNormal(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the viewNormal.
     PyObject *retval = PyTuple_New(3);
     const double *viewNormal = obj->data->GetViewNormal();
@@ -254,37 +308,62 @@ View3DAttributes_GetViewNormal(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetFocus(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    double *dvals = obj->data->GetFocus();
-    if(!PyArg_ParseTuple(args, "ddd", &dvals[0], &dvals[1], &dvals[2]))
+    PyObject *packaged_args = 0;
+    double *vals = obj->data->GetFocus();
+
+    if (!PySequence_Check(args) || PyUnicode_Check(args))
+        return PyErr_Format(PyExc_TypeError, "Expecting a sequence of numeric args");
+
+    // break open args seq. if we think it matches this API's needs
+    if (PySequence_Size(args) == 1)
     {
-        PyObject     *tuple;
-        if(!PyArg_ParseTuple(args, "O", &tuple))
-            return NULL;
-
-        if(PyTuple_Check(tuple))
-        {
-            if(PyTuple_Size(tuple) != 3)
-                return NULL;
-
-            PyErr_Clear();
-            for(int i = 0; i < PyTuple_Size(tuple); ++i)
-            {
-                PyObject *item = PyTuple_GET_ITEM(tuple, i);
-                if(PyFloat_Check(item))
-                    dvals[i] = PyFloat_AS_DOUBLE(item);
-                else if(PyInt_Check(item))
-                    dvals[i] = double(PyInt_AS_LONG(item));
-                else if(PyLong_Check(item))
-                    dvals[i] = PyLong_AsDouble(item);
-                else
-                    dvals[i] = 0.;
-            }
-        }
-        else
-            return NULL;
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PySequence_Check(packaged_args) && !PyUnicode_Check(packaged_args) &&
+            PySequence_Size(packaged_args) == 3)
+            args = packaged_args;
     }
+
+    if (PySequence_Size(args) != 3)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "Expecting 3 numeric args");
+    }
+
+    for (Py_ssize_t i = 0; i < PySequence_Size(args); i++)
+    {
+        PyObject *item = PySequence_GetItem(args, i);
+
+        if (!PyNumber_Check(item))
+        {
+            Py_DECREF(item);
+            Py_XDECREF(packaged_args);
+            return PyErr_Format(PyExc_TypeError, "arg %d is not a number type", (int) i);
+        }
+
+        double val = PyFloat_AsDouble(item);
+        double cval = double(val);
+
+        if (val == -1 && PyErr_Occurred())
+        {
+            Py_XDECREF(packaged_args);
+            Py_DECREF(item);
+            PyErr_Clear();
+            return PyErr_Format(PyExc_TypeError, "arg %d not interpretable as C++ double", (int) i);
+        }
+        if (fabs(double(val))>1.5E-7 && fabs((double(double(cval))-double(val))/double(val))>1.5E-7)
+        {
+            Py_XDECREF(packaged_args);
+            Py_DECREF(item);
+            return PyErr_Format(PyExc_ValueError, "arg %d not interpretable as C++ double", (int) i);
+        }
+        Py_DECREF(item);
+
+        vals[i] = cval;
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Mark the focus in the object as modified.
     obj->data->SelectFocus();
@@ -296,7 +375,7 @@ View3DAttributes_SetFocus(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetFocus(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the focus.
     PyObject *retval = PyTuple_New(3);
     const double *focus = obj->data->GetFocus();
@@ -308,37 +387,62 @@ View3DAttributes_GetFocus(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetViewUp(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    double *dvals = obj->data->GetViewUp();
-    if(!PyArg_ParseTuple(args, "ddd", &dvals[0], &dvals[1], &dvals[2]))
+    PyObject *packaged_args = 0;
+    double *vals = obj->data->GetViewUp();
+
+    if (!PySequence_Check(args) || PyUnicode_Check(args))
+        return PyErr_Format(PyExc_TypeError, "Expecting a sequence of numeric args");
+
+    // break open args seq. if we think it matches this API's needs
+    if (PySequence_Size(args) == 1)
     {
-        PyObject     *tuple;
-        if(!PyArg_ParseTuple(args, "O", &tuple))
-            return NULL;
-
-        if(PyTuple_Check(tuple))
-        {
-            if(PyTuple_Size(tuple) != 3)
-                return NULL;
-
-            PyErr_Clear();
-            for(int i = 0; i < PyTuple_Size(tuple); ++i)
-            {
-                PyObject *item = PyTuple_GET_ITEM(tuple, i);
-                if(PyFloat_Check(item))
-                    dvals[i] = PyFloat_AS_DOUBLE(item);
-                else if(PyInt_Check(item))
-                    dvals[i] = double(PyInt_AS_LONG(item));
-                else if(PyLong_Check(item))
-                    dvals[i] = PyLong_AsDouble(item);
-                else
-                    dvals[i] = 0.;
-            }
-        }
-        else
-            return NULL;
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PySequence_Check(packaged_args) && !PyUnicode_Check(packaged_args) &&
+            PySequence_Size(packaged_args) == 3)
+            args = packaged_args;
     }
+
+    if (PySequence_Size(args) != 3)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "Expecting 3 numeric args");
+    }
+
+    for (Py_ssize_t i = 0; i < PySequence_Size(args); i++)
+    {
+        PyObject *item = PySequence_GetItem(args, i);
+
+        if (!PyNumber_Check(item))
+        {
+            Py_DECREF(item);
+            Py_XDECREF(packaged_args);
+            return PyErr_Format(PyExc_TypeError, "arg %d is not a number type", (int) i);
+        }
+
+        double val = PyFloat_AsDouble(item);
+        double cval = double(val);
+
+        if (val == -1 && PyErr_Occurred())
+        {
+            Py_XDECREF(packaged_args);
+            Py_DECREF(item);
+            PyErr_Clear();
+            return PyErr_Format(PyExc_TypeError, "arg %d not interpretable as C++ double", (int) i);
+        }
+        if (fabs(double(val))>1.5E-7 && fabs((double(double(cval))-double(val))/double(val))>1.5E-7)
+        {
+            Py_XDECREF(packaged_args);
+            Py_DECREF(item);
+            return PyErr_Format(PyExc_ValueError, "arg %d not interpretable as C++ double", (int) i);
+        }
+        Py_DECREF(item);
+
+        vals[i] = cval;
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Mark the viewUp in the object as modified.
     obj->data->SelectViewUp();
@@ -350,7 +454,7 @@ View3DAttributes_SetViewUp(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetViewUp(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the viewUp.
     PyObject *retval = PyTuple_New(3);
     const double *viewUp = obj->data->GetViewUp();
@@ -362,14 +466,50 @@ View3DAttributes_GetViewUp(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetViewAngle(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    double dval;
-    if(!PyArg_ParseTuple(args, "d", &dval))
-        return NULL;
+    PyObject *packaged_args = 0;
+
+    // Handle args packaged into a tuple of size one
+    // if we think the unpackaged args matches our needs
+    if (PySequence_Check(args) && PySequence_Size(args) == 1)
+    {
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PyNumber_Check(packaged_args))
+            args = packaged_args;
+    }
+
+    if (PySequence_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "expecting a single number arg");
+    }
+
+    if (!PyNumber_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "arg is not a number type");
+    }
+
+    double val = PyFloat_AsDouble(args);
+    double cval = double(val);
+
+    if (val == -1 && PyErr_Occurred())
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ double");
+    }
+    if (fabs(double(val))>1.5E-7 && fabs((double(double(cval))-double(val))/double(val))>1.5E-7)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ double");
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Set the viewAngle in the object.
-    obj->data->SetViewAngle(dval);
+    obj->data->SetViewAngle(cval);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -378,7 +518,7 @@ View3DAttributes_SetViewAngle(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetViewAngle(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetViewAngle());
     return retval;
 }
@@ -386,14 +526,50 @@ View3DAttributes_GetViewAngle(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetParallelScale(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    double dval;
-    if(!PyArg_ParseTuple(args, "d", &dval))
-        return NULL;
+    PyObject *packaged_args = 0;
+
+    // Handle args packaged into a tuple of size one
+    // if we think the unpackaged args matches our needs
+    if (PySequence_Check(args) && PySequence_Size(args) == 1)
+    {
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PyNumber_Check(packaged_args))
+            args = packaged_args;
+    }
+
+    if (PySequence_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "expecting a single number arg");
+    }
+
+    if (!PyNumber_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "arg is not a number type");
+    }
+
+    double val = PyFloat_AsDouble(args);
+    double cval = double(val);
+
+    if (val == -1 && PyErr_Occurred())
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ double");
+    }
+    if (fabs(double(val))>1.5E-7 && fabs((double(double(cval))-double(val))/double(val))>1.5E-7)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ double");
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Set the parallelScale in the object.
-    obj->data->SetParallelScale(dval);
+    obj->data->SetParallelScale(cval);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -402,7 +578,7 @@ View3DAttributes_SetParallelScale(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetParallelScale(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetParallelScale());
     return retval;
 }
@@ -410,14 +586,50 @@ View3DAttributes_GetParallelScale(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetNearPlane(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    double dval;
-    if(!PyArg_ParseTuple(args, "d", &dval))
-        return NULL;
+    PyObject *packaged_args = 0;
+
+    // Handle args packaged into a tuple of size one
+    // if we think the unpackaged args matches our needs
+    if (PySequence_Check(args) && PySequence_Size(args) == 1)
+    {
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PyNumber_Check(packaged_args))
+            args = packaged_args;
+    }
+
+    if (PySequence_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "expecting a single number arg");
+    }
+
+    if (!PyNumber_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "arg is not a number type");
+    }
+
+    double val = PyFloat_AsDouble(args);
+    double cval = double(val);
+
+    if (val == -1 && PyErr_Occurred())
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ double");
+    }
+    if (fabs(double(val))>1.5E-7 && fabs((double(double(cval))-double(val))/double(val))>1.5E-7)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ double");
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Set the nearPlane in the object.
-    obj->data->SetNearPlane(dval);
+    obj->data->SetNearPlane(cval);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -426,7 +638,7 @@ View3DAttributes_SetNearPlane(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetNearPlane(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetNearPlane());
     return retval;
 }
@@ -434,14 +646,50 @@ View3DAttributes_GetNearPlane(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetFarPlane(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    double dval;
-    if(!PyArg_ParseTuple(args, "d", &dval))
-        return NULL;
+    PyObject *packaged_args = 0;
+
+    // Handle args packaged into a tuple of size one
+    // if we think the unpackaged args matches our needs
+    if (PySequence_Check(args) && PySequence_Size(args) == 1)
+    {
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PyNumber_Check(packaged_args))
+            args = packaged_args;
+    }
+
+    if (PySequence_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "expecting a single number arg");
+    }
+
+    if (!PyNumber_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "arg is not a number type");
+    }
+
+    double val = PyFloat_AsDouble(args);
+    double cval = double(val);
+
+    if (val == -1 && PyErr_Occurred())
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ double");
+    }
+    if (fabs(double(val))>1.5E-7 && fabs((double(double(cval))-double(val))/double(val))>1.5E-7)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ double");
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Set the farPlane in the object.
-    obj->data->SetFarPlane(dval);
+    obj->data->SetFarPlane(cval);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -450,7 +698,7 @@ View3DAttributes_SetFarPlane(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetFarPlane(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetFarPlane());
     return retval;
 }
@@ -458,37 +706,62 @@ View3DAttributes_GetFarPlane(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetImagePan(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    double *dvals = obj->data->GetImagePan();
-    if(!PyArg_ParseTuple(args, "dd", &dvals[0], &dvals[1]))
+    PyObject *packaged_args = 0;
+    double *vals = obj->data->GetImagePan();
+
+    if (!PySequence_Check(args) || PyUnicode_Check(args))
+        return PyErr_Format(PyExc_TypeError, "Expecting a sequence of numeric args");
+
+    // break open args seq. if we think it matches this API's needs
+    if (PySequence_Size(args) == 1)
     {
-        PyObject     *tuple;
-        if(!PyArg_ParseTuple(args, "O", &tuple))
-            return NULL;
-
-        if(PyTuple_Check(tuple))
-        {
-            if(PyTuple_Size(tuple) != 2)
-                return NULL;
-
-            PyErr_Clear();
-            for(int i = 0; i < PyTuple_Size(tuple); ++i)
-            {
-                PyObject *item = PyTuple_GET_ITEM(tuple, i);
-                if(PyFloat_Check(item))
-                    dvals[i] = PyFloat_AS_DOUBLE(item);
-                else if(PyInt_Check(item))
-                    dvals[i] = double(PyInt_AS_LONG(item));
-                else if(PyLong_Check(item))
-                    dvals[i] = PyLong_AsDouble(item);
-                else
-                    dvals[i] = 0.;
-            }
-        }
-        else
-            return NULL;
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PySequence_Check(packaged_args) && !PyUnicode_Check(packaged_args) &&
+            PySequence_Size(packaged_args) == 2)
+            args = packaged_args;
     }
+
+    if (PySequence_Size(args) != 2)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "Expecting 2 numeric args");
+    }
+
+    for (Py_ssize_t i = 0; i < PySequence_Size(args); i++)
+    {
+        PyObject *item = PySequence_GetItem(args, i);
+
+        if (!PyNumber_Check(item))
+        {
+            Py_DECREF(item);
+            Py_XDECREF(packaged_args);
+            return PyErr_Format(PyExc_TypeError, "arg %d is not a number type", (int) i);
+        }
+
+        double val = PyFloat_AsDouble(item);
+        double cval = double(val);
+
+        if (val == -1 && PyErr_Occurred())
+        {
+            Py_XDECREF(packaged_args);
+            Py_DECREF(item);
+            PyErr_Clear();
+            return PyErr_Format(PyExc_TypeError, "arg %d not interpretable as C++ double", (int) i);
+        }
+        if (fabs(double(val))>1.5E-7 && fabs((double(double(cval))-double(val))/double(val))>1.5E-7)
+        {
+            Py_XDECREF(packaged_args);
+            Py_DECREF(item);
+            return PyErr_Format(PyExc_ValueError, "arg %d not interpretable as C++ double", (int) i);
+        }
+        Py_DECREF(item);
+
+        vals[i] = cval;
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Mark the imagePan in the object as modified.
     obj->data->SelectImagePan();
@@ -500,7 +773,7 @@ View3DAttributes_SetImagePan(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetImagePan(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the imagePan.
     PyObject *retval = PyTuple_New(2);
     const double *imagePan = obj->data->GetImagePan();
@@ -512,14 +785,50 @@ View3DAttributes_GetImagePan(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetImageZoom(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    double dval;
-    if(!PyArg_ParseTuple(args, "d", &dval))
-        return NULL;
+    PyObject *packaged_args = 0;
+
+    // Handle args packaged into a tuple of size one
+    // if we think the unpackaged args matches our needs
+    if (PySequence_Check(args) && PySequence_Size(args) == 1)
+    {
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PyNumber_Check(packaged_args))
+            args = packaged_args;
+    }
+
+    if (PySequence_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "expecting a single number arg");
+    }
+
+    if (!PyNumber_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "arg is not a number type");
+    }
+
+    double val = PyFloat_AsDouble(args);
+    double cval = double(val);
+
+    if (val == -1 && PyErr_Occurred())
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ double");
+    }
+    if (fabs(double(val))>1.5E-7 && fabs((double(double(cval))-double(val))/double(val))>1.5E-7)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ double");
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Set the imageZoom in the object.
-    obj->data->SetImageZoom(dval);
+    obj->data->SetImageZoom(cval);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -528,7 +837,7 @@ View3DAttributes_SetImageZoom(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetImageZoom(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetImageZoom());
     return retval;
 }
@@ -536,14 +845,50 @@ View3DAttributes_GetImageZoom(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetPerspective(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    int ival;
-    if(!PyArg_ParseTuple(args, "i", &ival))
-        return NULL;
+    PyObject *packaged_args = 0;
+
+    // Handle args packaged into a tuple of size one
+    // if we think the unpackaged args matches our needs
+    if (PySequence_Check(args) && PySequence_Size(args) == 1)
+    {
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PyNumber_Check(packaged_args))
+            args = packaged_args;
+    }
+
+    if (PySequence_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "expecting a single number arg");
+    }
+
+    if (!PyNumber_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "arg is not a number type");
+    }
+
+    long val = PyLong_AsLong(args);
+    bool cval = bool(val);
+
+    if (val == -1 && PyErr_Occurred())
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ bool");
+    }
+    if (fabs(double(val))>1.5E-7 && fabs((double(long(cval))-double(val))/double(val))>1.5E-7)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ bool");
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Set the perspective in the object.
-    obj->data->SetPerspective(ival != 0);
+    obj->data->SetPerspective(cval);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -552,7 +897,7 @@ View3DAttributes_SetPerspective(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetPerspective(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetPerspective()?1L:0L);
     return retval;
 }
@@ -560,14 +905,50 @@ View3DAttributes_GetPerspective(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetEyeAngle(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    double dval;
-    if(!PyArg_ParseTuple(args, "d", &dval))
-        return NULL;
+    PyObject *packaged_args = 0;
+
+    // Handle args packaged into a tuple of size one
+    // if we think the unpackaged args matches our needs
+    if (PySequence_Check(args) && PySequence_Size(args) == 1)
+    {
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PyNumber_Check(packaged_args))
+            args = packaged_args;
+    }
+
+    if (PySequence_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "expecting a single number arg");
+    }
+
+    if (!PyNumber_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "arg is not a number type");
+    }
+
+    double val = PyFloat_AsDouble(args);
+    double cval = double(val);
+
+    if (val == -1 && PyErr_Occurred())
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ double");
+    }
+    if (fabs(double(val))>1.5E-7 && fabs((double(double(cval))-double(val))/double(val))>1.5E-7)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ double");
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Set the eyeAngle in the object.
-    obj->data->SetEyeAngle(dval);
+    obj->data->SetEyeAngle(cval);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -576,7 +957,7 @@ View3DAttributes_SetEyeAngle(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetEyeAngle(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetEyeAngle());
     return retval;
 }
@@ -584,14 +965,50 @@ View3DAttributes_GetEyeAngle(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetCenterOfRotationSet(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    int ival;
-    if(!PyArg_ParseTuple(args, "i", &ival))
-        return NULL;
+    PyObject *packaged_args = 0;
+
+    // Handle args packaged into a tuple of size one
+    // if we think the unpackaged args matches our needs
+    if (PySequence_Check(args) && PySequence_Size(args) == 1)
+    {
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PyNumber_Check(packaged_args))
+            args = packaged_args;
+    }
+
+    if (PySequence_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "expecting a single number arg");
+    }
+
+    if (!PyNumber_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "arg is not a number type");
+    }
+
+    long val = PyLong_AsLong(args);
+    bool cval = bool(val);
+
+    if (val == -1 && PyErr_Occurred())
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ bool");
+    }
+    if (fabs(double(val))>1.5E-7 && fabs((double(long(cval))-double(val))/double(val))>1.5E-7)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ bool");
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Set the centerOfRotationSet in the object.
-    obj->data->SetCenterOfRotationSet(ival != 0);
+    obj->data->SetCenterOfRotationSet(cval);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -600,7 +1017,7 @@ View3DAttributes_SetCenterOfRotationSet(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetCenterOfRotationSet(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetCenterOfRotationSet()?1L:0L);
     return retval;
 }
@@ -608,37 +1025,62 @@ View3DAttributes_GetCenterOfRotationSet(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetCenterOfRotation(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    double *dvals = obj->data->GetCenterOfRotation();
-    if(!PyArg_ParseTuple(args, "ddd", &dvals[0], &dvals[1], &dvals[2]))
+    PyObject *packaged_args = 0;
+    double *vals = obj->data->GetCenterOfRotation();
+
+    if (!PySequence_Check(args) || PyUnicode_Check(args))
+        return PyErr_Format(PyExc_TypeError, "Expecting a sequence of numeric args");
+
+    // break open args seq. if we think it matches this API's needs
+    if (PySequence_Size(args) == 1)
     {
-        PyObject     *tuple;
-        if(!PyArg_ParseTuple(args, "O", &tuple))
-            return NULL;
-
-        if(PyTuple_Check(tuple))
-        {
-            if(PyTuple_Size(tuple) != 3)
-                return NULL;
-
-            PyErr_Clear();
-            for(int i = 0; i < PyTuple_Size(tuple); ++i)
-            {
-                PyObject *item = PyTuple_GET_ITEM(tuple, i);
-                if(PyFloat_Check(item))
-                    dvals[i] = PyFloat_AS_DOUBLE(item);
-                else if(PyInt_Check(item))
-                    dvals[i] = double(PyInt_AS_LONG(item));
-                else if(PyLong_Check(item))
-                    dvals[i] = PyLong_AsDouble(item);
-                else
-                    dvals[i] = 0.;
-            }
-        }
-        else
-            return NULL;
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PySequence_Check(packaged_args) && !PyUnicode_Check(packaged_args) &&
+            PySequence_Size(packaged_args) == 3)
+            args = packaged_args;
     }
+
+    if (PySequence_Size(args) != 3)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "Expecting 3 numeric args");
+    }
+
+    for (Py_ssize_t i = 0; i < PySequence_Size(args); i++)
+    {
+        PyObject *item = PySequence_GetItem(args, i);
+
+        if (!PyNumber_Check(item))
+        {
+            Py_DECREF(item);
+            Py_XDECREF(packaged_args);
+            return PyErr_Format(PyExc_TypeError, "arg %d is not a number type", (int) i);
+        }
+
+        double val = PyFloat_AsDouble(item);
+        double cval = double(val);
+
+        if (val == -1 && PyErr_Occurred())
+        {
+            Py_XDECREF(packaged_args);
+            Py_DECREF(item);
+            PyErr_Clear();
+            return PyErr_Format(PyExc_TypeError, "arg %d not interpretable as C++ double", (int) i);
+        }
+        if (fabs(double(val))>1.5E-7 && fabs((double(double(cval))-double(val))/double(val))>1.5E-7)
+        {
+            Py_XDECREF(packaged_args);
+            Py_DECREF(item);
+            return PyErr_Format(PyExc_ValueError, "arg %d not interpretable as C++ double", (int) i);
+        }
+        Py_DECREF(item);
+
+        vals[i] = cval;
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Mark the centerOfRotation in the object as modified.
     obj->data->SelectCenterOfRotation();
@@ -650,7 +1092,7 @@ View3DAttributes_SetCenterOfRotation(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetCenterOfRotation(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the centerOfRotation.
     PyObject *retval = PyTuple_New(3);
     const double *centerOfRotation = obj->data->GetCenterOfRotation();
@@ -662,14 +1104,50 @@ View3DAttributes_GetCenterOfRotation(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetAxis3DScaleFlag(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    int ival;
-    if(!PyArg_ParseTuple(args, "i", &ival))
-        return NULL;
+    PyObject *packaged_args = 0;
+
+    // Handle args packaged into a tuple of size one
+    // if we think the unpackaged args matches our needs
+    if (PySequence_Check(args) && PySequence_Size(args) == 1)
+    {
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PyNumber_Check(packaged_args))
+            args = packaged_args;
+    }
+
+    if (PySequence_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "expecting a single number arg");
+    }
+
+    if (!PyNumber_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "arg is not a number type");
+    }
+
+    long val = PyLong_AsLong(args);
+    bool cval = bool(val);
+
+    if (val == -1 && PyErr_Occurred())
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ bool");
+    }
+    if (fabs(double(val))>1.5E-7 && fabs((double(long(cval))-double(val))/double(val))>1.5E-7)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ bool");
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Set the axis3DScaleFlag in the object.
-    obj->data->SetAxis3DScaleFlag(ival != 0);
+    obj->data->SetAxis3DScaleFlag(cval);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -678,7 +1156,7 @@ View3DAttributes_SetAxis3DScaleFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetAxis3DScaleFlag(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetAxis3DScaleFlag()?1L:0L);
     return retval;
 }
@@ -686,37 +1164,62 @@ View3DAttributes_GetAxis3DScaleFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetAxis3DScales(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    double *dvals = obj->data->GetAxis3DScales();
-    if(!PyArg_ParseTuple(args, "ddd", &dvals[0], &dvals[1], &dvals[2]))
+    PyObject *packaged_args = 0;
+    double *vals = obj->data->GetAxis3DScales();
+
+    if (!PySequence_Check(args) || PyUnicode_Check(args))
+        return PyErr_Format(PyExc_TypeError, "Expecting a sequence of numeric args");
+
+    // break open args seq. if we think it matches this API's needs
+    if (PySequence_Size(args) == 1)
     {
-        PyObject     *tuple;
-        if(!PyArg_ParseTuple(args, "O", &tuple))
-            return NULL;
-
-        if(PyTuple_Check(tuple))
-        {
-            if(PyTuple_Size(tuple) != 3)
-                return NULL;
-
-            PyErr_Clear();
-            for(int i = 0; i < PyTuple_Size(tuple); ++i)
-            {
-                PyObject *item = PyTuple_GET_ITEM(tuple, i);
-                if(PyFloat_Check(item))
-                    dvals[i] = PyFloat_AS_DOUBLE(item);
-                else if(PyInt_Check(item))
-                    dvals[i] = double(PyInt_AS_LONG(item));
-                else if(PyLong_Check(item))
-                    dvals[i] = PyLong_AsDouble(item);
-                else
-                    dvals[i] = 0.;
-            }
-        }
-        else
-            return NULL;
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PySequence_Check(packaged_args) && !PyUnicode_Check(packaged_args) &&
+            PySequence_Size(packaged_args) == 3)
+            args = packaged_args;
     }
+
+    if (PySequence_Size(args) != 3)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "Expecting 3 numeric args");
+    }
+
+    for (Py_ssize_t i = 0; i < PySequence_Size(args); i++)
+    {
+        PyObject *item = PySequence_GetItem(args, i);
+
+        if (!PyNumber_Check(item))
+        {
+            Py_DECREF(item);
+            Py_XDECREF(packaged_args);
+            return PyErr_Format(PyExc_TypeError, "arg %d is not a number type", (int) i);
+        }
+
+        double val = PyFloat_AsDouble(item);
+        double cval = double(val);
+
+        if (val == -1 && PyErr_Occurred())
+        {
+            Py_XDECREF(packaged_args);
+            Py_DECREF(item);
+            PyErr_Clear();
+            return PyErr_Format(PyExc_TypeError, "arg %d not interpretable as C++ double", (int) i);
+        }
+        if (fabs(double(val))>1.5E-7 && fabs((double(double(cval))-double(val))/double(val))>1.5E-7)
+        {
+            Py_XDECREF(packaged_args);
+            Py_DECREF(item);
+            return PyErr_Format(PyExc_ValueError, "arg %d not interpretable as C++ double", (int) i);
+        }
+        Py_DECREF(item);
+
+        vals[i] = cval;
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Mark the axis3DScales in the object as modified.
     obj->data->SelectAxis3DScales();
@@ -728,7 +1231,7 @@ View3DAttributes_SetAxis3DScales(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetAxis3DScales(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the axis3DScales.
     PyObject *retval = PyTuple_New(3);
     const double *axis3DScales = obj->data->GetAxis3DScales();
@@ -740,37 +1243,62 @@ View3DAttributes_GetAxis3DScales(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetShear(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    double *dvals = obj->data->GetShear();
-    if(!PyArg_ParseTuple(args, "ddd", &dvals[0], &dvals[1], &dvals[2]))
+    PyObject *packaged_args = 0;
+    double *vals = obj->data->GetShear();
+
+    if (!PySequence_Check(args) || PyUnicode_Check(args))
+        return PyErr_Format(PyExc_TypeError, "Expecting a sequence of numeric args");
+
+    // break open args seq. if we think it matches this API's needs
+    if (PySequence_Size(args) == 1)
     {
-        PyObject     *tuple;
-        if(!PyArg_ParseTuple(args, "O", &tuple))
-            return NULL;
-
-        if(PyTuple_Check(tuple))
-        {
-            if(PyTuple_Size(tuple) != 3)
-                return NULL;
-
-            PyErr_Clear();
-            for(int i = 0; i < PyTuple_Size(tuple); ++i)
-            {
-                PyObject *item = PyTuple_GET_ITEM(tuple, i);
-                if(PyFloat_Check(item))
-                    dvals[i] = PyFloat_AS_DOUBLE(item);
-                else if(PyInt_Check(item))
-                    dvals[i] = double(PyInt_AS_LONG(item));
-                else if(PyLong_Check(item))
-                    dvals[i] = PyLong_AsDouble(item);
-                else
-                    dvals[i] = 0.;
-            }
-        }
-        else
-            return NULL;
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PySequence_Check(packaged_args) && !PyUnicode_Check(packaged_args) &&
+            PySequence_Size(packaged_args) == 3)
+            args = packaged_args;
     }
+
+    if (PySequence_Size(args) != 3)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "Expecting 3 numeric args");
+    }
+
+    for (Py_ssize_t i = 0; i < PySequence_Size(args); i++)
+    {
+        PyObject *item = PySequence_GetItem(args, i);
+
+        if (!PyNumber_Check(item))
+        {
+            Py_DECREF(item);
+            Py_XDECREF(packaged_args);
+            return PyErr_Format(PyExc_TypeError, "arg %d is not a number type", (int) i);
+        }
+
+        double val = PyFloat_AsDouble(item);
+        double cval = double(val);
+
+        if (val == -1 && PyErr_Occurred())
+        {
+            Py_XDECREF(packaged_args);
+            Py_DECREF(item);
+            PyErr_Clear();
+            return PyErr_Format(PyExc_TypeError, "arg %d not interpretable as C++ double", (int) i);
+        }
+        if (fabs(double(val))>1.5E-7 && fabs((double(double(cval))-double(val))/double(val))>1.5E-7)
+        {
+            Py_XDECREF(packaged_args);
+            Py_DECREF(item);
+            return PyErr_Format(PyExc_ValueError, "arg %d not interpretable as C++ double", (int) i);
+        }
+        Py_DECREF(item);
+
+        vals[i] = cval;
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Mark the shear in the object as modified.
     obj->data->SelectShear();
@@ -782,7 +1310,7 @@ View3DAttributes_SetShear(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetShear(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the shear.
     PyObject *retval = PyTuple_New(3);
     const double *shear = obj->data->GetShear();
@@ -794,14 +1322,50 @@ View3DAttributes_GetShear(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_SetWindowValid(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
-    int ival;
-    if(!PyArg_ParseTuple(args, "i", &ival))
-        return NULL;
+    PyObject *packaged_args = 0;
+
+    // Handle args packaged into a tuple of size one
+    // if we think the unpackaged args matches our needs
+    if (PySequence_Check(args) && PySequence_Size(args) == 1)
+    {
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PyNumber_Check(packaged_args))
+            args = packaged_args;
+    }
+
+    if (PySequence_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "expecting a single number arg");
+    }
+
+    if (!PyNumber_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "arg is not a number type");
+    }
+
+    long val = PyLong_AsLong(args);
+    bool cval = bool(val);
+
+    if (val == -1 && PyErr_Occurred())
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ bool");
+    }
+    if (fabs(double(val))>1.5E-7 && fabs((double(long(cval))-double(val))/double(val))>1.5E-7)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ bool");
+    }
+
+    Py_XDECREF(packaged_args);
 
     // Set the windowValid in the object.
-    obj->data->SetWindowValid(ival != 0);
+    obj->data->SetWindowValid(cval);
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -810,7 +1374,7 @@ View3DAttributes_SetWindowValid(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 View3DAttributes_GetWindowValid(PyObject *self, PyObject *args)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetWindowValid()?1L:0L);
     return retval;
 }
@@ -837,14 +1401,17 @@ View3DAttributes_GetWindowValid(PyObject *self, PyObject *args)
 View3DAttributes_RotateAxis(PyObject *self, PyObject *args)
 {
 //
-// THIS METHOD IS CUSTOM CODED!!!!!!.
+// THIS METHOD IS CUSTOM CODED!!!!!!
+// see .code file
 //
-    View3DAttributesObject *obj = (View3DAttributesObject *)self;
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)self;
 
     int ival;
     double dval;
     if(!PyArg_ParseTuple(args, "id", &ival, &dval))
-        return NULL;
+        return PyErr_Format(PyExc_TypeError, "Expecting integer 0 (x-axis), 1 (y-axis) "
+                            "or 2 (z-axis) for first argument and float "
+                            "(degrees rotation) for second.");
 
     // Out of range ival could indicate user reversed axis and angle
     if (ival < 0 || ival > 2)
@@ -857,8 +1424,8 @@ View3DAttributes_RotateAxis(PyObject *self, PyObject *args)
         }
         else
         {
-            PyErr_SetString(PyExc_IndexError, "Axis arg (the first) must be 0,1 or 2 for X,Y or Z");
-            return NULL;
+            return PyErr_Format(PyExc_IndexError, "Axis arg (the first) "
+                                "must be 0,1 or 2 for X,Y or Z");
         }
     }
 
@@ -873,19 +1440,20 @@ View3DAttributes_RotateAxis(PyObject *self, PyObject *args)
 static PyObject *
 View3DAttributes_Add(PyObject *v, PyObject *w)
 {
+//
+// THIS METHOD IS CUSTOM CODED!!!!!!.
+// see .code file
+//
     bool arg1isObject = PyView3DAttributes_Check(v);
     bool arg2isObject = PyView3DAttributes_Check(w);
     if(!arg1isObject || !arg2isObject)
-    {
-        PyErr_SetString(PyExc_TypeError,
-                    "View3DAttributes_add: One or more arguments are not View3DAttributes!");
-        return NULL;
-    }
+        return PyErr_Format(PyExc_TypeError, "View3DAttributes_add: One or "
+                            "more arguments are not View3DAttributes!");
 
     PyObject *retval = NewView3DAttributes(0);
     View3DAttributes *c = PyView3DAttributes_FromPyObject(retval);
-    View3DAttributes *a = ((View3DAttributesObject *)v)->data;
-    View3DAttributes *b = ((View3DAttributesObject *)w)->data;
+    View3DAttributes *a = ((PyView3DAttributesObject *)v)->data;
+    View3DAttributes *b = ((PyView3DAttributesObject *)w)->data;
 
     c->GetViewNormal()[0] = a->GetViewNormal()[0] + b->GetViewNormal()[0];
     c->GetViewNormal()[1] = a->GetViewNormal()[1] + b->GetViewNormal()[1];
@@ -925,6 +1493,10 @@ View3DAttributes_Add(PyObject *v, PyObject *w)
 static PyObject *
 View3DAttributes_Mul(PyObject *v, PyObject *w)
 {
+//
+// THIS METHOD IS CUSTOM CODED!!!!!!.
+// see .code file
+//
     PyObject *retval = NewView3DAttributes(0);
     View3DAttributes *c = PyView3DAttributes_FromPyObject(retval);
 
@@ -935,10 +1507,8 @@ View3DAttributes_Mul(PyObject *v, PyObject *w)
 
     if(arg1isObject && arg2isObject)
     {
-        PyErr_SetString(PyExc_TypeError,
-                    "View3DAttributes_mult: Both  arguments are View3DAttributes!"
-                    " Expected one View3DAttributes object and one numeric argument.");
-        return NULL;
+        return PyErr_Format(PyExc_TypeError, "One argument must be a View3DAttributes "
+                            "object and the other must be a number");
     }
     else
     {
@@ -946,12 +1516,12 @@ View3DAttributes_Mul(PyObject *v, PyObject *w)
 
         if(arg1isObject)
         {
-            a = ((View3DAttributesObject *)v)->data;
+            a = ((PyView3DAttributesObject *)v)->data;
             num = w;
         }
         else
         {
-            a = ((View3DAttributesObject *)w)->data;
+            a = ((PyView3DAttributesObject *)w)->data;
             num = v;
         }
 
@@ -962,12 +1532,8 @@ View3DAttributes_Mul(PyObject *v, PyObject *w)
         else if(PyLong_Check(num))
             val = PyLong_AsDouble(num);
         else
-        {
-            PyErr_SetString(PyExc_TypeError,
-                        "View3DAttributes_mult: Expected numeric argument is not a number!"
-                        " Expected one View3DAttributes object and one numeric argument.");
-            return NULL;
-        }
+            return PyErr_Format(PyExc_TypeError, "Expected numeric argument for * (MUL) "
+                   "operator with View3DAttributes is not a number!");
 
         c->GetViewNormal()[0] = a->GetViewNormal()[0] * val;
         c->GetViewNormal()[1] = a->GetViewNormal()[1] * val;
@@ -1004,7 +1570,8 @@ View3DAttributes_Mul(PyObject *v, PyObject *w)
 
 
 PyMethodDef PyView3DAttributes_methods[VIEW3DATTRIBUTES_NMETH] = {
-    {"Notify", View3DAttributes_Notify, METH_VARARGS},
+    {"__dir__", View3DAttributes_dir, METH_NOARGS},
+    {"Notify", View3DAttributes_Notify, METH_NOARGS},
     {"SetViewNormal", View3DAttributes_SetViewNormal, METH_VARARGS},
     {"GetViewNormal", View3DAttributes_GetViewNormal, METH_VARARGS},
     {"SetFocus", View3DAttributes_SetFocus, METH_VARARGS},
@@ -1050,19 +1617,22 @@ PyMethodDef PyView3DAttributes_methods[VIEW3DATTRIBUTES_NMETH] = {
 //
 
 static void
-View3DAttributes_dealloc(PyObject *v)
+PyView3DAttributes_dealloc(PyObject *v)
 {
-   View3DAttributesObject *obj = (View3DAttributesObject *)v;
+   PyView3DAttributesObject *obj = (PyView3DAttributesObject *)v;
    if(obj->parent != 0)
        Py_DECREF(obj->parent);
    if(obj->owns)
        delete obj->data;
 }
 
-static PyObject *View3DAttributes_richcompare(PyObject *self, PyObject *other, int op);
+static PyObject *PyView3DAttributes_richcompare(PyObject *self, PyObject *other, int op);
 PyObject *
-PyView3DAttributes_getattr(PyObject *self, char *name)
+PyView3DAttributes_getattro(PyObject *self, PyObject *attr_name)
 {
+    const char *name = PyUnicode_AsUTF8(attr_name);
+    if (!name) return NULL;
+
     if(strcmp(name, "viewNormal") == 0)
         return View3DAttributes_GetViewNormal(self, NULL);
     if(strcmp(name, "focus") == 0)
@@ -1098,98 +1668,105 @@ PyView3DAttributes_getattr(PyObject *self, char *name)
     if(strcmp(name, "windowValid") == 0)
         return View3DAttributes_GetWindowValid(self, NULL);
 
-    // Add a __dict__ answer so that dir() works
-    if (!strcmp(name, "__dict__"))
-    {
-        PyObject *result = PyDict_New();
-        for (int i = 0; PyView3DAttributes_methods[i].ml_meth; i++)
-            PyDict_SetItem(result,
-                PyString_FromString(PyView3DAttributes_methods[i].ml_name),
-                PyString_FromString(PyView3DAttributes_methods[i].ml_name));
-        return result;
-    }
+    PyObject *meth = Py_FindMethod(PyView3DAttributes_methods, self, (char*)name);
+    if (meth) return meth;
 
-    return Py_FindMethod(PyView3DAttributes_methods, self, name);
+    return PyObject_GenericGetAttr(self, attr_name);
 }
 
 int
-PyView3DAttributes_setattr(PyObject *self, char *name, PyObject *args)
+PyView3DAttributes_setattro(PyObject *self, PyObject *attr_name, PyObject *args)
 {
-    // Create a tuple to contain the arguments since all of the Set
-    // functions expect a tuple.
-    PyObject *tuple = PyTuple_New(1);
-    PyTuple_SET_ITEM(tuple, 0, args);
-    Py_INCREF(args);
-    PyObject *obj = NULL;
+    PyObject NULL_PY_OBJ;
+    PyObject *obj = &NULL_PY_OBJ;
+    const char *name = PyUnicode_AsUTF8(attr_name);
+    if (!name) return -1;
 
     if(strcmp(name, "viewNormal") == 0)
-        obj = View3DAttributes_SetViewNormal(self, tuple);
+        obj = View3DAttributes_SetViewNormal(self, args);
     else if(strcmp(name, "focus") == 0)
-        obj = View3DAttributes_SetFocus(self, tuple);
+        obj = View3DAttributes_SetFocus(self, args);
     else if(strcmp(name, "viewUp") == 0)
-        obj = View3DAttributes_SetViewUp(self, tuple);
+        obj = View3DAttributes_SetViewUp(self, args);
     else if(strcmp(name, "viewAngle") == 0)
-        obj = View3DAttributes_SetViewAngle(self, tuple);
+        obj = View3DAttributes_SetViewAngle(self, args);
     else if(strcmp(name, "parallelScale") == 0)
-        obj = View3DAttributes_SetParallelScale(self, tuple);
+        obj = View3DAttributes_SetParallelScale(self, args);
     else if(strcmp(name, "nearPlane") == 0)
-        obj = View3DAttributes_SetNearPlane(self, tuple);
+        obj = View3DAttributes_SetNearPlane(self, args);
     else if(strcmp(name, "farPlane") == 0)
-        obj = View3DAttributes_SetFarPlane(self, tuple);
+        obj = View3DAttributes_SetFarPlane(self, args);
     else if(strcmp(name, "imagePan") == 0)
-        obj = View3DAttributes_SetImagePan(self, tuple);
+        obj = View3DAttributes_SetImagePan(self, args);
     else if(strcmp(name, "imageZoom") == 0)
-        obj = View3DAttributes_SetImageZoom(self, tuple);
+        obj = View3DAttributes_SetImageZoom(self, args);
     else if(strcmp(name, "perspective") == 0)
-        obj = View3DAttributes_SetPerspective(self, tuple);
+        obj = View3DAttributes_SetPerspective(self, args);
     else if(strcmp(name, "eyeAngle") == 0)
-        obj = View3DAttributes_SetEyeAngle(self, tuple);
+        obj = View3DAttributes_SetEyeAngle(self, args);
     else if(strcmp(name, "centerOfRotationSet") == 0)
-        obj = View3DAttributes_SetCenterOfRotationSet(self, tuple);
+        obj = View3DAttributes_SetCenterOfRotationSet(self, args);
     else if(strcmp(name, "centerOfRotation") == 0)
-        obj = View3DAttributes_SetCenterOfRotation(self, tuple);
+        obj = View3DAttributes_SetCenterOfRotation(self, args);
     else if(strcmp(name, "axis3DScaleFlag") == 0)
-        obj = View3DAttributes_SetAxis3DScaleFlag(self, tuple);
+        obj = View3DAttributes_SetAxis3DScaleFlag(self, args);
     else if(strcmp(name, "axis3DScales") == 0)
-        obj = View3DAttributes_SetAxis3DScales(self, tuple);
+        obj = View3DAttributes_SetAxis3DScales(self, args);
     else if(strcmp(name, "shear") == 0)
-        obj = View3DAttributes_SetShear(self, tuple);
+        obj = View3DAttributes_SetShear(self, args);
     else if(strcmp(name, "windowValid") == 0)
-        obj = View3DAttributes_SetWindowValid(self, tuple);
+        obj = View3DAttributes_SetWindowValid(self, args);
 
-    if(obj != NULL)
+    if (obj == &NULL_PY_OBJ && PyObject_GenericSetAttr(self, attr_name, args) == 0)
+    {
+        Py_INCREF(Py_None);
+        obj = Py_None;
+    }
+
+    if (obj != NULL && obj != &NULL_PY_OBJ)
         Py_DECREF(obj);
 
-    Py_DECREF(tuple);
-    if( obj == NULL)
-        PyErr_Format(PyExc_RuntimeError, "Unable to set unknown attribute: '%s'", name);
+    if (obj == &NULL_PY_OBJ)
+    {
+        obj = NULL;
+        PyErr_Format(PyExc_NameError, "name '%s' is not defined", name);
+    }
+    else if (obj == NULL && !PyErr_Occurred())
+        PyErr_Format(PyExc_RuntimeError, "unknown problem with '%s'", name);
+
     return (obj != NULL) ? 0 : -1;
 }
 
-static int
-View3DAttributes_print(PyObject *v, FILE *fp, int flags)
-{
-    View3DAttributesObject *obj = (View3DAttributesObject *)v;
-    fprintf(fp, "%s", PyView3DAttributes_ToString(obj->data, "").c_str());
-    return 0;
-}
-
 PyObject *
-View3DAttributes_str(PyObject *v)
+PyView3DAttributes_str(PyObject *v)
 {
-    View3DAttributesObject *obj = (View3DAttributesObject *)v;
-    return PyString_FromString(PyView3DAttributes_ToString(obj->data,"").c_str());
+    PyView3DAttributesObject *obj = (PyView3DAttributesObject *)v;
+    return PyString_FromString(PyView3DAttributes_ToString(obj->data,"", false).c_str());
 }
 
+//
+// The doc string for the class.
+//
+static char const *PyView3DAttributes_purpose = "This class contains the 3d view attributes.";
 
+//
+// Initialize the python object type structure with default values.
+// If you need to do something custom, #undef VISIT_PY_TYPE_OBJ_TP_SLOTS,
+// which is defined with default values for our standard python objects
+// in src/visitpy/common/Py2and3Support.h. Then re-define it here AHEAD of
+// instantiating the type with VISIT_PY_TYPE_OBJ. Look for examples of
+// such customization in src/avt/PythonFilters or src/visitpy/common.
+//
+
+//
+// THIS SECTION IS CUSTOM CODED!!!
+//  see .code file
 /*
 PyNumberMethods struct differs between Python 2 and Python 3
 
 // Good ref on python 2 and 3 changes for PyNumberMethods
 // https://py3c.readthedocs.io/en/latest/ext-types.html#pynumbermethods
-
 // PYTHON 2 STRUCT FOR PyNumberMethods
-
 typedef struct {
      binaryfunc nb_add;
      binaryfunc nb_subtract;
@@ -1282,13 +1859,11 @@ typedef struct {
      binaryfunc nb_matrix_multiply; // MISSING IN PYTHON 2
      binaryfunc nb_inplace_matrix_multiply; // MISSING IN PYTHON 2
 } PyNumberMethods;
-
 */
-
 //
 // The type description structure
 //
-static PyNumberMethods View3DAttributes_as_number = {
+static PyNumberMethods _PyView3DAttributes_as_number = {
     (binaryfunc)View3DAttributes_Add, /*nb_add*/
     (binaryfunc)0, /*nb_subtract*/
     (binaryfunc)View3DAttributes_Mul, /*nb_multiply*/
@@ -1347,59 +1922,42 @@ static PyNumberMethods View3DAttributes_as_number = {
     (binaryfunc)0 /*nb_inplace_matrix_multiply;*/
 #endif
 };
+static PyNumberMethods *PyView3DAttributes_as_number = &_PyView3DAttributes_as_number;
+
+// Re-define tp slots for this custom object
+#undef VISIT_PY_TYPE_OBJ_TP_SLOTS
+#define VISIT_PY_TYPE_OBJ_TP_SLOTS(VSObjName)                          \
+    VISIT_PY_TYPE_OBJ_SLOT2(VSObjName, doc, purpose);                  \
+    VISIT_PY_TYPE_OBJ_SLOT1(VSObjName, dealloc);                       \
+    VISIT_PY_TYPE_OBJ_SLOT1(VSObjName, getattro);                      \
+    VISIT_PY_TYPE_OBJ_SLOT1(VSObjName, setattro);                      \
+    VISIT_PY_TYPE_OBJ_SLOT1(VSObjName, str);                           \
+    VISIT_PY_TYPE_OBJ_SLOT1(VSObjName, richcompare);                   \
+    VISIT_PY_TYPE_OBJ_SLOT1(VSObjName, as_number);                     \
+    VISIT_PY_TYPE_OBJ_SLOT1(VSObjName, methods)
+//
+// END CUSTOM CODE SECTION
+//
+
+VISIT_PY_TYPE_OBJ(View3DAttributes);
 
 //
-// The doc string for the class.
+// Helper function for comparing.
 //
-#if PY_MAJOR_VERSION > 2 || (PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION >= 5)
-static const char *View3DAttributes_Purpose = "This class contains the 3d view attributes.";
-#else
-static char *View3DAttributes_Purpose = "This class contains the 3d view attributes.";
-#endif
-
-//
-// The type description structure
-//
-
-//         VISIT_PY_TYPE_OBJ( VPY_TYPE,
-//                            VPY_NAME,
-//                            VPY_OBJECT,
-//                            VPY_DEALLOC,
-//                            VPY_PRINT,
-//                            VPY_GETATTR,
-//                            VPY_SETATTR,
-//                            VPY_STR,
-//                            VPY_PURPOSE,
-//                            VPY_RICHCOMP,
-//                            VPY_AS_NUMBER)
-
-VISIT_PY_TYPE_OBJ(View3DAttributesType,          \
-                  "View3DAttributes",            \
-                  View3DAttributesObject,        \
-                  View3DAttributes_dealloc,      \
-                  View3DAttributes_print,        \
-                  PyView3DAttributes_getattr,    \
-                  PyView3DAttributes_setattr,    \
-                  View3DAttributes_str,          \
-                  View3DAttributes_Purpose,      \
-                  View3DAttributes_richcompare,  \
-                  &View3DAttributes_as_number);
-
-
 static PyObject *
-View3DAttributes_richcompare(PyObject *self, PyObject *other, int op)
+PyView3DAttributes_richcompare(PyObject *self, PyObject *other, int op)
 {
     // only compare against the same type 
-    if ( Py_TYPE(self) == Py_TYPE(other) 
-         && Py_TYPE(self) == &View3DAttributesType)
+    if ( Py_TYPE(self) != &PyView3DAttributesType
+         || Py_TYPE(other) != &PyView3DAttributesType)
     {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
 
     PyObject *res = NULL;
-    View3DAttributes *a = ((View3DAttributesObject *)self)->data;
-    View3DAttributes *b = ((View3DAttributesObject *)other)->data;
+    View3DAttributes *a = ((PyView3DAttributesObject *)self)->data;
+    View3DAttributes *b = ((PyView3DAttributesObject *)other)->data;
 
     switch (op)
     {
@@ -1428,8 +1986,8 @@ static View3DAttributes *currentAtts = 0;
 static PyObject *
 NewView3DAttributes(int useCurrent)
 {
-    View3DAttributesObject *newObject;
-    newObject = PyObject_NEW(View3DAttributesObject, &View3DAttributesType);
+    PyView3DAttributesObject *newObject;
+    newObject = PyObject_NEW(PyView3DAttributesObject, &PyView3DAttributesType);
     if(newObject == NULL)
         return NULL;
     if(useCurrent && currentAtts != 0)
@@ -1440,14 +1998,15 @@ NewView3DAttributes(int useCurrent)
         newObject->data = new View3DAttributes;
     newObject->owns = true;
     newObject->parent = 0;
+    PyType_Ready(&PyView3DAttributesType);
     return (PyObject *)newObject;
 }
 
 static PyObject *
 WrapView3DAttributes(const View3DAttributes *attr)
 {
-    View3DAttributesObject *newObject;
-    newObject = PyObject_NEW(View3DAttributesObject, &View3DAttributesType);
+    PyView3DAttributesObject *newObject;
+    newObject = PyObject_NEW(PyView3DAttributesObject, &PyView3DAttributesType);
     if(newObject == NULL)
         return NULL;
     newObject->data = (View3DAttributes *)attr;
@@ -1492,7 +2051,7 @@ PyView3DAttributes_GetLogString()
 {
     std::string s("View3DAtts = View3DAttributes()\n");
     if(currentAtts != 0)
-        s += PyView3DAttributes_ToString(currentAtts, "View3DAtts.");
+        s += PyView3DAttributes_ToString(currentAtts, "View3DAtts.", true);
     return s;
 }
 
@@ -1505,7 +2064,7 @@ PyView3DAttributes_CallLogRoutine(Subject *subj, void *data)
     if(cb != 0)
     {
         std::string s("View3DAtts = View3DAttributes()\n");
-        s += PyView3DAttributes_ToString(currentAtts, "View3DAtts.");
+        s += PyView3DAttributes_ToString(currentAtts, "View3DAtts.", true);
         cb(s);
     }
 }
@@ -1549,13 +2108,13 @@ PyView3DAttributes_GetMethodTable(int *nMethods)
 bool
 PyView3DAttributes_Check(PyObject *obj)
 {
-    return (obj->ob_type == &View3DAttributesType);
+    return (obj->ob_type == &PyView3DAttributesType);
 }
 
 View3DAttributes *
 PyView3DAttributes_FromPyObject(PyObject *obj)
 {
-    View3DAttributesObject *obj2 = (View3DAttributesObject *)obj;
+    PyView3DAttributesObject *obj2 = (PyView3DAttributesObject *)obj;
     return obj2->data;
 }
 
@@ -1574,7 +2133,7 @@ PyView3DAttributes_Wrap(const View3DAttributes *attr)
 void
 PyView3DAttributes_SetParent(PyObject *obj, PyObject *parent)
 {
-    View3DAttributesObject *obj2 = (View3DAttributesObject *)obj;
+    PyView3DAttributesObject *obj2 = (PyView3DAttributesObject *)obj;
     obj2->parent = parent;
 }
 

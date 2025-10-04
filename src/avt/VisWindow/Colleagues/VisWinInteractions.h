@@ -69,6 +69,12 @@ class VisitHotPointInteractor;
 //     Kathleen Biagas, Wed Aug 17, 2022
 //     Added SetOsprayRendering.
 //
+//     Kevin Griffin, Wed Apr 02, 2025
+//     Added SetAnariRendering.
+//
+//     Kevin Griffin, Thu Aug 14, 2025
+//     Removed SetAnariRendering.
+//
 // ****************************************************************************
 
 class VISWINDOW_API VisWinInteractions : public VisWinColleague
@@ -120,5 +126,3 @@ class VISWINDOW_API VisWinInteractions : public VisWinColleague
 
 
 #endif
-
-

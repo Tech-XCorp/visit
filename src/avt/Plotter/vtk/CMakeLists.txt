@@ -6,6 +6,13 @@
 # Modifications:
 #   Kathleen Biagas, Mon Dec 12, 2022
 #   Moved from ../CMakeLists.txt
+#
+#   Kevin Griffin, Mon 03 Mar 2025 04:23:27 PM CST
+#   Added support for ANARI
+#
+#   Kathleen Biagas, Tue Jun 24, 2025
+#   Removed vtkVisItDataSetMapper.
+#
 #****************************************************************************
 
 
@@ -27,7 +34,6 @@ set(AVTPLOTTER_VTK_SOURCES
     vtkVisItAxisActor.C
     vtkVisItAxisActor2D.C
     vtkVisItCubeAxesActor.C
-    vtkVisItDataSetMapper.C
     vtkVisItFullFrameMapper2D.C
     vtkVisItScalarBarActor.C
     vtkVisItScalarBarWithOpacityActor.C
@@ -41,6 +47,13 @@ if(HAVE_LIBOSPRAY)
          vtkVisItViewNodeFactory.C)
 endif()
 
+if(HAVE_ANARI)
+    list(APPEND AVTPLOTTER_VTK_SOURCES
+         vtkAnariVisItCubeAxesActorNode.C
+         vtkAnariVisItAxisActorNode.C
+         vtkAnariVisItViewNodeFactory.C)
+endif()
+
 target_sources(avtplotter_ser PRIVATE ${AVTPLOTTER_VTK_SOURCES})
 target_include_directories(avtplotter_ser PUBLIC .)
 
@@ -50,4 +63,3 @@ if(VISIT_PARALLEL)
 endif()
 
 unset(AVTPLOTTER_VTK_SOURCES)
-

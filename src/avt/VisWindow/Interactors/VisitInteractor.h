@@ -163,8 +163,6 @@ class VISWINDOW_API VisitInteractor : public vtkInteractorStyleTrackballCamera
     float                       MotionFactor;
 
     bool                        useOSPRay;
-
-
     void                        PrepTrackball();
     void                        NewButtonPress();
 

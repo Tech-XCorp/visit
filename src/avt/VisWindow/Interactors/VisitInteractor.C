@@ -40,6 +40,12 @@ ViewCallback   VisitInteractor::viewCallback     = NULL;
 //    Kathleen Biagas, Wed Aug 17, 2022
 //    Added useOSPray.
 //
+//    Kevin Griffin, Wed Apr 02, 2025
+//    Added useAnari.
+//
+//    Kevin Griffin, Thu Aug 14, 2025
+//    Removed useAnari.
+//
 // ****************************************************************************
 
 VisitInteractor::VisitInteractor(VisWindowInteractorProxy &p) : proxy(p)

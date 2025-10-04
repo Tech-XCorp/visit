@@ -32,6 +32,30 @@
 #define MIN_LINEEDIT_WIDTH 200
 #define VIEW_WINDOW_SPACING 10
 
+
+void QVW_ClampViewport(double vp[4])
+{
+    if(vp[0] < 0.)
+       vp[0] = 0.;
+    else if(vp[0] > 1.)
+       vp[0] = 1.;
+
+    if(vp[1] > 1.)
+       vp[1] = 1.;
+    else if(vp[1] < 0.)
+       vp[1] = 0.;
+
+    if(vp[2] < 0.)
+       vp[2] = 0.;
+    else if(vp[2] > 1.)
+       vp[2] = 1.;
+
+    if(vp[3] > 1.)
+       vp[3] = 1.;
+    else if(vp[3] < 0.)
+       vp[3] = 0.;
+}
+
 // ****************************************************************************
 // Method: QvisViewWindow::QvisViewWindow
 //
@@ -250,13 +274,8 @@ QvisViewWindow::CreateWindowContents()
     QLabel *domainScaleLabel = new QLabel(tr("Domain Scale"), pageCurve);
     layoutCurve->addWidget(domainScaleLabel, 3, 0);
     domainScaleMode = new QButtonGroup(pageCurve);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(domainScaleMode, SIGNAL(buttonClicked(int)),
-            this, SLOT(domainScaleModeChanged(int)));
-#else
     connect(domainScaleMode, SIGNAL(idClicked(int)),
             this, SLOT(domainScaleModeChanged(int)));
-#endif
     domainLinear = new QRadioButton(tr("Linear"), pageCurve);
     domainScaleMode->addButton(domainLinear, 0);
     layoutCurve->addWidget(domainLinear, 3, 1);
@@ -267,13 +286,8 @@ QvisViewWindow::CreateWindowContents()
     QLabel *rangeScaleLabel = new QLabel(tr("Range Scale"), pageCurve);
     layoutCurve->addWidget(rangeScaleLabel, 4, 0);
     rangeScaleMode = new QButtonGroup(pageCurve);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(rangeScaleMode, SIGNAL(buttonClicked(int)),
-            this, SLOT(rangeScaleModeChanged(int)));
-#else
     connect(rangeScaleMode, SIGNAL(idClicked(int)),
             this, SLOT(rangeScaleModeChanged(int)));
-#endif
     rangeLinear = new QRadioButton(tr("Linear"), pageCurve);
     rangeScaleMode->addButton(rangeLinear, 0);
     layoutCurve->addWidget(rangeLinear, 4, 1);
@@ -296,7 +310,7 @@ QvisViewWindow::CreateWindowContents()
     layout2D->setSpacing(VIEW_WINDOW_SPACING);
 
     viewportLineEdit = new QLineEdit(page2D);
-    connect(viewportLineEdit, SIGNAL(returnPressed()),
+    connect(viewportLineEdit, SIGNAL(editingFinished()),
             this, SLOT(processViewportText()));
     layout2D->addWidget(viewportLineEdit, 0, 1, 1, 4);
     QLabel *viewportLabel = new QLabel(tr("Viewport"), page2D);
@@ -314,13 +328,8 @@ QvisViewWindow::CreateWindowContents()
     QLabel *fullFrameLabel = new QLabel(tr("Full Frame"), page2D);
     layout2D->addWidget(fullFrameLabel, 2, 0);
     fullFrameActivationMode = new QButtonGroup(page2D);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(fullFrameActivationMode, SIGNAL(buttonClicked(int)),
-            this, SLOT(fullFrameActivationModeChanged(int)));
-#else
     connect(fullFrameActivationMode, SIGNAL(idClicked(int)),
             this, SLOT(fullFrameActivationModeChanged(int)));
-#endif
     fullFrameAuto = new QRadioButton(tr("Auto"), page2D);
     fullFrameActivationMode->addButton(fullFrameAuto, 0);
     layout2D->addWidget(fullFrameAuto, 2, 1);
@@ -334,13 +343,8 @@ QvisViewWindow::CreateWindowContents()
     QLabel *xScaleLabel = new QLabel(tr("X Scale"), page2D);
     layout2D->addWidget(xScaleLabel, 3, 0);
     xScaleMode = new QButtonGroup(page2D);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(xScaleMode, SIGNAL(buttonClicked(int)),
-            this, SLOT(xScaleModeChanged(int)));
-#else
     connect(xScaleMode, SIGNAL(idClicked(int)),
             this, SLOT(xScaleModeChanged(int)));
-#endif
     xLinear = new QRadioButton(tr("Linear"), page2D);
     xScaleMode->addButton(xLinear, 0);
     layout2D->addWidget(xLinear, 3, 1);
@@ -351,13 +355,8 @@ QvisViewWindow::CreateWindowContents()
     QLabel *yScaleLabel = new QLabel(tr("Y Scale"), page2D);
     layout2D->addWidget(yScaleLabel, 4, 0);
     yScaleMode = new QButtonGroup(page2D);
-#if QT_VERSION < QT_VERSION_CHECK(6,0,0)
-    connect(yScaleMode, SIGNAL(buttonClicked(int)),
-            this, SLOT(yScaleModeChanged(int)));
-#else
     connect(yScaleMode, SIGNAL(idClicked(int)),
             this, SLOT(yScaleModeChanged(int)));
-#endif
     yLinear = new QRadioButton(tr("Linear"), page2D);
     yScaleMode->addButton(yLinear, 0);
     layout2D->addWidget(yLinear, 4, 1);
@@ -793,7 +792,7 @@ QvisViewWindow::UpdateCurve(bool doAll)
             rangeCurveLineEdit->setText(temp);
             break;
         case ViewCurveAttributes::ID_viewportCoords:
-           temp = DoublesToQString(viewCurve->GetViewportCoords(), 4);
+            temp = DoublesToQString(viewCurve->GetViewportCoords(), 4);
             viewportCurveLineEdit->setText(temp);
             break;
         case ViewCurveAttributes::ID_domainScale:
@@ -1451,6 +1450,9 @@ QvisViewWindow::SetFromNode(DataNode *parentNode, const int *borders)
 //   Brad Whitlock, Wed Jun 18 15:25:26 PDT 2008
 //   Rewrote with utility methods.
 //
+//   Kathleen Biagas, Fri Apr 18, 2025
+//   Clamp ViewportCoords before setting.
+//
 // ****************************************************************************
 
 void
@@ -1463,7 +1465,10 @@ QvisViewWindow::GetCurrentValuesAxisArray(int which_widget)
     {
         double v[4];
         if(LineEditGetDoubles(viewportAxisArrayLineEdit, v, 4))
+        {
+            QVW_ClampViewport(v);
             viewAxisArray->SetViewportCoords(v);
+        }
         else
         {
             ResettingError(tr("viewport"),
@@ -1520,6 +1525,9 @@ QvisViewWindow::GetCurrentValuesAxisArray(int which_widget)
 //   Brad Whitlock, Wed Jun 18 15:28:28 PDT 2008
 //   Rewrote using utility methods.
 //
+//   Kathleen Biagas, Fri Apr 18, 2025
+//   Clamp ViewportCoords before setting.
+//
 // ****************************************************************************
 
 void
@@ -1532,7 +1540,10 @@ QvisViewWindow::GetCurrentValuesCurve(int which_widget)
     {
         double v[4];
         if(LineEditGetDoubles(viewportCurveLineEdit, v, 4))
+        {
+            QVW_ClampViewport(v);
             viewCurve->SetViewportCoords(v);
+        }
         else
         {
             ResettingError(tr("viewport"),
@@ -1595,6 +1606,9 @@ QvisViewWindow::GetCurrentValuesCurve(int which_widget)
 //   Brad Whitlock, Wed Jun 18 15:28:28 PDT 2008
 //   Rewrote using utility methods.
 //
+//   Kathleen Biagas, Fri Apr 18, 2025
+//   Clamp ViewportCoords before setting.
+//
 // ****************************************************************************
 
 void
@@ -1607,7 +1621,10 @@ QvisViewWindow::GetCurrentValues2d(int which_widget)
     {
         double v[4];
         if(LineEditGetDoubles(viewportLineEdit, v, 4))
+        {
+            QVW_ClampViewport(v);
             view2d->SetViewportCoords(v);
+        }
         else
         {
             ResettingError(tr("viewport"),
@@ -1917,6 +1934,9 @@ QvisViewWindow::GetCurrentValues(int which_widget)
 //   Kathleen Biagas, Thu Jan 21, 2021
 //   Replace QString.asprintf with QString.arg.
 //
+//   Kathleen Biagas, Fri Apr 18, 2025
+//   Clamp ViewportCoords before setting.
+//
 // ****************************************************************************
 
 void
@@ -2124,6 +2144,7 @@ QvisViewWindow::ParseViewCommands(const char *str)
             if (sscanf(&command[3], "%lg %lg %lg %lg", &viewport[0],
                        &viewport[1], &viewport[2], &viewport[3]) == 4)
             {
+                QVW_ClampViewport(viewport);
                 Viewport(viewport);
                 doApply = true;
             }
@@ -3039,3 +3060,4 @@ QvisViewWindow::processAxis3DScalesText()
     GetCurrentValues3d(View3DAttributes::ID_axis3DScales);
     Apply();
 }
+

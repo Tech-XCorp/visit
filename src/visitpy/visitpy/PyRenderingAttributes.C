@@ -5,8 +5,11 @@
 #include <PyRenderingAttributes.h>
 #include <ObserverToCallback.h>
 #include <stdio.h>
+#include <string.h>
 #include <Py2and3Support.h>
+#include <PyFXAAOptions.h>
 #include <ColorAttribute.h>
+#include <PyAnariAttributes.h>
 
 // ****************************************************************************
 // Module: PyRenderingAttributes
@@ -24,7 +27,7 @@
 //
 // This struct contains the Python type information and a RenderingAttributes.
 //
-struct RenderingAttributesObject
+struct PyRenderingAttributesObject
 {
     PyObject_HEAD
     RenderingAttributes *data;
@@ -42,11 +45,32 @@ PyRenderingAttributes_ToString(const RenderingAttributes *atts, const char *pref
     std::string str;
     char tmpStr[1000];
 
-    if(atts->GetAntialiasing())
-        snprintf(tmpStr, 1000, "%santialiasing = 1\n", prefix);
-    else
-        snprintf(tmpStr, 1000, "%santialiasing = 0\n", prefix);
+    const char *antialiasing_names = "NONE, MSAA, FXAA";
+    switch (atts->GetAntialiasing())
+    {
+      case RenderingAttributes::None:
+          snprintf(tmpStr, 1000, "%santialiasing = %sNONE  # %s\n", prefix, prefix, antialiasing_names);
+          str += tmpStr;
+          break;
+      case RenderingAttributes::MSAA:
+          snprintf(tmpStr, 1000, "%santialiasing = %sMSAA  # %s\n", prefix, prefix, antialiasing_names);
+          str += tmpStr;
+          break;
+      case RenderingAttributes::FXAA:
+          snprintf(tmpStr, 1000, "%santialiasing = %sFXAA  # %s\n", prefix, prefix, antialiasing_names);
+          str += tmpStr;
+          break;
+      default:
+          break;
+    }
+
+    snprintf(tmpStr, 1000, "%sMSAASamples = %d\n", prefix, atts->GetMSAASamples());
     str += tmpStr;
+    { // new scope
+        std::string objPrefix(prefix);
+        objPrefix += "FXAAOpt.";
+        str += PyFXAAOptions_ToString(&atts->GetFXAAOpt(), objPrefix.c_str(), forLogging);
+    }
     if(atts->GetOrderComposite())
         snprintf(tmpStr, 1000, "%sorderComposite = 1\n", prefix);
     else
@@ -76,25 +100,6 @@ PyRenderingAttributes_ToString(const RenderingAttributes *atts, const char *pref
     str += tmpStr;
     snprintf(tmpStr, 1000, "%smultiresolutionCellSize = %g\n", prefix, atts->GetMultiresolutionCellSize());
     str += tmpStr;
-    const char *geometryRepresentation_names = "Surfaces, Wireframe, Points";
-    switch (atts->GetGeometryRepresentation())
-    {
-      case RenderingAttributes::Surfaces:
-          snprintf(tmpStr, 1000, "%sgeometryRepresentation = %sSurfaces  # %s\n", prefix, prefix, geometryRepresentation_names);
-          str += tmpStr;
-          break;
-      case RenderingAttributes::Wireframe:
-          snprintf(tmpStr, 1000, "%sgeometryRepresentation = %sWireframe  # %s\n", prefix, prefix, geometryRepresentation_names);
-          str += tmpStr;
-          break;
-      case RenderingAttributes::Points:
-          snprintf(tmpStr, 1000, "%sgeometryRepresentation = %sPoints  # %s\n", prefix, prefix, geometryRepresentation_names);
-          str += tmpStr;
-          break;
-      default:
-          break;
-    }
-
     if(atts->GetStereoRendering())
         snprintf(tmpStr, 1000, "%sstereoRendering = 1\n", prefix);
     else
@@ -269,22 +274,56 @@ PyRenderingAttributes_ToString(const RenderingAttributes *atts, const char *pref
     else
         snprintf(tmpStr, 1000, "%sosprayShadows = 0\n", prefix);
     str += tmpStr;
+    { // new scope
+        std::string objPrefix(prefix);
+        objPrefix += "anariAttributes.";
+        str += PyAnariAttributes_ToString(&atts->GetAnariAttributes(), objPrefix.c_str(), forLogging);
+    }
     return str;
 }
 
 static PyObject *
 RenderingAttributes_Notify(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     obj->data->Notify();
     Py_INCREF(Py_None);
     return Py_None;
 }
 
+static PyObject *
+RenderingAttributes_dir(PyObject *self, PyObject *args)
+{
+    static RenderingAttributes atts; // dummy to access field names
+
+    PyObject *dir_list = PyList_New(0);
+    if (!dir_list)
+    {
+        PyErr_NoMemory();
+        return NULL;
+    }
+
+    // Add methods from the methods table
+    for (PyMethodDef const *method = &PyRenderingAttributes_methods[0];
+         method && method->ml_name;
+         method++) {
+        if (!strncmp(method->ml_name, "__dir__", 7)) continue;
+        if (!strncmp(method->ml_name, "Notify", 6)) continue;
+        PyList_Append(dir_list, PyUnicode_FromString(method->ml_name));
+    }
+
+    // Add members using generic AttributeGroup interface
+    for (int i = 0; i < atts.NumAttributes(); i++) {
+        if (i == 1) continue; // internal field
+        PyList_Append(dir_list, PyUnicode_FromString(atts.GetFieldName(i).c_str()));
+    }
+
+    return dir_list;
+}
 /*static*/ PyObject *
 RenderingAttributes_SetAntialiasing(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -310,24 +349,42 @@ RenderingAttributes_SetAntialiasing(PyObject *self, PyObject *args)
     }
 
     long val = PyLong_AsLong(args);
-    bool cval = bool(val);
+    int cval = int(val);
 
-    if (val == -1 && PyErr_Occurred())
+    if ((val == -1 && PyErr_Occurred()) || long(cval) != val)
     {
         Py_XDECREF(packaged_args);
         PyErr_Clear();
-        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ bool");
-    }
-    if (fabs(double(val))>1.5E-7 && fabs((double(long(cval))-double(val))/double(val))>1.5E-7)
-    {
-        Py_XDECREF(packaged_args);
-        return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ bool");
+        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ int");
     }
 
+    if (cval < 0 || cval >= 3)
+    {
+        std::stringstream ss;
+        ss << "An invalid antialiasing value was given." << std::endl;
+        ss << "Valid values are in the range [0,2]." << std::endl;
+        ss << "You can also use the following symbolic names:";
+        ss << " None";
+        ss << ", MSAA";
+        ss << ", FXAA";
+        return PyErr_Format(PyExc_ValueError, ss.str().c_str());
+    }
+
+   if(cval == 1 && (cval != obj->data->GetAntialiasing()) &&
+      (obj->data->GetDepthPeeling()))
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        PyErr_WarnEx(PyExc_RuntimeWarning,
+                "MSAA is incompatible with DepthPeeling, turn off\n"
+                " DepthPeeling before selecting MSAA antialiasing\n"
+                " or choose a different antialiasing mode.\n",  0);
+        return PyInt_FromLong(0);
+    }
     Py_XDECREF(packaged_args);
 
     // Set the antialiasing in the object.
-    obj->data->SetAntialiasing(cval);
+    obj->data->SetAntialiasing(RenderingAttributes::AAMode(cval));
 
     Py_INCREF(Py_None);
     return Py_None;
@@ -336,15 +393,108 @@ RenderingAttributes_SetAntialiasing(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetAntialiasing(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
-    PyObject *retval = PyInt_FromLong(obj->data->GetAntialiasing()?1L:0L);
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
+    PyObject *retval = PyInt_FromLong(long(obj->data->GetAntialiasing()));
+    return retval;
+}
+
+/*static*/ PyObject *
+RenderingAttributes_SetMSAASamples(PyObject *self, PyObject *args)
+{
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
+
+    PyObject *packaged_args = 0;
+
+    // Handle args packaged into a tuple of size one
+    // if we think the unpackaged args matches our needs
+    if (PySequence_Check(args) && PySequence_Size(args) == 1)
+    {
+        packaged_args = PySequence_GetItem(args, 0);
+        if (PyNumber_Check(packaged_args))
+            args = packaged_args;
+    }
+
+    if (PySequence_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "expecting a single number arg");
+    }
+
+    if (!PyNumber_Check(args))
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_TypeError, "arg is not a number type");
+    }
+
+    long val = PyLong_AsLong(args);
+    int cval = int(val);
+
+    if (val == -1 && PyErr_Occurred())
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ int");
+    }
+    if (fabs(double(val))>1.5E-7 && fabs((double(long(cval))-double(val))/double(val))>1.5E-7)
+    {
+        Py_XDECREF(packaged_args);
+        return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ int");
+    }
+
+    Py_XDECREF(packaged_args);
+
+    // Set the MSAASamples in the object.
+    obj->data->SetMSAASamples(cval);
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+/*static*/ PyObject *
+RenderingAttributes_GetMSAASamples(PyObject *self, PyObject *args)
+{
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
+    PyObject *retval = PyInt_FromLong(long(obj->data->GetMSAASamples()));
+    return retval;
+}
+
+/*static*/ PyObject *
+RenderingAttributes_SetFXAAOpt(PyObject *self, PyObject *args)
+{
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
+
+    PyObject *newValue = NULL;
+    if(!PyArg_ParseTuple(args, "O", &newValue))
+        return NULL;
+    if(!PyFXAAOptions_Check(newValue))
+        return PyErr_Format(PyExc_TypeError, "Field FXAAOpt can be set only with FXAAOptions objects");
+
+    obj->data->SetFXAAOpt(*PyFXAAOptions_FromPyObject(newValue));
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+/*static*/ PyObject *
+RenderingAttributes_GetFXAAOpt(PyObject *self, PyObject *args)
+{
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
+    // Since the new object will point to data owned by this object,
+    // we need to increment the reference count.
+    Py_INCREF(self);
+
+    PyObject *retval = PyFXAAOptions_Wrap(&obj->data->GetFXAAOpt());
+    // Set the object's parent so the reference to the parent can be decref'd
+    // when the child goes out of scope.
+    PyFXAAOptions_SetParent(retval, self);
+
     return retval;
 }
 
 /*static*/ PyObject *
 RenderingAttributes_SetOrderComposite(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -396,7 +546,7 @@ RenderingAttributes_SetOrderComposite(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetOrderComposite(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetOrderComposite()?1L:0L);
     return retval;
 }
@@ -404,7 +554,7 @@ RenderingAttributes_GetOrderComposite(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetDepthCompositeThreads(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -456,7 +606,7 @@ RenderingAttributes_SetDepthCompositeThreads(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetDepthCompositeThreads(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetDepthCompositeThreads()));
     return retval;
 }
@@ -464,7 +614,7 @@ RenderingAttributes_GetDepthCompositeThreads(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetDepthCompositeBlocking(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -516,7 +666,7 @@ RenderingAttributes_SetDepthCompositeBlocking(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetDepthCompositeBlocking(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetDepthCompositeBlocking()));
     return retval;
 }
@@ -524,7 +674,7 @@ RenderingAttributes_GetDepthCompositeBlocking(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetAlphaCompositeThreads(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -576,7 +726,7 @@ RenderingAttributes_SetAlphaCompositeThreads(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetAlphaCompositeThreads(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetAlphaCompositeThreads()));
     return retval;
 }
@@ -584,7 +734,7 @@ RenderingAttributes_GetAlphaCompositeThreads(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetAlphaCompositeBlocking(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -636,7 +786,7 @@ RenderingAttributes_SetAlphaCompositeBlocking(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetAlphaCompositeBlocking(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetAlphaCompositeBlocking()));
     return retval;
 }
@@ -644,7 +794,7 @@ RenderingAttributes_GetAlphaCompositeBlocking(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetDepthPeeling(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -684,6 +834,16 @@ RenderingAttributes_SetDepthPeeling(PyObject *self, PyObject *args)
         return PyErr_Format(PyExc_ValueError, "arg not interpretable as C++ bool");
     }
 
+    if(cval && (cval != obj->data->GetDepthPeeling()) &&
+      (obj->data->GetAntialiasing() == RenderingAttributes::MSAA))
+    {
+        Py_XDECREF(packaged_args);
+        PyErr_Clear();
+        PyErr_WarnEx(PyExc_RuntimeWarning,
+                "DepthPeeling is incompatible with MSAA, select a different\n"
+                " antialiasing method before turning on DepthPeeling.", 0);
+        return PyInt_FromLong(0);
+    }
     Py_XDECREF(packaged_args);
 
     // Set the depthPeeling in the object.
@@ -696,7 +856,7 @@ RenderingAttributes_SetDepthPeeling(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetDepthPeeling(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetDepthPeeling()?1L:0L);
     return retval;
 }
@@ -704,7 +864,7 @@ RenderingAttributes_GetDepthPeeling(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetOcclusionRatio(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -756,7 +916,7 @@ RenderingAttributes_SetOcclusionRatio(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetOcclusionRatio(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetOcclusionRatio());
     return retval;
 }
@@ -764,7 +924,7 @@ RenderingAttributes_GetOcclusionRatio(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetNumberOfPeels(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -816,7 +976,7 @@ RenderingAttributes_SetNumberOfPeels(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetNumberOfPeels(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetNumberOfPeels()));
     return retval;
 }
@@ -824,7 +984,7 @@ RenderingAttributes_GetNumberOfPeels(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetMultiresolutionMode(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -876,7 +1036,7 @@ RenderingAttributes_SetMultiresolutionMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetMultiresolutionMode(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetMultiresolutionMode()?1L:0L);
     return retval;
 }
@@ -884,7 +1044,7 @@ RenderingAttributes_GetMultiresolutionMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetMultiresolutionCellSize(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -936,82 +1096,15 @@ RenderingAttributes_SetMultiresolutionCellSize(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetMultiresolutionCellSize(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(double(obj->data->GetMultiresolutionCellSize()));
-    return retval;
-}
-
-/*static*/ PyObject *
-RenderingAttributes_SetGeometryRepresentation(PyObject *self, PyObject *args)
-{
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
-
-    PyObject *packaged_args = 0;
-
-    // Handle args packaged into a tuple of size one
-    // if we think the unpackaged args matches our needs
-    if (PySequence_Check(args) && PySequence_Size(args) == 1)
-    {
-        packaged_args = PySequence_GetItem(args, 0);
-        if (PyNumber_Check(packaged_args))
-            args = packaged_args;
-    }
-
-    if (PySequence_Check(args))
-    {
-        Py_XDECREF(packaged_args);
-        return PyErr_Format(PyExc_TypeError, "expecting a single number arg");
-    }
-
-    if (!PyNumber_Check(args))
-    {
-        Py_XDECREF(packaged_args);
-        return PyErr_Format(PyExc_TypeError, "arg is not a number type");
-    }
-
-    long val = PyLong_AsLong(args);
-    int cval = int(val);
-
-    if ((val == -1 && PyErr_Occurred()) || long(cval) != val)
-    {
-        Py_XDECREF(packaged_args);
-        PyErr_Clear();
-        return PyErr_Format(PyExc_TypeError, "arg not interpretable as C++ int");
-    }
-
-    if (cval < 0 || cval >= 3)
-    {
-        std::stringstream ss;
-        ss << "An invalid geometryRepresentation value was given." << std::endl;
-        ss << "Valid values are in the range [0,2]." << std::endl;
-        ss << "You can also use the following symbolic names:";
-        ss << " Surfaces";
-        ss << ", Wireframe";
-        ss << ", Points";
-        return PyErr_Format(PyExc_ValueError, ss.str().c_str());
-    }
-
-    Py_XDECREF(packaged_args);
-
-    // Set the geometryRepresentation in the object.
-    obj->data->SetGeometryRepresentation(RenderingAttributes::GeometryRepresentation(cval));
-
-    Py_INCREF(Py_None);
-    return Py_None;
-}
-
-/*static*/ PyObject *
-RenderingAttributes_GetGeometryRepresentation(PyObject *self, PyObject *args)
-{
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
-    PyObject *retval = PyInt_FromLong(long(obj->data->GetGeometryRepresentation()));
     return retval;
 }
 
 /*static*/ PyObject *
 RenderingAttributes_SetStereoRendering(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1063,7 +1156,7 @@ RenderingAttributes_SetStereoRendering(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetStereoRendering(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetStereoRendering()?1L:0L);
     return retval;
 }
@@ -1071,7 +1164,7 @@ RenderingAttributes_GetStereoRendering(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetStereoType(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1131,7 +1224,7 @@ RenderingAttributes_SetStereoType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetStereoType(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetStereoType()));
     return retval;
 }
@@ -1139,7 +1232,7 @@ RenderingAttributes_GetStereoType(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetNotifyForEachRender(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1191,7 +1284,7 @@ RenderingAttributes_SetNotifyForEachRender(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetNotifyForEachRender(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetNotifyForEachRender()?1L:0L);
     return retval;
 }
@@ -1199,7 +1292,7 @@ RenderingAttributes_GetNotifyForEachRender(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetScalableActivationMode(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1258,7 +1351,7 @@ RenderingAttributes_SetScalableActivationMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetScalableActivationMode(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetScalableActivationMode()));
     return retval;
 }
@@ -1266,7 +1359,7 @@ RenderingAttributes_GetScalableActivationMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetScalableAutoThreshold(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1318,7 +1411,7 @@ RenderingAttributes_SetScalableAutoThreshold(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetScalableAutoThreshold(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetScalableAutoThreshold()));
     return retval;
 }
@@ -1326,7 +1419,7 @@ RenderingAttributes_GetScalableAutoThreshold(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetSpecularFlag(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1378,7 +1471,7 @@ RenderingAttributes_SetSpecularFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetSpecularFlag(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetSpecularFlag()?1L:0L);
     return retval;
 }
@@ -1386,7 +1479,7 @@ RenderingAttributes_GetSpecularFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetSpecularCoeff(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1438,7 +1531,7 @@ RenderingAttributes_SetSpecularCoeff(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetSpecularCoeff(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(double(obj->data->GetSpecularCoeff()));
     return retval;
 }
@@ -1446,7 +1539,7 @@ RenderingAttributes_GetSpecularCoeff(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetSpecularPower(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1498,7 +1591,7 @@ RenderingAttributes_SetSpecularPower(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetSpecularPower(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(double(obj->data->GetSpecularPower()));
     return retval;
 }
@@ -1506,7 +1599,7 @@ RenderingAttributes_GetSpecularPower(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetSpecularColor(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     int c[4];
     if(!PyArg_ParseTuple(args, "iiii", &c[0], &c[1], &c[2], &c[3]))
@@ -1569,7 +1662,7 @@ RenderingAttributes_SetSpecularColor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetSpecularColor(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the specularColor.
     PyObject *retval = PyTuple_New(4);
     const unsigned char *specularColor = obj->data->GetSpecularColor().GetColor();
@@ -1583,7 +1676,7 @@ RenderingAttributes_GetSpecularColor(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetDoShadowing(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1635,7 +1728,7 @@ RenderingAttributes_SetDoShadowing(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetDoShadowing(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetDoShadowing()?1L:0L);
     return retval;
 }
@@ -1643,7 +1736,7 @@ RenderingAttributes_GetDoShadowing(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetShadowStrength(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1695,7 +1788,7 @@ RenderingAttributes_SetShadowStrength(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetShadowStrength(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyFloat_FromDouble(obj->data->GetShadowStrength());
     return retval;
 }
@@ -1703,7 +1796,7 @@ RenderingAttributes_GetShadowStrength(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetDoDepthCueing(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1755,7 +1848,7 @@ RenderingAttributes_SetDoDepthCueing(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetDoDepthCueing(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetDoDepthCueing()?1L:0L);
     return retval;
 }
@@ -1763,7 +1856,7 @@ RenderingAttributes_GetDoDepthCueing(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetDepthCueingAutomatic(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -1815,7 +1908,7 @@ RenderingAttributes_SetDepthCueingAutomatic(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetDepthCueingAutomatic(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetDepthCueingAutomatic()?1L:0L);
     return retval;
 }
@@ -1823,7 +1916,7 @@ RenderingAttributes_GetDepthCueingAutomatic(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetStartCuePoint(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
     double *vals = obj->data->GetStartCuePoint();
@@ -1890,7 +1983,7 @@ RenderingAttributes_SetStartCuePoint(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetStartCuePoint(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the startCuePoint.
     PyObject *retval = PyTuple_New(3);
     const double *startCuePoint = obj->data->GetStartCuePoint();
@@ -1902,7 +1995,7 @@ RenderingAttributes_GetStartCuePoint(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetEndCuePoint(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
     double *vals = obj->data->GetEndCuePoint();
@@ -1969,7 +2062,7 @@ RenderingAttributes_SetEndCuePoint(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetEndCuePoint(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     // Allocate a tuple the with enough entries to hold the endCuePoint.
     PyObject *retval = PyTuple_New(3);
     const double *endCuePoint = obj->data->GetEndCuePoint();
@@ -1981,7 +2074,7 @@ RenderingAttributes_GetEndCuePoint(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetCompressionActivationMode(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2040,7 +2133,7 @@ RenderingAttributes_SetCompressionActivationMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetCompressionActivationMode(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetCompressionActivationMode()));
     return retval;
 }
@@ -2048,7 +2141,7 @@ RenderingAttributes_GetCompressionActivationMode(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetColorTexturingFlag(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2100,7 +2193,7 @@ RenderingAttributes_SetColorTexturingFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetColorTexturingFlag(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetColorTexturingFlag()?1L:0L);
     return retval;
 }
@@ -2108,7 +2201,7 @@ RenderingAttributes_GetColorTexturingFlag(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetCompactDomainsActivationMode(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2167,7 +2260,7 @@ RenderingAttributes_SetCompactDomainsActivationMode(PyObject *self, PyObject *ar
 /*static*/ PyObject *
 RenderingAttributes_GetCompactDomainsActivationMode(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetCompactDomainsActivationMode()));
     return retval;
 }
@@ -2175,7 +2268,7 @@ RenderingAttributes_GetCompactDomainsActivationMode(PyObject *self, PyObject *ar
 /*static*/ PyObject *
 RenderingAttributes_SetCompactDomainsAutoThreshold(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2227,7 +2320,7 @@ RenderingAttributes_SetCompactDomainsAutoThreshold(PyObject *self, PyObject *arg
 /*static*/ PyObject *
 RenderingAttributes_GetCompactDomainsAutoThreshold(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetCompactDomainsAutoThreshold()));
     return retval;
 }
@@ -2235,7 +2328,7 @@ RenderingAttributes_GetCompactDomainsAutoThreshold(PyObject *self, PyObject *arg
 /*static*/ PyObject *
 RenderingAttributes_SetOsprayRendering(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2287,7 +2380,7 @@ RenderingAttributes_SetOsprayRendering(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetOsprayRendering(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetOsprayRendering()?1L:0L);
     return retval;
 }
@@ -2295,7 +2388,7 @@ RenderingAttributes_GetOsprayRendering(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetOspraySPP(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2347,7 +2440,7 @@ RenderingAttributes_SetOspraySPP(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetOspraySPP(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetOspraySPP()));
     return retval;
 }
@@ -2355,7 +2448,7 @@ RenderingAttributes_GetOspraySPP(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetOsprayAO(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2407,7 +2500,7 @@ RenderingAttributes_SetOsprayAO(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetOsprayAO(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(long(obj->data->GetOsprayAO()));
     return retval;
 }
@@ -2415,7 +2508,7 @@ RenderingAttributes_GetOsprayAO(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_SetOsprayShadows(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
 
     PyObject *packaged_args = 0;
 
@@ -2467,17 +2560,55 @@ RenderingAttributes_SetOsprayShadows(PyObject *self, PyObject *args)
 /*static*/ PyObject *
 RenderingAttributes_GetOsprayShadows(PyObject *self, PyObject *args)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)self;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
     PyObject *retval = PyInt_FromLong(obj->data->GetOsprayShadows()?1L:0L);
+    return retval;
+}
+
+/*static*/ PyObject *
+RenderingAttributes_SetAnariAttributes(PyObject *self, PyObject *args)
+{
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
+
+    PyObject *newValue = NULL;
+    if(!PyArg_ParseTuple(args, "O", &newValue))
+        return NULL;
+    if(!PyAnariAttributes_Check(newValue))
+        return PyErr_Format(PyExc_TypeError, "Field anariAttributes can be set only with AnariAttributes objects");
+
+    obj->data->SetAnariAttributes(*PyAnariAttributes_FromPyObject(newValue));
+
+    Py_INCREF(Py_None);
+    return Py_None;
+}
+
+/*static*/ PyObject *
+RenderingAttributes_GetAnariAttributes(PyObject *self, PyObject *args)
+{
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)self;
+    // Since the new object will point to data owned by this object,
+    // we need to increment the reference count.
+    Py_INCREF(self);
+
+    PyObject *retval = PyAnariAttributes_Wrap(&obj->data->GetAnariAttributes());
+    // Set the object's parent so the reference to the parent can be decref'd
+    // when the child goes out of scope.
+    PyAnariAttributes_SetParent(retval, self);
+
     return retval;
 }
 
 
 
 PyMethodDef PyRenderingAttributes_methods[RENDERINGATTRIBUTES_NMETH] = {
-    {"Notify", RenderingAttributes_Notify, METH_VARARGS},
+    {"__dir__", RenderingAttributes_dir, METH_NOARGS},
+    {"Notify", RenderingAttributes_Notify, METH_NOARGS},
     {"SetAntialiasing", RenderingAttributes_SetAntialiasing, METH_VARARGS},
     {"GetAntialiasing", RenderingAttributes_GetAntialiasing, METH_VARARGS},
+    {"SetMSAASamples", RenderingAttributes_SetMSAASamples, METH_VARARGS},
+    {"GetMSAASamples", RenderingAttributes_GetMSAASamples, METH_VARARGS},
+    {"SetFXAAOpt", RenderingAttributes_SetFXAAOpt, METH_VARARGS},
+    {"GetFXAAOpt", RenderingAttributes_GetFXAAOpt, METH_VARARGS},
     {"SetOrderComposite", RenderingAttributes_SetOrderComposite, METH_VARARGS},
     {"GetOrderComposite", RenderingAttributes_GetOrderComposite, METH_VARARGS},
     {"SetDepthCompositeThreads", RenderingAttributes_SetDepthCompositeThreads, METH_VARARGS},
@@ -2498,8 +2629,6 @@ PyMethodDef PyRenderingAttributes_methods[RENDERINGATTRIBUTES_NMETH] = {
     {"GetMultiresolutionMode", RenderingAttributes_GetMultiresolutionMode, METH_VARARGS},
     {"SetMultiresolutionCellSize", RenderingAttributes_SetMultiresolutionCellSize, METH_VARARGS},
     {"GetMultiresolutionCellSize", RenderingAttributes_GetMultiresolutionCellSize, METH_VARARGS},
-    {"SetGeometryRepresentation", RenderingAttributes_SetGeometryRepresentation, METH_VARARGS},
-    {"GetGeometryRepresentation", RenderingAttributes_GetGeometryRepresentation, METH_VARARGS},
     {"SetStereoRendering", RenderingAttributes_SetStereoRendering, METH_VARARGS},
     {"GetStereoRendering", RenderingAttributes_GetStereoRendering, METH_VARARGS},
     {"SetStereoType", RenderingAttributes_SetStereoType, METH_VARARGS},
@@ -2546,6 +2675,8 @@ PyMethodDef PyRenderingAttributes_methods[RENDERINGATTRIBUTES_NMETH] = {
     {"GetOsprayAO", RenderingAttributes_GetOsprayAO, METH_VARARGS},
     {"SetOsprayShadows", RenderingAttributes_SetOsprayShadows, METH_VARARGS},
     {"GetOsprayShadows", RenderingAttributes_GetOsprayShadows, METH_VARARGS},
+    {"SetAnariAttributes", RenderingAttributes_SetAnariAttributes, METH_VARARGS},
+    {"GetAnariAttributes", RenderingAttributes_GetAnariAttributes, METH_VARARGS},
     {NULL, NULL}
 };
 
@@ -2554,21 +2685,38 @@ PyMethodDef PyRenderingAttributes_methods[RENDERINGATTRIBUTES_NMETH] = {
 //
 
 static void
-RenderingAttributes_dealloc(PyObject *v)
+PyRenderingAttributes_dealloc(PyObject *v)
 {
-   RenderingAttributesObject *obj = (RenderingAttributesObject *)v;
+   PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)v;
    if(obj->parent != 0)
        Py_DECREF(obj->parent);
    if(obj->owns)
        delete obj->data;
 }
 
-static PyObject *RenderingAttributes_richcompare(PyObject *self, PyObject *other, int op);
+static PyObject *PyRenderingAttributes_richcompare(PyObject *self, PyObject *other, int op);
 PyObject *
-PyRenderingAttributes_getattr(PyObject *self, char *name)
+PyRenderingAttributes_getattro(PyObject *self, PyObject *attr_name)
 {
+    const char *name = PyUnicode_AsUTF8(attr_name);
+    if (!name) return NULL;
+
+#include <visit-config.h>
     if(strcmp(name, "antialiasing") == 0)
         return RenderingAttributes_GetAntialiasing(self, NULL);
+    if(strcmp(name, "None") == 0)
+        return PyInt_FromLong(long(RenderingAttributes::None));
+    if(strcmp(name, "NONE") == 0)
+        return PyInt_FromLong(long(RenderingAttributes::None));
+    if(strcmp(name, "MSAA") == 0)
+        return PyInt_FromLong(long(RenderingAttributes::MSAA));
+    if(strcmp(name, "FXAA") == 0)
+        return PyInt_FromLong(long(RenderingAttributes::FXAA));
+
+    if(strcmp(name, "MSAASamples") == 0)
+        return RenderingAttributes_GetMSAASamples(self, NULL);
+    if(strcmp(name, "FXAAOpt") == 0)
+        return RenderingAttributes_GetFXAAOpt(self, NULL);
     if(strcmp(name, "orderComposite") == 0)
         return RenderingAttributes_GetOrderComposite(self, NULL);
     if(strcmp(name, "depthCompositeThreads") == 0)
@@ -2589,15 +2737,6 @@ PyRenderingAttributes_getattr(PyObject *self, char *name)
         return RenderingAttributes_GetMultiresolutionMode(self, NULL);
     if(strcmp(name, "multiresolutionCellSize") == 0)
         return RenderingAttributes_GetMultiresolutionCellSize(self, NULL);
-    if(strcmp(name, "geometryRepresentation") == 0)
-        return RenderingAttributes_GetGeometryRepresentation(self, NULL);
-    if(strcmp(name, "Surfaces") == 0)
-        return PyInt_FromLong(long(RenderingAttributes::Surfaces));
-    if(strcmp(name, "Wireframe") == 0)
-        return PyInt_FromLong(long(RenderingAttributes::Wireframe));
-    if(strcmp(name, "Points") == 0)
-        return PyInt_FromLong(long(RenderingAttributes::Points));
-
     if(strcmp(name, "stereoRendering") == 0)
         return RenderingAttributes_GetStereoRendering(self, NULL);
     if(strcmp(name, "stereoType") == 0)
@@ -2674,30 +2813,47 @@ PyRenderingAttributes_getattr(PyObject *self, char *name)
         return RenderingAttributes_GetOsprayAO(self, NULL);
     if(strcmp(name, "osprayShadows") == 0)
         return RenderingAttributes_GetOsprayShadows(self, NULL);
+    if(strcmp(name, "anariAttributes") == 0)
+        return RenderingAttributes_GetAnariAttributes(self, NULL);
 
+#if VISIT_OBSOLETE_AT_VERSION(3,6,0)
+#error This code is obsolete in this version. Please remove it.
+#else
+    // Try and handle legacy fields in RenderingAttributes
 
-    // Add a __dict__ answer so that dir() works
-    if (!strcmp(name, "__dict__"))
+    //
+    // Removed in 3.5.0
+    //
+    if(strcmp(name, "geometryRepresentation") == 0)
     {
-        PyObject *result = PyDict_New();
-        for (int i = 0; PyRenderingAttributes_methods[i].ml_meth; i++)
-            PyDict_SetItem(result,
-                PyString_FromString(PyRenderingAttributes_methods[i].ml_name),
-                PyString_FromString(PyRenderingAttributes_methods[i].ml_name));
-        return result;
+        PyErr_WarnEx(NULL,
+                    "geometryRepresentation is no longer a valid Rendering "
+                    "attribute.\nIt's value is being ignored, please remove "
+                    "it from your script.\n", 3);
+        return PyInt_FromLong(0L);
     }
+#endif
+    PyObject *meth = Py_FindMethod(PyRenderingAttributes_methods, self, (char*)name);
+    if (meth) return meth;
 
-    return Py_FindMethod(PyRenderingAttributes_methods, self, name);
+    return PyObject_GenericGetAttr(self, attr_name);
 }
 
 int
-PyRenderingAttributes_setattr(PyObject *self, char *name, PyObject *args)
+PyRenderingAttributes_setattro(PyObject *self, PyObject *attr_name, PyObject *args)
 {
+#include <visit-config.h>
     PyObject NULL_PY_OBJ;
     PyObject *obj = &NULL_PY_OBJ;
+    const char *name = PyUnicode_AsUTF8(attr_name);
+    if (!name) return -1;
 
     if(strcmp(name, "antialiasing") == 0)
         obj = RenderingAttributes_SetAntialiasing(self, args);
+    else if(strcmp(name, "MSAASamples") == 0)
+        obj = RenderingAttributes_SetMSAASamples(self, args);
+    else if(strcmp(name, "FXAAOpt") == 0)
+        obj = RenderingAttributes_SetFXAAOpt(self, args);
     else if(strcmp(name, "orderComposite") == 0)
         obj = RenderingAttributes_SetOrderComposite(self, args);
     else if(strcmp(name, "depthCompositeThreads") == 0)
@@ -2718,8 +2874,6 @@ PyRenderingAttributes_setattr(PyObject *self, char *name, PyObject *args)
         obj = RenderingAttributes_SetMultiresolutionMode(self, args);
     else if(strcmp(name, "multiresolutionCellSize") == 0)
         obj = RenderingAttributes_SetMultiresolutionCellSize(self, args);
-    else if(strcmp(name, "geometryRepresentation") == 0)
-        obj = RenderingAttributes_SetGeometryRepresentation(self, args);
     else if(strcmp(name, "stereoRendering") == 0)
         obj = RenderingAttributes_SetStereoRendering(self, args);
     else if(strcmp(name, "stereoType") == 0)
@@ -2766,6 +2920,32 @@ PyRenderingAttributes_setattr(PyObject *self, char *name, PyObject *args)
         obj = RenderingAttributes_SetOsprayAO(self, args);
     else if(strcmp(name, "osprayShadows") == 0)
         obj = RenderingAttributes_SetOsprayShadows(self, args);
+    else if(strcmp(name, "anariAttributes") == 0)
+        obj = RenderingAttributes_SetAnariAttributes(self, args);
+
+#if VISIT_OBSOLETE_AT_VERSION(3,6,0)
+#error This code is obsolete in this version. Please remove it.
+#else
+   // Try and handle legacy fields in RenderingAttributes
+    if(obj == &NULL_PY_OBJ)
+    {
+        //
+        // Removed in 3.5.0
+        //
+        if(strcmp(name, "geometryRepresentation") == 0)
+        {
+            PyErr_WarnEx(NULL, "'geometryRepresentation' is obsolete and is being ignored.", 3);
+            Py_INCREF(Py_None);
+            obj = Py_None;
+        }
+    }
+#endif
+
+    if (obj == &NULL_PY_OBJ && PyObject_GenericSetAttr(self, attr_name, args) == 0)
+    {
+        Py_INCREF(Py_None);
+        obj = Py_None;
+    }
 
     if (obj != NULL && obj != &NULL_PY_OBJ)
         Py_DECREF(obj);
@@ -2781,78 +2961,45 @@ PyRenderingAttributes_setattr(PyObject *self, char *name, PyObject *args)
     return (obj != NULL) ? 0 : -1;
 }
 
-static int
-RenderingAttributes_print(PyObject *v, FILE *fp, int flags)
-{
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)v;
-    fprintf(fp, "%s", PyRenderingAttributes_ToString(obj->data, "",false).c_str());
-    return 0;
-}
-
 PyObject *
-RenderingAttributes_str(PyObject *v)
+PyRenderingAttributes_str(PyObject *v)
 {
-    RenderingAttributesObject *obj = (RenderingAttributesObject *)v;
+    PyRenderingAttributesObject *obj = (PyRenderingAttributesObject *)v;
     return PyString_FromString(PyRenderingAttributes_ToString(obj->data,"", false).c_str());
 }
 
 //
 // The doc string for the class.
 //
-#if PY_MAJOR_VERSION > 2 || (PY_MAJOR_VERSION == 2 && PY_MINOR_VERSION >= 5)
-static const char *RenderingAttributes_Purpose = "This class contains special rendering attributes like antialiasing and stero settings.";
-#else
-static char *RenderingAttributes_Purpose = "This class contains special rendering attributes like antialiasing and stero settings.";
-#endif
+static char const *PyRenderingAttributes_purpose = "This class contains special rendering attributes like antialiasing and stero settings.";
 
 //
-// Python Type Struct Def Macro from Py2and3Support.h
+// Initialize the python object type structure with default values.
+// If you need to do something custom, #undef VISIT_PY_TYPE_OBJ_TP_SLOTS,
+// which is defined with default values for our standard python objects
+// in src/visitpy/common/Py2and3Support.h. Then re-define it here AHEAD of
+// instantiating the type with VISIT_PY_TYPE_OBJ. Look for examples of
+// such customization in src/avt/PythonFilters or src/visitpy/common.
 //
-//         VISIT_PY_TYPE_OBJ( VPY_TYPE,
-//                            VPY_NAME,
-//                            VPY_OBJECT,
-//                            VPY_DEALLOC,
-//                            VPY_PRINT,
-//                            VPY_GETATTR,
-//                            VPY_SETATTR,
-//                            VPY_STR,
-//                            VPY_PURPOSE,
-//                            VPY_RICHCOMP,
-//                            VPY_AS_NUMBER)
-
-//
-// The type description structure
-//
-
-VISIT_PY_TYPE_OBJ(RenderingAttributesType,         \
-                  "RenderingAttributes",           \
-                  RenderingAttributesObject,       \
-                  RenderingAttributes_dealloc,     \
-                  RenderingAttributes_print,       \
-                  PyRenderingAttributes_getattr,   \
-                  PyRenderingAttributes_setattr,   \
-                  RenderingAttributes_str,         \
-                  RenderingAttributes_Purpose,     \
-                  RenderingAttributes_richcompare, \
-                  0); /* as_number*/
+VISIT_PY_TYPE_OBJ(RenderingAttributes);
 
 //
 // Helper function for comparing.
 //
 static PyObject *
-RenderingAttributes_richcompare(PyObject *self, PyObject *other, int op)
+PyRenderingAttributes_richcompare(PyObject *self, PyObject *other, int op)
 {
     // only compare against the same type 
-    if ( Py_TYPE(self) != &RenderingAttributesType
-         || Py_TYPE(other) != &RenderingAttributesType)
+    if ( Py_TYPE(self) != &PyRenderingAttributesType
+         || Py_TYPE(other) != &PyRenderingAttributesType)
     {
         Py_INCREF(Py_NotImplemented);
         return Py_NotImplemented;
     }
 
     PyObject *res = NULL;
-    RenderingAttributes *a = ((RenderingAttributesObject *)self)->data;
-    RenderingAttributes *b = ((RenderingAttributesObject *)other)->data;
+    RenderingAttributes *a = ((PyRenderingAttributesObject *)self)->data;
+    RenderingAttributes *b = ((PyRenderingAttributesObject *)other)->data;
 
     switch (op)
     {
@@ -2881,8 +3028,8 @@ static RenderingAttributes *currentAtts = 0;
 static PyObject *
 NewRenderingAttributes(int useCurrent)
 {
-    RenderingAttributesObject *newObject;
-    newObject = PyObject_NEW(RenderingAttributesObject, &RenderingAttributesType);
+    PyRenderingAttributesObject *newObject;
+    newObject = PyObject_NEW(PyRenderingAttributesObject, &PyRenderingAttributesType);
     if(newObject == NULL)
         return NULL;
     if(useCurrent && currentAtts != 0)
@@ -2893,14 +3040,15 @@ NewRenderingAttributes(int useCurrent)
         newObject->data = new RenderingAttributes;
     newObject->owns = true;
     newObject->parent = 0;
+    PyType_Ready(&PyRenderingAttributesType);
     return (PyObject *)newObject;
 }
 
 static PyObject *
 WrapRenderingAttributes(const RenderingAttributes *attr)
 {
-    RenderingAttributesObject *newObject;
-    newObject = PyObject_NEW(RenderingAttributesObject, &RenderingAttributesType);
+    PyRenderingAttributesObject *newObject;
+    newObject = PyObject_NEW(PyRenderingAttributesObject, &PyRenderingAttributesType);
     if(newObject == NULL)
         return NULL;
     newObject->data = (RenderingAttributes *)attr;
@@ -3002,13 +3150,13 @@ PyRenderingAttributes_GetMethodTable(int *nMethods)
 bool
 PyRenderingAttributes_Check(PyObject *obj)
 {
-    return (obj->ob_type == &RenderingAttributesType);
+    return (obj->ob_type == &PyRenderingAttributesType);
 }
 
 RenderingAttributes *
 PyRenderingAttributes_FromPyObject(PyObject *obj)
 {
-    RenderingAttributesObject *obj2 = (RenderingAttributesObject *)obj;
+    PyRenderingAttributesObject *obj2 = (PyRenderingAttributesObject *)obj;
     return obj2->data;
 }
 
@@ -3027,7 +3175,7 @@ PyRenderingAttributes_Wrap(const RenderingAttributes *attr)
 void
 PyRenderingAttributes_SetParent(PyObject *obj, PyObject *parent)
 {
-    RenderingAttributesObject *obj2 = (RenderingAttributesObject *)obj;
+    PyRenderingAttributesObject *obj2 = (PyRenderingAttributesObject *)obj;
     obj2->parent = parent;
 }
 

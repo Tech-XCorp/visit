@@ -63,6 +63,16 @@
 #  Make visitmodule depend on visitmodule_py_setup, so it will be built after
 #  the python module. Prevents pip install from deleting visitmodule.so
 #
+#  Kathleen Biagas, Thu Apr 17, 2025
+#  Remove DatabaseCorrelation, View2DAttributes, View3DAttributes from
+#  code-gen skipping. All customizations are in the .code files now.
+#
+#  Kathleen Biagas, Thu Aug 14, 2025
+#  Add FXAAOptions.
+#
+#  Kevin Griffin, Wed Sep 10, 2025
+#  Add AnariAttributes.
+#
 #****************************************************************************
 
 #########################################################
@@ -90,11 +100,6 @@
 
 #####################
 # Metadata Objects
-#####################
-
-
-#####################
-# Metadata Objects that we can't Code-Gen, or have customizations:
 #####################
 
 SET(PY_GEN_METADATA_OBJECTS
@@ -125,11 +130,9 @@ SET(PY_GEN_METADATA_OBJECTS
 #####################
 # State Objects that we can't Code-Gen, or have customizations:
 #####################
-# DatabaseCorrelation - NOT OK
-# View2DAttributes -- NOT OK -- need as_number worked out
-# View3DAttributes -- NOT OK -- need as_number worked out
 
 SET(PY_GEN_STATE_OBJECTS
+    AnariAttributes
     AnimationAttributes
     AnnotationAttributes
     Axes2D
@@ -144,7 +147,7 @@ SET(PY_GEN_STATE_OBJECTS
     ColorControlPointList
     ColorTableAttributes 
     ConstructDataBinningAttributes
-    # DatabaseCorrelation # (see above note)
+    DatabaseCorrelation
     DBOptionsAttributes
     EngineProperties
     ExportDBAttributes
@@ -152,6 +155,7 @@ SET(PY_GEN_STATE_OBJECTS
     ExpressionList
     FontAttributes
     FileOpenOptions
+    FXAAOptions
     GaussianControlPoint
     GaussianControlPointList
     GlobalAttributes
@@ -181,8 +185,8 @@ SET(PY_GEN_STATE_OBJECTS
     SelectionVariableSummary
     SelectionList
     ThresholdOpAttributes
-    #View2DAttributes # (see above note)
-    #View3DAttributes # (see above note)
+    View2DAttributes
+    View3DAttributes
     ViewAttributes
     AxisTitles
     ViewAxisArrayAttributes
@@ -290,6 +294,7 @@ visitpy/PyavtVectorMetaData.C
 
 
 SET(GENERATED_PY_SOURCES
+visitpy/PyAnariAttributes.C
 visitpy/PyAnimationAttributes.C 
 visitpy/PyAnnotationAttributes.C 
 visitpy/PyAxes2D.C 
@@ -314,6 +319,7 @@ visitpy/PyExpression.C
 visitpy/PyExpressionList.C 
 visitpy/PyFontAttributes.C 
 visitpy/PyFileOpenOptions.C 
+visitpy/PyFXAAOptions.C 
 visitpy/PyGaussianControlPoint.C 
 visitpy/PyGaussianControlPointList.C 
 visitpy/PyGlobalAttributes.C 
@@ -424,10 +430,8 @@ IF(NOT WIN32)
     IF(NOT APPLE)
         find_library(LIBRT rt)
         TARGET_LINK_LIBRARIES(cli ${LIBRT})
-        IF(NOT AIX)
-            # Is this a Python companion libary? We need it for unresolved openpty/forkpty
-            TARGET_LINK_LIBRARIES(cli util)
-        ENDIF(NOT AIX)
+        # Is this a Python companion libary? We need it for unresolved openpty/forkpty
+        TARGET_LINK_LIBRARIES(cli util)
     ENDIF(NOT APPLE)
 else()
     # resolve inconsistent dll-linkage problem
@@ -480,20 +484,18 @@ ELSE(VISIT_STATIC)
 ENDIF(VISIT_STATIC)
 
 #
-# For module setup of the pure python parts of the visit module
+# For module setup pure python visit modules
 #
-ADD_SUBDIRECTORY(visitmodule)
-# the visitmodule subdir added above creates the visitmodule_py_setup target
-# visitmodule needs to depend on it so it is built after the py module,
-# otherwise pip install will overwrite the directory and delete visitmodule.so
-target_link_libraries(visitmodule PRIVATE visitmodule_py_setup)
+ADD_SUBDIRECTORY(visit_module)
+ADD_SUBDIRECTORY(visit_launcher)
 ADD_SUBDIRECTORY(visit_utils)
 ADD_SUBDIRECTORY(visit_flow)
 
+# the visit compiled module depends on the dir structure from the python shell
+target_link_libraries(visitmodule PRIVATE visit_module_py_setup)
 
 IF(VISIT_PYTHON_FILTERS)
     ADD_SUBDIRECTORY(pyavt)
     ADD_SUBDIRECTORY(mpicom)
 ENDIF(VISIT_PYTHON_FILTERS)
 
-ADD_SUBDIRECTORY(pyui)

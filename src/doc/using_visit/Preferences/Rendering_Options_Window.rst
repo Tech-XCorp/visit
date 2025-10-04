@@ -3,7 +3,7 @@
 Rendering Options Window
 ------------------------
 
-The **Rendering options** window (shown in 
+The **Rendering options** window (shown in
 :numref:`Figure %s<Preferences-RenderingOptionsBasic>`) contains controls
 that set global options that affect how the plots in the active visualization
 window are drawn, as well as, look at information related to the performance
@@ -27,53 +27,7 @@ The **Antialiasing**, and **Specular lighting** options are covered in the
 
     The basic rendering options
 
-Changing surface representations
-""""""""""""""""""""""""""""""""
 
-Sometimes when visualizing large or complex databases, drawing plots with
-all of their shaded surfaces can take too long to be interactive, even for
-fast graphics hardware. To combat this problem, VisIt_ provides an option
-to view all of the plots in the visualization window as wireframe outlines
-or point clouds instead of as shaded surfaces (see
-:numref:`Figure %s<Preferences-SurfaceRepresentations>`). While being less
-visually informative, plots drawn as wireframe outlines or as clouds of
-points can still be useful for visualizations since it is possible to do
-the setup work like setting the view before switching back to a surface
-representation that is more costly to draw. To change the surface
-representation used to draw plots click on either the **Surfaces**,
-**Wireframe** or **Points** radio buttons below the **Draw objects as**
-label.
-
-.. _Preferences-SurfaceRepresentations:
-
-.. figure:: images/SurfaceRepresentations.png
-
-    The different surface representations
-
-Using display lists
-"""""""""""""""""""
-
-VisIt_ benefits from the use of hardware accelerated graphics and one of the
-concepts central to hardware accelerated graphics is the display list. A
-display list is a sequence of simple graphics commands that are stored in
-a computer's graphics hardware so the hardware can draw the object described
-by the display list several times more quickly than it could if the graphics
-commands were issued directly. VisIt_ tries to make maximum use of display
-lists when necessary so it can draw plots as fast as possible.
-
-By default, VisIt_ decides when to and when not to use display lists.
-Typically, when running VisIt_ on a local workstation with plots that result
-in fewer than a couple million graphics primitives, VisIt_ does not use
-display lists because the cost of creating them is more expensive than just
-drawing the graphics primitives without display lists. When running on a
-Unix version of VisIt_ on a remote computer and displaying the results
-back to a workstation using an X-server, it is almost always advantageous
-to create display lists for plot geometry. Without display lists, VisIt_
-must transmit the plot geometry over the network to the X-server every time
-it renders an image. VisIt_ can be set to either use or not use display
-lists all the time. To change the way VisIt_ uses display lists click on
-either the **Auto**, **Always** or **Never** radio buttons below the
-**Use display lists** label.
 
 Stereo images
 """""""""""""
@@ -159,6 +113,53 @@ It is also possible to have VisIt_ always or never use scalable rendering.
 To change the scalable rendering mode, click on either the **Auto**,
 **Always** or **Never** radio boxes under the **Use scalable rendering**
 label.
+
+ANARI Rendering
+~~~~~~~~~~~~~~~
+
+.. _Preferences-AnariRenderingOptions:
+
+.. figure:: images/AnariRenderingOptions.png
+
+    ANARI rendering options
+
+If VisIt_ is built with `ANARI <https://www.khronos.org/api/index_2017/anari/>`_ support by using the ``--anari`` option when building from source, the **ANARI rendering** section will appear in the **Rendering options** window under the **Advanced** tab.
+Once **Anari Rendering** is enabled, all surface rendering will be done using ANARI.
+This section contains options for controlling the ANARI rendering system.
+
+Back-end
+""""""""
+
+This option allows you to specify any ANARI supported back-end like `NVIDIA VisRTX <https://github.com/NVIDIA/VisRTX/>`_.
+The back-end is a library that implements the ANARI API and must be on your library path.
+You can specify **environment** if you've exported the **ANARI_LIBRARY** environment variable with the name of theback-end (e.g., ``export ANARI_LIBRARY=visrtx``).
+A list of supported back-ends and publicly available applications using ANARI can be found `here <https://github.com/KhronosGroup/ANARI-SDK/>`_.
+
+.. note::
+    ANARI back-ends are a software construct.
+    Because ANARI abstracts away the details of an entire rendering system, the underlying hardware which a back-end may use is entirely up to the implementation.
+    Please read your vendor's back-end documentation to see what parameters are available to configure and what underlying hardware is both available and used to render frames.
+
+Back-end Subtype
+""""""""""""""""
+
+This option allows you to specify the subtype of the back-end to use if supported by the back-end.
+The **default** option is most common and supported by all of the back-ends.
+
+Renderer
+""""""""
+
+This option allows you to specify the renderer to use with the back-end.
+Different renderers implement different algorithms, extensions, and support different materials.
+Every ANARI back-end offers a **default** renderer.
+See the vendor's documentation for details on the available renderers and their capabilities.
+
+Other Options
+"""""""""""""
+
+These options are specific to the **Back-end** and **Renderer** you are using and are generated at runtime.
+Hovering the mouse over the option label will show you a tooltip with more information.
+For more detailed information on the options, please refer to the vendor's documentation.
 
 Rendering Information
 ~~~~~~~~~~~~~~~~~~~~~

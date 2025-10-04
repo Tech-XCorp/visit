@@ -694,24 +694,6 @@ VisWindowProtectionProxy::ProxiedUpdateLightPositions()
     viswin->UpdateLightPositions();
 }
 
-// ****************************************************************************
-// Method: VisWindowProtectionProxy::ProxiedGetSurfaceRepresentation
-//
-// Purpose:
-//   Returns the surface representation.
-//
-// Programmer: Brad Whitlock
-// Creation:   Mon Sep 23 16:32:24 PST 2002
-//
-// Modifications:
-//
-// ****************************************************************************
-
-int
-VisWindowProtectionProxy::ProxiedGetSurfaceRepresentation()
-{
-    return viswin->GetSurfaceRepresentation();
-}
 
 // ****************************************************************************
 // Method: VisWindowProtectionProxy::ProxiedDisableExternalRenderRequests
@@ -799,9 +781,13 @@ VisWindowProtectionProxy::ProxiedReAddColleaguesToRenderWindow()
 // Programmer:  Kathleen Bonnell
 // Creation:    May 28, 2003
 //
+// Modifications:
+//   Kathleen Biagas, Mon July 28, 2025
+//   Antialiasing is now an int (enum).
+//
 // ****************************************************************************
 
-bool
+int
 VisWindowProtectionProxy::ProxiedGetAntialiasing()
 {
     return viswin->GetAntialiasing();
@@ -1234,5 +1220,25 @@ bool
 VisWindowProtectionProxy::ProxiedGetOsprayShadows()
 {
     return viswin->GetOsprayShadows();
+}
+#endif
+
+#ifdef HAVE_ANARI
+// ****************************************************************************
+// Method: VisWindowProtectionProxy::ProxiedGetAnariAttributes
+//
+// Purpose:     Get the ANARI attributes
+//
+// Returns:     A const reference to the ANARI attributes
+//
+// Programmer:  Kevin Griffin
+// Creation:    Wed 30 Mar 2022 03:43:48 PM PDT
+//
+// ****************************************************************************
+
+const AnariAttributes &
+VisWindowProtectionProxy::ProxiedGetAnariAttributes()
+{
+    return viswin->GetAnariAttributes();
 }
 #endif

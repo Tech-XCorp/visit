@@ -50,6 +50,12 @@
 #   even if QWT isn't found. This will preserve the ability for simulations
 #   to use the StripChart callbacks and not crash.
 #
+#   Kevin Griffin, Wed 05 Mar 2025 03:46:12 PM CST
+#   Added anari/AnariRenderingWidget
+#
+#   Kevin Griffin, Thu 05 Jun 2025
+#   Added anari/AnariParameterInfo
+#
 #****************************************************************************
 
 SET(GUILIB_SOURCES
@@ -206,7 +212,6 @@ QvisVariableListLimiter.C
 QvisVCRControl.C
 QvisViewWindow.C
 QvisViewportWidget.C
-QvisVisItUpdate.C
 QvisWindowBase.C
 QvisWizard.C
 QvisXRayImageQueryWidget.C
@@ -240,23 +245,30 @@ ${VISIT_SOURCE_DIR}/winutil
 ${VISIT_SOURCE_DIR}/third_party_builtin
 )
 
+if(HAVE_ANARI)
+    list(APPEND GUILIB_SOURCES
+            anari/AnariRenderingWidget.C
+            anari/AnariParameterInfo.C)
+    include_directories(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/anari)
+endif(HAVE_ANARI)
+
 SET(GUI_QT_LIBS
 ${QT_QTUITOOLS_LIBRARY}
-${QT_QTOPENGL_LIBRARY} 
-${QT_QTGUI_LIBRARY} 
-${QT_QTNETWORK_LIBRARY} 
-${QT_QTXML_LIBRARY} 
+${QT_QTOPENGL_LIBRARY}
+${QT_QTGUI_LIBRARY}
+${QT_QTNETWORK_LIBRARY}
+${QT_QTXML_LIBRARY}
 ${QT_QTCORE_LIBRARY}
 ${QT_QTPRINTSUPPORT_LIBRARY}
 )
 IF(VISIT_STATIC)
     SET(GUI_QT_LIBS
         ${GUI_QT_LIBS}
-        ${QT_QTCORE_LIB_DEPENDENCIES} 
-        ${QT_QTGUI_LIB_DEPENDENCIES} 
-        ${QT_QTOPENGL_LIB_DEPENDENCIES} 
-        ${QT_QTNETWORK_LIB_DEPENDENCIES} 
-        ${QT_QTXML_LIB_DEPENDENCIES} 
+        ${QT_QTCORE_LIB_DEPENDENCIES}
+        ${QT_QTGUI_LIB_DEPENDENCIES}
+        ${QT_QTOPENGL_LIB_DEPENDENCIES}
+        ${QT_QTNETWORK_LIB_DEPENDENCIES}
+        ${QT_QTXML_LIB_DEPENDENCIES}
         ${QT_QTUITOOLS_LIB_DEPENDENCIES}
     )
 ENDIF(VISIT_STATIC)
@@ -264,9 +276,7 @@ ENDIF(VISIT_STATIC)
 #***************************** The gui library *******************************
 ADD_LIBRARY(gui ${GUILIB_SOURCES})
 
-if(QT_VERSION VERSION_GREATER_EQUAL "6.2.0")
-    qt6_disable_unicode_defines(gui)
-endif()
+qt6_disable_unicode_defines(gui)
 
 set_target_properties(gui PROPERTIES AUTOMOC ON)
 
@@ -277,7 +287,7 @@ IF (WIN32)
     endif()
 ENDIF (WIN32)
 
-TARGET_LINK_LIBRARIES(gui 
+TARGET_LINK_LIBRARIES(gui
 viewerrpc
 viewerproxy
 visitcommon
@@ -286,6 +296,7 @@ mdserverproxy
 avtdbatts
 winutil
 ${GUI_QT_LIBS}
+$<$<BOOL:${HAVE_ANARI}>:anari::anari>
 )
 
 if(QWT_FOUND)
@@ -295,7 +306,7 @@ if(QWT_FOUND)
 endif()
 
 IF(APPLE)
-    SET_TARGET_PROPERTIES(gui 
+    SET_TARGET_PROPERTIES(gui
         PROPERTIES
         LINK_FLAGS "-framework Carbon"
     )
