@@ -1161,6 +1161,13 @@ QvisHostProfileWindow::CreateParallelSettingsGroup()
 //   Replace `currentIndexChanged` signal for QComboBox with
 //   'currentTextChanged' as the former is not available in Qt 6.
 // 
+//   Eric Brugger, Tue May 21 13:35:51 PDT 2024
+//   Add flux.
+//
+//   Eric Brugger, Mon Aug 26 10:54:18 PDT 2024
+//   Add jsrun, bsub/jsrun. Moved "bsub/mpirun", "flux/batch" and "flux/run"
+//   in the list, since they were in the wrong location.
+//
 // ****************************************************************************
 
 QWidget *
@@ -1181,9 +1188,9 @@ QvisHostProfileWindow::CreateLaunchSettingsGroup()
     launchMethod->addItem(tr("(default)"));
     launchMethod->addItem("aprun");
     launchMethod->addItem("bsub");
-    launchMethod->addItem("bsub/mpirun");
     launchMethod->addItem("dmpirun");
     launchMethod->addItem("ibrun");
+    launchMethod->addItem("jsrun");
     launchMethod->addItem("mpiexec");
     launchMethod->addItem("mpirun");
     launchMethod->addItem("msub");
@@ -1195,6 +1202,10 @@ QvisHostProfileWindow::CreateLaunchSettingsGroup()
     launchMethod->addItem("WindowsHPC");
     launchMethod->addItem("yod");
     launchMethod->addItem("lrun");
+    launchMethod->addItem("bsub/jsrun");
+    launchMethod->addItem("bsub/mpirun");
+    launchMethod->addItem("flux/batch");
+    launchMethod->addItem("flux/run");
     launchMethod->addItem("msub/aprun");
     launchMethod->addItem("msub/srun");
     launchMethod->addItem("psub/mpirun");

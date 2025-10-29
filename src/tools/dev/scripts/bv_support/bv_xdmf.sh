@@ -54,16 +54,20 @@ function bv_xdmf_host_profile
             "VISIT_OPTION_DEFAULT(VISIT_XDMF_DIR \${VISITHOME}/Xdmf/$XDMF_VERSION/\${VISITARCH})" \
             >> $HOSTCONF
         if [[ "$DO_VTK9" == "yes" ]] ; then
-            libdir="lib"
+            xml64=""
+            xmlsep="-"
             if test -e $VISITDIR/${VTK_INSTALL_DIR}/$VTK_VERSION/$VISITARCH/lib64 ; then
-                libdir="lib64"
+                xml64="64"
+            fi
+            if test -e $VISITDIR/${VTK_INSTALL_DIR}/$VTK_VERSION/$VISITARCH/lib${xml64}/libvtklibxml2.${VTK_SHORT_VERSION}.${SO_EXT}; then
+                xmlsep="."
             fi
             echo \
-                "VISIT_OPTION_DEFAULT(VISIT_XDMF_LIBDEP HDF5_LIBRARY_DIR hdf5 ${VISIT_HDF5_LIBDEP} \${VISITHOME}/vtk/\${VTK_VERSION}/\${VISITARCH}/${libdir} vtklibxml2-\${VTK_MAJOR_VERSION}.\${VTK_MINOR_VERSION} TYPE STRING)"\
+                "VISIT_OPTION_DEFAULT(VISIT_XDMF_LIBDEP HDF5_LIBRARY_DIR hdf5 ${VISIT_HDF5_LIBDEP} \${VISITHOME}/vtk/\${VTK_VERSION}/\${VISITARCH}/lib${xml64} vtklibxml2${xmlsep}\${VTK_MAJOR_VERSION}.\${VTK_MINOR_VERSION} TYPE STRING)"\
                     >> $HOSTCONF
         else
             echo \
-                "VISIT_OPTION_DEFAULT(VISIT_XDMF_LIBDEP HDF5_LIBRARY_DIR hdf5 ${VISIT_HDF5_LIBDEP} VTK_LIBRARY_DIRS vtklibxml2-\${VTK_MAJOR_VERSION}.\${VTK_MINOR_VERSION} ${VISIT_VTK_LIBDEP} TYPE STRING)"\
+                "VISIT_OPTION_DEFAULT(VISIT_XDMF_LIBDEP HDF5_LIBRARY_DIR hdf5 ${VISIT_HDF5_LIBDEP} VTK_LIBRARY_DIRS libvtklibxml2-\${VTK_MAJOR_VERSION}.\${VTK_MINOR_VERSION} ${VISIT_VTK_LIBDEP} TYPE STRING)"\
                 >> $HOSTCONF
         fi
     fi
@@ -119,9 +123,9 @@ EOF
 
 }
 
-function apply_xdmf_osx_patch
+function apply_xdmf_patch2
 {
-    info "Patching Xdmf 2.1.1 for Xcode 9 and up . . ."
+    info "Patching Xdmf 2.1.1 for null ptr fix . . ."
     patch -p0 << \EOF
 diff -c Xdmf/libsrc/XdmfDsmComm.cxx.orig Xdmf/libsrc/XdmfDsmComm.cxx
 *** Xdmf/libsrc/XdmfDsmComm.cxx.orig    Thu Aug 23 22:05:42 2018
@@ -162,57 +166,7 @@ diff -c Xdmf/libsrc/XdmfDsmComm.cxx.orig Xdmf/libsrc/XdmfDsmComm.cxx
       }
 EOF
     if [[ $? != 0 ]] ; then
-        warn "Xdmf 2.1.1 Xcode 9 patch failed."
-        return 1
-    fi
-
-    return 0;
-}
-
-function apply_xdmf_gcc_11_2_patch
-{
-    info "Patching Xdmf 2.1.1 for gcc 11.2 . . ."
-    patch -p0 << \EOF
-diff -c Xdmf/libsrc/XdmfDsmComm.cxx.orig Xdmf/libsrc/XdmfDsmComm.cxx
-*** Xdmf/libsrc/XdmfDsmComm.cxx.orig    Fri May 20 12:34:02 2022
---- Xdmf/libsrc/XdmfDsmComm.cxx         Fri May 20 12:34:50 2022
-***************
-*** 50,56 ****
-          XdmfErrorMessage("Cannot Receive Message of Length = " << Msg->Length);
-          return(XDMF_FAIL);
-      }
-!     if(Msg->Data <= 0 ){
-          XdmfErrorMessage("Cannot Receive Message into Data Buffer = " << Msg->Length);
-          return(XDMF_FAIL);
-      }
---- 50,56 ----
-          XdmfErrorMessage("Cannot Receive Message of Length = " << Msg->Length);
-          return(XDMF_FAIL);
-      }
-!     if(Msg->Data == (void*)0 ){
-          XdmfErrorMessage("Cannot Receive Message into Data Buffer = " << Msg->Length);
-          return(XDMF_FAIL);
-      }
-***************
-*** 64,70 ****
-          XdmfErrorMessage("Cannot Send Message of Length = " << Msg->Length);
-          return(XDMF_FAIL);
-      }
-!     if(Msg->Data <= 0 ){
-          XdmfErrorMessage("Cannot Send Message from Data Buffer = " << Msg->Length);
-          return(XDMF_FAIL);
-      }
---- 64,70 ----
-          XdmfErrorMessage("Cannot Send Message of Length = " << Msg->Length);
-          return(XDMF_FAIL);
-      }
-!     if(Msg->Data == (void*)0 ){
-          XdmfErrorMessage("Cannot Send Message from Data Buffer = " << Msg->Length);
-          return(XDMF_FAIL);
-      }
-EOF
-    if [[ $? != 0 ]] ; then
-        warn "Xdmf 2.1.1 gcc 11.2 failed."
+        warn "Xdmf 2.1.1 null ptr patch failed."
         return 1
     fi
 
@@ -227,27 +181,9 @@ function apply_xdmf_patch
             return 1
         fi
 
-        if [[ "$OPSYS" == "Darwin" ]] ; then
-                XCODE_VERSION="$(/usr/bin/xcodebuild -version)"
-                # this will catch Xcode 10 +, we don't have to worry about
-                # XCode 1, it shouldn't be in the wild and even if it was
-                # zero hope that current bv stack will build using
-                if [[ "$XCODE_VERSION" == "Xcode 9"* ||
-                      "$XCODE_VERSION" == "Xcode 1"* ]] ; then
-                    apply_xdmf_osx_patch
-                    if [[ $? != 0 ]] ; then
-                        return 1
-                    fi
-                fi
-        fi
-
-        if [[ "$OPSYS" == "Linux" ]]; then
-            if [[ "$C_COMPILER" == "gcc" ]]; then
-                apply_xdmf_gcc_11_2_patch
-                if [[ $? != 0 ]] ; then
-                    return 1
-                fi
-            fi
+        apply_xdmf_patch2
+        if [[ $? != 0 ]] ; then
+            return 1
         fi
     fi
 
@@ -301,17 +237,22 @@ function build_xdmf
     fi
 
     if [[ "$DO_VTK9" == "yes" ]] ; then
+        xml64=""
+        xmlsep="-"
         xmlinc=$VISITDIR/${VTK_INSTALL_DIR}/$VTK_VERSION/$VISITARCH/include/vtk-${VTK_SHORT_VERSION}/vtklibxml2/include
         if test -e $VISITDIR/${VTK_INSTALL_DIR}/$VTK_VERSION/$VISITARCH/lib64 ; then
-            xmllib=$VISITDIR/${VTK_INSTALL_DIR}/$VTK_VERSION/$VISITARCH/lib64/libvtklibxml2-${VTK_SHORT_VERSION}.${SO_EXT}
-        else
-            xmllib=$VISITDIR/${VTK_INSTALL_DIR}/$VTK_VERSION/$VISITARCH/lib/libvtklibxml2-${VTK_SHORT_VERSION}.${SO_EXT}
+            xml64="64"
         fi
+        if test -e $VISITDIR/${VTK_INSTALL_DIR}/$VTK_VERSION/$VISITARCH/lib${xml64}/libvtklibxml2.${VTK_SHORT_VERSION}.${SO_EXT}; then
+            xmlsep="."
+        fi
+        xmllib=$VISITDIR/${VTK_INSTALL_DIR}/$VTK_VERSION/$VISITARCH/lib${xml64}/libvtklibxml2${xmlsep}${VTK_SHORT_VERSION}.${SO_EXT}
     else
         xmlinc=$VISITDIR/${VTK_INSTALL_DIR}/$VTK_VERSION/$VISITARCH/include/vtk-${VTK_SHORT_VERSION}/vtklibxml2
         xmllib=$VISITDIR/${VTK_INSTALL_DIR}/$VTK_VERSION/$VISITARCH/lib/libvtklibxml2-${VTK_SHORT_VERSION}.${SO_EXT}
     fi
 
+    set -x
     ${CMAKE_BIN} -DCMAKE_INSTALL_PREFIX:PATH="$VISITDIR/Xdmf/${XDMF_VERSION}/${VISITARCH}"\
                  -DCMAKE_BUILD_TYPE:STRING="${VISIT_BUILD_MODE}" \
                  -DCMAKE_BUILD_WITH_INSTALL_RPATH:BOOL=ON \
@@ -334,6 +275,7 @@ function build_xdmf
                  -DLIBXML2_INCLUDE_PATH:PATH="${xmlinc}" \
                  -DLIBXML2_LIBRARY:FILEPATH="${xmllib}" \
                  .
+    set +x
 
     if [[ $? != 0 ]] ; then
         warn "Xdmf configure failed.  Giving up"

@@ -1,13 +1,16 @@
  
 function bv_qt6_initialize
 {
-    export DO_QT6="no"
+    export DO_QT6="yes"
 }
 
 function bv_qt6_enable
 { 
-    DO_QT6="yes"
-    DO_QT="no"
+    if [[ "$DO_QT" == "no" ]] ; then
+        DO_QT6="yes"
+    else
+        DO_QT6="no"
+    fi
 }
 
 function bv_qt6_disable
@@ -28,7 +31,6 @@ function bv_qt6_info
 {
     export QT6_VERSION=${QT6_VERSION:-"6.4.2"}
     export QT6_SHORT_VERSION=${QT6_SHORT_VERSION:-"6.4"}
-    export QT6_URL=${QT6_URL:-"https://download.qt.io/archive/qt/${QT6_SHORT_VERSION}/${QT6_VERSION}/submodules"}
     export QT6_BASE_FILE=${QT6_BASE_FILE:-"qtbase-everywhere-src-${QT6_VERSION}.tar.xz"}
     export QT6_BASE_SOURCE_DIR=${QT6_BASE_SOURCE_DIR:-"qtbase-everywhere-src-${QT6_VERSION}"}
     export QT6_BASE_SHA256_CHECKSUM="a88bc6cedbb34878a49a622baa79cace78cfbad4f95fdbd3656ddb21c705525d"
@@ -90,13 +92,59 @@ function bv_qt6_ensure
     return 0
 }
 
+
 function apply_qt6_base_patch
 {
      if [[ "$OPSYS" == "Darwin" ]]; then
-        qt6_macos_13_cpp_stdlib_issue_patch 
+
+        qt6_macos_13_cpp_stdlib_issue_patch
         if [[ $? != 0 ]] ; then
             return 1
         fi
+
+        qt6_macos_14_xcode_15_patch
+        if [[ $? != 0 ]] ; then
+            return 1
+        fi
+
+    fi
+    qt6_xkbcommon_patch
+    if [[ $? != 0 ]] ; then
+        return 1
+    fi
+}
+
+function qt6_xkbcommon_patch
+{
+    info "Patching qt 6 for xkbcommon issue"
+    patch -p0 << \EOF
+-- qtbase-everywhere-src-6.4.2/src/gui/platform/unix/qxkbcommon.cpp.orig	2024-05-21 08:51:16.000000000 -0700
++++ qtbase-everywhere-src-6.4.2/src/gui/platform/unix/qxkbcommon.cpp	2024-05-21 08:50:33.000000000 -0700
+@@ -236,16 +236,20 @@
+         Xkb2Qt<XKB_KEY_dead_O,                  Qt::Key_Dead_O>,
+         Xkb2Qt<XKB_KEY_dead_u,                  Qt::Key_Dead_u>,
+         Xkb2Qt<XKB_KEY_dead_U,                  Qt::Key_Dead_U>,
+         Xkb2Qt<XKB_KEY_dead_small_schwa,        Qt::Key_Dead_Small_Schwa>,
+         Xkb2Qt<XKB_KEY_dead_capital_schwa,      Qt::Key_Dead_Capital_Schwa>,
+         Xkb2Qt<XKB_KEY_dead_greek,              Qt::Key_Dead_Greek>,
++/* The following for XKB_KEY_dead keys got removed in libxkbcommon 1.6.0
++   The define check is kind of version check here. */
++#ifdef XKB_KEY_dead_lowline
+         Xkb2Qt<XKB_KEY_dead_lowline,            Qt::Key_Dead_Lowline>,
+         Xkb2Qt<XKB_KEY_dead_aboveverticalline,  Qt::Key_Dead_Aboveverticalline>,
+         Xkb2Qt<XKB_KEY_dead_belowverticalline,  Qt::Key_Dead_Belowverticalline>,
+         Xkb2Qt<XKB_KEY_dead_longsolidusoverlay, Qt::Key_Dead_Longsolidusoverlay>,
++#endif
+ 
+         // Special keys from X.org - This include multimedia keys,
+         // wireless/bluetooth/uwb keys, special launcher keys, etc.
+         Xkb2Qt<XKB_KEY_XF86Back,                Qt::Key_Back>,
+         Xkb2Qt<XKB_KEY_XF86Forward,             Qt::Key_Forward>,
+         Xkb2Qt<XKB_KEY_XF86Stop,                Qt::Key_Stop>,
+EOF
+    if [[ $? != 0 ]] ; then
+        warn "Patching qt 6 for xkbcommon issue failed"
+        return 1
     fi
 }
 
@@ -105,7 +153,7 @@ function qt6_macos_13_cpp_stdlib_issue_patch
 {
     info "Patching qt 6 for macOS c++ stdlib issue"
 
-    patch -p0 <<EOF
+    patch -p0 << \EOF
 diff -crB qtbase-everywhere-src-6.4.2/src/corelib/tools/qduplicatetracker_p.h qtbase-everywhere-src-6.4.2-patched/src/corelib/tools/qduplicatetracker_p.h
 *** qtbase-everywhere-src-6.4.2/src/corelib/tools/qduplicatetracker_p.h	Tue Nov 15 23:54:24 2022
 --- qtbase-everywhere-src-6.4.2-patched/src/corelib/tools/qduplicatetracker_p.h	Wed Oct 25 13:14:40 2023
@@ -193,6 +241,47 @@ EOF
         return 1
     fi
 }
+
+function qt6_macos_14_xcode_15_patch
+{
+    info "Patching qt 6 for macOS xcode 15 with toolchain fix"
+
+    patch -p0 << \EOF
+diff --git qtbase-everywhere-src-6.4.2/mkspecs/features/toolchain.prf qtbase-everywhere-src-6.4.2-patched/mkspecs/features/toolchain.prf
+index 0040b6c..bfad10d 100644
+--- qtbase-everywhere-src-6.4.2/mkspecs/features/toolchain.prf
++++ qtbase-everywhere-src-6.4.2-patched/mkspecs/features/toolchain.prf
+@@ -288,9 +288,12 @@
+                 }
+             }
+         }
+-        isEmpty(QMAKE_DEFAULT_LIBDIRS)|isEmpty(QMAKE_DEFAULT_INCDIRS): \
++        isEmpty(QMAKE_DEFAULT_INCDIRS): \
+             !integrity: \
+-                error("failed to parse default search paths from compiler output")
++                error("failed to parse default include paths from compiler output")
++        isEmpty(QMAKE_DEFAULT_LIBDIRS): \
++            !integrity:!darwin: \
++                error("failed to parse default library paths from compiler output")
+         QMAKE_DEFAULT_LIBDIRS = $$unique(QMAKE_DEFAULT_LIBDIRS)
+     } else: ghs {
+         cmd = $$QMAKE_CXX $$QMAKE_CXXFLAGS -$${LITERAL_HASH} -o /tmp/fake_output /tmp/fake_input.cpp
+@@ -411,7 +414,7 @@
+         QMAKE_DEFAULT_INCDIRS = $$split(INCLUDE, $$QMAKE_DIRLIST_SEP)
+     }
+ 
+-    unix:if(!cross_compile|host_build) {
++    unix:!darwin:if(!cross_compile|host_build) {
+         isEmpty(QMAKE_DEFAULT_INCDIRS): QMAKE_DEFAULT_INCDIRS = /usr/include /usr/local/include
+         isEmpty(QMAKE_DEFAULT_LIBDIRS): QMAKE_DEFAULT_LIBDIRS = /lib /usr/lib
+     }
+EOF
+    if [[ $? != 0 ]] ; then
+        warn "Patching qt 6 for macOS xcode 15 with toolchain fix failed"
+        return 1
+    fi
+}
+
 
 function build_qt6_base
 {
@@ -397,19 +486,10 @@ function build_qt6_tools
     fi
 
     cd ${QT6_TOOLS_BUILD_DIR}
-    copts="-DQt6_DIR:PATH=${QT6_INSTALL_DIR}/lib/cmake/Qt6"
-    copts="${copts} -DCMAKE_INSTALL_PREFIX:PATH=${QT6_INSTALL_DIR}"
-    copts="${copts} -DCMAKE_CXX_STANDARD:STRING=17"
-    copts="${copts} -DCMAKE_CXX_STANDARD_REQUIRED:BOOL=ON"
-    info "qt6 tools options: $copts"
-    info "cmake_install ${CMAKE_INSTALL}"
-    info "cmake_command ${CMAKE_COMMAND}"
-    qt6_path="${CMAKE_INSTALL}:$PATH"
-    info "qt6 tools path: $qt6_path"
    
     info "Configuring Qt6 tools . . . "
-    env PATH="${qt6_path}" CC="${C_COMPILER}" CXX="${CXX_COMPILER}"  \
-        ${CMAKE_COMMAND} ${copts} ../${QT6_TOOLS_SOURCE_DIR}
+    env CC="${C_COMPILER}" CXX="${CXX_COMPILER}"  \
+        ${QT6_INSTALL_DIR}/bin/qt-configure-module  ../${QT6_TOOLS_SOURCE_DIR}
 
     info "Building Qt6 tools . . . "
     ${CMAKE_COMMAND} --build . --parallel $MAKE_OPT_FLAGS
@@ -450,19 +530,10 @@ function build_qt6_svg
     fi
 
     cd ${QT6_SVG_BUILD_DIR}
-    copts="-DQt6_DIR:PATH=${QT6_INSTALL_DIR}/lib/cmake/Qt6"
-    copts="${copts} -DCMAKE_INSTALL_PREFIX:PATH=${QT6_INSTALL_DIR}"
-    copts="${copts} -DCMAKE_CXX_STANDARD:STRING=17"
-    copts="${copts} -DCMAKE_CXX_STANDARD_REQUIRED:BOOL=ON"
-    info "qt6 svg options: $copts"
-    info "cmake_install ${CMAKE_INSTALL}"
-    info "cmake_command ${CMAKE_COMMAND}"
-    qt6_path="${CMAKE_INSTALL}:$PATH"
-    info "qt6 svg path: $qt6_path"
 
     info "Configuring Qt6 svg . . . "
-    env PATH="${qt6_path}" CC="${C_COMPILER}" CXX="${CXX_COMPILER}"  \
-        ${CMAKE_COMMAND} ${copts} ../${QT6_SVG_SOURCE_DIR} 
+    env CC="${C_COMPILER}" CXX="${CXX_COMPILER}"  \
+        ${QT6_INSTALL_DIR}/bin/qt-configure-module  ../${QT6_SVG_SOURCE_DIR}
 
     info "Building Qt6 svg . . . "
     ${CMAKE_COMMAND} --build . --parallel $MAKE_OPT_FLAGS

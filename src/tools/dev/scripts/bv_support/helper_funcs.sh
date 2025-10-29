@@ -1,4 +1,4 @@
-export LOG_FILE=${LOG_FILE:-"${0##*/}_log"}
+export LOG_FILE=${LOG_FILE:-"$(pwd)/${0##*/}_log"}
 
 # *************************************************************************** #
 # Purpose: Flexible comparison function for version strings                   #
@@ -189,11 +189,7 @@ function error
              "the VisIt project via https://visit-help.llnl.gov. You may "\
              "need to compress the ${LOG_FILE} using a program like gzip "\
              "so it will fit within the size limits for attachments."
-        if [[ -n "$START_DIR" ]]; then
-            info "Log file full path: " ${START_DIR}/${LOG_FILE}
-        else
-            info "Log file full path: " $(pwd)/${LOG_FILE}
-        fi
+        info "Log file full path: " ${LOG_FILE}
     fi
     exit 1
 }
@@ -607,20 +603,34 @@ function download_file
 #   Specify explicit path to system curl so that we do not use another
 #   version without SSL support
 #
+#   Mark C. Miller, Thu Mar 21 10:39:14 PDT 2024
+#   Use trap to prevent interruptions to downloads which can leave
+#   corrupted tarballs.
 # ***************************************************************************
 
 function try_download_file
 {
+    no_download_tool=0
+
+    trap '' SIGINT SIGTERM SIGHUP SIGQUIT
+
     if [[ "$OPSYS" == "Darwin" ]]; then
         # MaxOS X comes with curl
         /usr/bin/curl -ksfLO $1
     else
         check_wget
         if [[ $? != 0 ]] ; then
-            error "Need to download $1, but \
-                   cannot locate the wget utility to do so."
+            no_download_tool=1
+        else
+            wget $WGET_OPTS -o /dev/null $1
         fi
-        wget $WGET_OPTS -o /dev/null $1
+    fi
+
+    trap - SIGINT SIGTERM SIGHUP SIGQUIT
+
+    if [[ ${no_download_tool} -ne 0 ]]; then
+        error "Need to download $1, but \
+               cannot locate a download utility to do so."
     fi
 
     verify_checksum_by_lookup `basename $1`

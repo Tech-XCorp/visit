@@ -16,7 +16,6 @@ import time
 
 import glob
 import re
-import plistlib  # Generate and parse macOS .plist files
 
 from os.path import join as pjoin
 
@@ -196,7 +195,7 @@ def timedelta(t_start,t_end):
             "minutes":minutes,
             "seconds": seconds}
 
-def shexe(cmd,ret_output=False,echo = False,env=None):
+def shexe(cmd,ret_output=False,echo=False,env=None,redirect=None):
         """ Helper for executing shell commands. """
         kwargs = {"shell":True}
         if not env is None:
@@ -211,7 +210,13 @@ def shexe(cmd,ret_output=False,echo = False,env=None):
             res = p.communicate()[0]
             return p.returncode,res
         else:
-            return subprocess.call(cmd,**kwargs),""
+            if redirect is not None:
+                with open(redirect, 'w') as file:
+                    kwargs["stdout"] = file
+                    kwargs["stderr"] = subprocess.STDOUT
+                    return subprocess.call(cmd,**kwargs),""
+            else:
+                return subprocess.call(cmd,**kwargs),""
 
 class Context(object):
     def __init__(self,enable_logging=True,log_dir=None):
@@ -318,7 +323,8 @@ class NotarizeAction(Action):
                  type="notarize",
                  description=None,
                  halt_on_error=True,
-                 env=None):
+                 env=None,
+                 redirect=None):
         super(NotarizeAction,self).__init__()
         self.params["build_dir"] = build_dir
         self.params["build_type"] = build_type
@@ -334,6 +340,7 @@ class NotarizeAction(Action):
         self.params["description"] = description
         self.params["halt_on_error"] = halt_on_error
         self.params["env"] = env
+        self.params["redirect"] = redirect
 
     def execute(self,base,key,tag,parent_res):
         t_start = timenow();
@@ -353,6 +360,7 @@ class NotarizeAction(Action):
                 "password": self.params["password"],
                 "asc_provider": self.params["asc_provider"],
                 "env": self.params["env"],
+                "redirect": self.params["redirect"],
                 "start_time":  timestamp(t_start),
                 "halt_on_error": self.params["halt_on_error"],
                 "finish_time":  None,
@@ -389,8 +397,7 @@ class NotarizeAction(Action):
                     cmd = 'codesign --force --options runtime --timestamp'
                     cmd += ' --entitlements %s' % self.params["entitlements"]
                     cmd += ' -s "%s" %s' % (self.params["cert"], binary)
-                    rcode, rout = shexe(cmd, ret_output=True, echo=True, env=env)
-                    print("[res: %s]" % rout)
+                    rcode, rout = shexe(cmd, ret_output=True, env=env)
 
             # codesign VisIt.app
             visit_app = pjoin(bundle_dir, "VisIt-%s/VisIt.app" % self.params["build_version"])
@@ -398,7 +405,6 @@ class NotarizeAction(Action):
             cmd += ' --entitlements %s' % self.params["entitlements"]
             cmd += ' -s "%s" %s' % (self.params["cert"], visit_app) 
             rcode, rout = shexe(cmd, ret_output=True, echo=True, env=env)
-            print("[res: %s]" % rout)
 
             # Create DMG to upload to Apple
             notarize_dir = pjoin(self.params["build_dir"], "notarize.%s" % self.params["build_type"])
@@ -419,6 +425,13 @@ class NotarizeAction(Action):
             # the dmg creation process is unreliable, it can often fail with:
             #   hdiutil: create failed - Resource busy 
             # but then works fine on subsequent tries, so we try here multiple times
+            #
+            # NOTE (miller86) Mark C. Miller, Fri Dec 13 19:12:02 PST 2024
+            # I believe the "Resource busy" condition we sometimes hit is actually not
+            # from hdiutil commands here but instead down in CMake's `make package`
+            # logic when large parallel task counts are used (e.g. -j8 or more).
+            # So, in the trigger in the bootstrap, we override nthreads to 1 there in
+            # hopes of preventing the "Resource busy" error in hdiutil commands.
             ##########################################################################
 
             dmg_created = False
@@ -439,47 +452,49 @@ class NotarizeAction(Action):
                 raise RuntimeError(msg, cmd, dmg_create_output)
 
             ######################################
-            # Upload to Apple Notary Service 
+            # Submit to Apple Notary Service 
             ######################################
-
-            cmd = "xcrun altool --notarize-app"
-            cmd += " --primary-bundle-id %s" % self.params["bundle_id"]
-            cmd += " --username %s" % self.params["username"]
-            cmd += " --password %s" % self.params["password"]
-            cmd += " --asc-provider %s" % self.params["asc_provider"]
-            cmd += " --file %s" % temp_dmg 
-            cmd += " --output-format xml"
+            cmd = 'xcrun notarytool submit'
+            cmd += ' --apple-id "%s"' % self.params["username"]
+            cmd += ' --keychain-profile %s' % self.params["password"]
+            cmd += ' --team-id %s' % self.params["asc_provider"]
+            cmd += ' --output-format json'
+            cmd += ' %s' % temp_dmg
             rcode, rout = shexe(cmd, ret_output=True, echo=True, env=env)
             if rcode != 0:
-                raise RuntimeError("[error submitting VisIt dmg for notarization]", cmd)
+                raise RuntimeError("[error submitting VisIt dmg for notarization, error='%s']"%rout, cmd)
 
-            pl = plistlib.readPlistFromString(rout)
-            uuid = pl["notarization-upload"]["RequestUUID"]
-            print("[uuid: %s]" % uuid)
+            jr = json.loads(rout)
+            uuid = jr.get("id")
+            print("[id: %s]" % uuid)
 
             # Check status of notarization request
-            cmd = "xcrun altool --notarization-info %s" % uuid
-            cmd += " --username %s" % self.params["username"]
-            cmd += " --password %s" % self.params["password"]
-            cmd += " --output-format xml"
+            cmd = 'xcrun notarytool info'
+            cmd += ' --apple-id "%s"' % self.params["username"]
+            cmd += ' --keychain-profile %s' % self.params["password"]
+            cmd += ' --team-id %s' % self.params["asc_provider"]
+            cmd += ' --output-format json'
+            cmd += ' %s' % uuid
 
             status = "in progress"
-            while status == "in progress":
-                time.sleep(30)
+            while "progress" in status:
+                time.sleep(120) # check status every two minutes
                 rcode, rout = shexe(cmd, ret_output=True, echo=True, env=env)
-                pl = plistlib.readPlistFromString(rout)
-                status = pl["notarization-info"]["Status"]
-                status = status.strip()
-                print("[status: %s]" % status)
+                jr = json.loads(rout)
+                status = jr.get("status").strip().lower()
+                print('Status check result: %s ("%s")'%(status,rout))
              
-            ###################################
+            #################################################################
             # Staple notarization ticket to app bundle
-            ###################################
+            # NOTE: Mark C. Miller, Sat Dec 14 09:06:34 PST 2024
+            # Stapling helps users who are not connected to a network still
+            # be able to validate the VisIt .dmg download before using it.
+            #################################################################
 
-            if status == "success":
+            if "accepted" in status:
                 cmd = "xcrun stapler staple %s" % visit_app
                 rcode, rout = shexe(cmd, ret_output=True, echo=True, env=env)
-                print("[stapler: %s]" % rout)
+                print('[stapler result: "%s"]' % rout)
                 if rcode != 0:
                     raise RuntimeError("[error stapling VisIt (bad network or on VPN?)]", cmd)
 
@@ -487,16 +502,17 @@ class NotarizeAction(Action):
                 dmg_stapled = pjoin(notarize_dir, "VisIt.stpl.dmg")
                 cmd = "hdiutil create -srcFolder %s -o %s" % (src_folder, dmg_stapled)
                 rcode, rout = shexe(cmd, ret_output=True, echo=True, env=env)
-                print("[hdiutil: %s]" % rout)
+                print('[hdiutil result: "%s"]' % rout)
                 if rcode != 0:
                     raise RuntimeError("[error creating stapled VisIt.stpl.dmg]", cmd)
 
-                dmg_release = pjoin(notarize_dir, "VisIt-%s.dmg" % self.params["build_version"])
+                final_dmg_name = "visit%s.darwin%s-%s.dmg" % (self.params["build_version"].replace('.','_'),os.uname().release[0:2],os.uname().machine)
+                dmg_release = pjoin(notarize_dir, final_dmg_name)
                 cmd = "hdiutil convert %s -format UDZO -o %s" % (dmg_stapled, dmg_release)
                 rcode, rout = shexe(cmd, ret_output=True, echo=True, env=env)
-                print("[hdiutil:convert: %s]" % rout)
+                print('[hdiutil convert result: "%s"]' % rout)
                 if rcode != 0:
-                    raise RuntimeError("[error creating final VisIt-{0}.dmg]".format(self.params["build_version"]), cmd)
+                    raise RuntimeError("[error creating final {0}]".format(final_dmg_name), cmd)
             else:
                 raise RuntimeError("Notarization Failed!")
         except KeyboardInterrupt as e:
@@ -521,7 +537,8 @@ class ShellAction(Action):
                  working_dir=None,
                  description=None,
                  halt_on_error=True,
-                 env=None):
+                 env=None,
+                 redirect=None):
         super(ShellAction,self).__init__()
         self.params["cmd"]  = cmd
         self.params["type"] = type
@@ -533,6 +550,7 @@ class ShellAction(Action):
             description = ""
         self.params["description"] = description
         self.params["env"] = env
+        self.params["redirect"] = redirect
     def execute(self,base,key,tag,parent_res):
         t_start = timenow();
         res = {"action":
@@ -543,6 +561,7 @@ class ShellAction(Action):
                 "description": self.params["description"],
                 "working_dir": self.params["working_dir"],
                 "env": self.params["env"],
+                "redirect": self.params["redirect"],
                 "start_time":  timestamp(t_start),
                 "halt_on_error": self.params["halt_on_error"],
                 "finish_time":  None,
@@ -553,6 +572,8 @@ class ShellAction(Action):
         base.log(key=key,result=parent_res)
         cwd = os.path.abspath(os.getcwd())
         env = os.environ.copy()
+        redirect=self.params["redirect"]
+        ret_output = True if redirect is None else False
         if not self.params["env"] is None:
             env.update(self.params["env"])
         try:
@@ -562,9 +583,10 @@ class ShellAction(Action):
             print("[chdir to: %s]" % self.params["working_dir"])
             os.chdir(self.params["working_dir"])
             rcode, rout = shexe(self.params["cmd"],
-                               ret_output=True,
+                               ret_output=ret_output,
                                echo=True,
-                               env=env)
+                               env=env,
+                               redirect=self.params["redirect"])
             res["action"]["output"] = rout
             res["action"]["return_code"]  = rcode
         except KeyboardInterrupt as e:
@@ -631,14 +653,16 @@ class CMakeAction(ShellAction):
                  working_dir=None,
                  description=None,
                  halt_on_error=True,
-                 env=None):
+                 env=None,
+                 redirect="cmake.out"):
         cmd = " ".join([cmake_bin,cmake_opts,src_dir])
         super(CMakeAction,self).__init__(cmd=cmd,
                                          type="cmake",
                                          working_dir=working_dir,
                                          description=description,
                                          halt_on_error=halt_on_error,
-                                         env=env)
+                                         env=env,
+                                         redirect="cmake.out")
         self.params["src_dir"]    = src_dir
         self.params["cmake_opts"] = cmake_opts
         self.params["cmake_bin"]  = cmake_bin
@@ -651,7 +675,8 @@ class MakeAction(ShellAction):
                  working_dir=None,
                  description=None,
                  halt_on_error=True,
-                 env=None):
+                 env=None,
+                 redirect="make.out"):
         cmd = " ".join([make_bin,
                         "-j%d" % nthreads,
                         target])
@@ -660,10 +685,11 @@ class MakeAction(ShellAction):
                                         working_dir=working_dir,
                                         description=description,
                                         halt_on_error=halt_on_error,
-                                        env=env)
-        self.params["target"]    = target
-        self.params["nthreads"]  = nthreads
-        self.params["make_bin"]   =make_bin
+                                        env=env,
+                                        redirect="make.out")
+        self.params["target"]   = target
+        self.params["nthreads"] = nthreads
+        self.params["make_bin"] = make_bin
 
 class InorderTrigger(Action):
     def __init__(self,actions=None):

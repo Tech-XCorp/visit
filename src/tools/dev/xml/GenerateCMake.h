@@ -189,6 +189,15 @@
 //    Kathleen Biagas, Wed Nov  8 10:16:09 PST 2023
 //    VTK9 targets need to be handled differently for non-dev.
 //
+//    Kathleen Biagas, Thu May 2, 2024
+//    Move CXX_STANDARD settings to apply only to GUI.
+//    Add -ZC:__cplusplus for MSVC.
+//    Add 'VISIT_PLUGIN_TARGET_OUTPUT_DIR' only for Dev builds.
+//
+//    Kathleen Biagas, Wed Sep 18, 2024
+//    Add 'FilterConditionalLibs' so that VTKM version can be appended to
+//    vtkm_ libraries when run outside dev environment (eg pluginVsInstall).
+//
 // ****************************************************************************
 
 class CMakeGeneratorPlugin : public Plugin
@@ -273,6 +282,30 @@ class CMakeGeneratorPlugin : public Plugin
                 s += (ConvertDollarParenthesis(vec[i]) + " ");
         }
         return s;
+    }
+
+    void
+    FilterConditionalLibs(QString &links, QString &libs)
+    {
+#ifdef HAVE_LIBVTKM
+        // Will convert vtkm_xxx to vtkm_xxx-version
+        // otherwise will leave it alone.
+        QString vtkmversion = QString("-%1").arg(VTKM_SMALL);
+
+        QStringList newlist = links.split(" ");
+        for(int i = 0; i < newlist.size(); ++i)
+        {
+            QString tmp(newlist[i]);
+            if(tmp.startsWith("vtkm_") && !using_dev)
+            {
+                // append the vtkm version
+                tmp.append(vtkmversion);
+            }
+            libs += " " + tmp;
+        }
+#else
+        libs = links;
+#endif
     }
 
     void
@@ -485,8 +518,10 @@ class CMakeGeneratorPlugin : public Plugin
         {
             for (int i = 0; i < conditions.size(); ++i)
             {
+                QString libs;
+                FilterConditionalLibs(links[i], libs);
                 out << indent << "if(" << conditions[i] << ")" << Endl;
-                out << indent << "    target_link_libraries(" << libType << target << plugType << " " << links[i] << ")" << Endl;
+                out << indent << "    target_link_libraries(" << libType << target << plugType << " " << libs << ")" << Endl;
                 out << indent << "endif()" << Endl;
                 out << Endl;
             }
@@ -702,11 +737,6 @@ class CMakeGeneratorPlugin : public Plugin
                          const QString &viewerlibname)
     {
         bool useFortran = false;
-        if (!using_dev)
-        {
-            out << "# Needed due to Qt 6 (until VisIt proper requires it" << Endl;
-            out << "set(CMAKE_CXX_STANDARD 17)" << Endl;
-        }
 
         out << "PROJECT(" << name<< "_" << type << ")" << Endl;
         out << Endl;
@@ -908,6 +938,20 @@ class CMakeGeneratorPlugin : public Plugin
         if (!vtk8_glibs.empty())
             out << "${vtk_glibs} ";
         out << ")" << Endl;
+        if (!using_dev)
+        {
+            out << "    # Qt 6 requires CXX 17 (Visit proper currently doesn't)." << Endl;
+            out << "    # We don't get the flags for free when building against" << Endl;
+            out << "    # an install, so need to set them for the G target here." << Endl;
+            out << "    set_target_properties(G" << name << ptype << Endl;
+            out << "           PROPERTIES CXX_STANDARD 17)" << Endl;
+            out << "    if(MSVC AND MSVC_VERSION GREATER_EQUAL 1913)" << Endl;
+            out << "        set_target_properties(G" << name << ptype << Endl;
+            out << "            PROPERTIES " << Endl;
+            out << "                COMPILE_OPTIONS \"-Zc:__cplusplus;-permissive-\")" << Endl;
+            out << "    endif()" << Endl;
+            out << Endl;
+        }
         WriteCMake_ConditionalTargetLinks(out, name, "G", ptype, "    ");
         out << Endl;
 
@@ -962,10 +1006,6 @@ class CMakeGeneratorPlugin : public Plugin
         out << "        )" << Endl;
         WriteCMake_ConditionalSources(out, "S", "        ");
         out << "        ADD_LIBRARY(S"<<name<<ptype<<" ${LIBS_SOURCES})" << Endl;
-        out << "        IF(WIN32)" << Endl;
-        out << "            # This prevents python from #defining snprintf as _snprintf" << Endl;
-        out << "            SET_TARGET_PROPERTIES(S"<<name<<ptype<<" PROPERTIES COMPILE_DEFINITIONS HAVE_SNPRINTF)" << Endl;
-        out << "        ENDIF()" << Endl;
         out << "        TARGET_LINK_LIBRARIES(S" << name << ptype
             << " visitcommon visitpy ${PYTHON_LIBRARY})" << Endl;
         WriteCMake_ConditionalTargetLinks(out, name, "S", ptype, "        ");
@@ -993,10 +1033,13 @@ class CMakeGeneratorPlugin : public Plugin
         CMakeAdd_EngineTargets(out);
 
         out << "VISIT_INSTALL_" << type.toUpper() << "_PLUGINS(${INSTALLTARGETS})" << Endl;
-        out << "VISIT_PLUGIN_TARGET_OUTPUT_DIR(" << type << "s ${INSTALLTARGETS})" << Endl;
+
         if (using_dev)
+        {
+          out << "VISIT_PLUGIN_TARGET_OUTPUT_DIR(" << type << "s ${INSTALLTARGETS})" << Endl;
           out << "VISIT_PLUGIN_TARGET_FOLDER(" << type << "s " << name
               << " ${INSTALLTARGETS})" << Endl;
+        }
         out << Endl;
 #ifdef _WIN32
         if (!using_dev)
@@ -1257,10 +1300,12 @@ class CMakeGeneratorPlugin : public Plugin
             CMakeAdd_EngineTargets(out);
         }
         out << "VISIT_INSTALL_DATABASE_PLUGINS(${INSTALLTARGETS})" << Endl;
-        out << "VISIT_PLUGIN_TARGET_OUTPUT_DIR(databases ${INSTALLTARGETS})" << Endl;
         if (using_dev)
+        {
+          out << "VISIT_PLUGIN_TARGET_OUTPUT_DIR(databases ${INSTALLTARGETS})" << Endl;
           out << "VISIT_PLUGIN_TARGET_FOLDER(databases " << name
               << " ${INSTALLTARGETS})" << Endl;
+        }
         out << Endl;
     }
 

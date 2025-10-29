@@ -42,6 +42,12 @@
 #   Eric Brugger, Fri Feb 24 14:57:15 PST 2023
 #   I replaced vtkh with vtkm.
 #
+#   Kathleen Biagas, Thu May 2, 2024
+#   Add '*.inl' to acceptable patterns when installing headers.
+#
+#   Eric Brugger, Wed Sep  4 10:31:31 PDT 2024
+#   I re-enabled vtkm.
+#
 #****************************************************************************/
 
 # ==============================================
@@ -500,6 +506,7 @@ function(THIRD_PARTY_INSTALL_INCLUDE pkg incdir)
                 PATTERN "*.hxx"
                 PATTERN "*.HPP"
                 PATTERN "*.inc"
+                PATTERN "*.inl"
                 PATTERN ".svn" EXCLUDE
             )
         endif()
@@ -630,9 +637,7 @@ if(NOT VISIT_BUILD_MINIMAL_PLUGINS OR VISIT_SELECTED_DATABASE_PLUGINS)
 
     include(${VISIT_SOURCE_DIR}/CMake/FindPIDX.cmake)
 
-    if(VTK_VERSION VERSION_EQUAL "8.1.0")
-        include(${VISIT_SOURCE_DIR}/CMake/FindVTKm.cmake)
-    endif()
+    include(${VISIT_SOURCE_DIR}/CMake/FindVTKm.cmake)
 
     include(${VISIT_SOURCE_DIR}/CMake/FindGFortran.cmake)
 endif()
