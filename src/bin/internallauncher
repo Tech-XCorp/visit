@@ -2553,7 +2553,10 @@ class MainLauncher(object):
                     arch = arch + "-" + compiler
             supportedarches.append(arch)
         elif self.os == "darwin":
-            mach = uname().machine
+            # Tech-X Change: using uname from Python so that on darwin in Rosetta we do not
+            # get the wrong machine architecture of x86 when Python is ARM.
+            # mach = self.uname("-m")
+            mach = os.uname().machine
             release = self.uname("-r")
             version = [int(x) for x in release.split(".")]
             self.osver = version[0]
