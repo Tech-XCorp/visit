@@ -268,4 +268,4 @@ function(FILTER_VISIT_LIB_DEPENDENCIES filename)
 endfunction()
 
 
-FILTER_VISIT_LIB_DEPENDENCIES(${VISIT_BINARY_DIR}/include/VisItLibraryDependencies.cmake)
+# FILTER_VISIT_LIB_DEPENDENCIES(${VISIT_BINARY_DIR}/include/VisItLibraryDependencies.cmake)

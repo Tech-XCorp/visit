@@ -334,7 +334,7 @@ unset(filtered_VISIT_PARALLEL_INCLUDE)
 # Done with Creating CMake/PluginVsInstall.cmake
 #-----------------------------------------------------------------------------
 
-export_library_dependencies(${VISIT_BINARY_DIR}/include/VisItLibraryDependencies.cmake.in)
+# export_library_dependencies(${VISIT_BINARY_DIR}/include/VisItLibraryDependencies.cmake.in)
 
 
 
@@ -343,6 +343,7 @@ configure_file(${VISIT_SOURCE_DIR}/CMake/FilterDependencies.cmake.in
               @ONLY)
 install(SCRIPT "${VISIT_BINARY_DIR}/include/FilterDependencies.cmake")
 
+if (FALSE)
 install(FILES
         ${VISIT_BINARY_DIR}/include/VisItLibraryDependencies.cmake
         DESTINATION ${VISIT_INSTALLED_VERSION_INCLUDE}
@@ -350,4 +351,5 @@ install(FILES
                     GROUP_READ GROUP_WRITE
                     WORLD_READ
         )
+endif ()
 

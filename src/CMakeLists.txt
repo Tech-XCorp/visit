@@ -569,7 +569,7 @@
 cmake_minimum_required(VERSION 3.24 FATAL_ERROR)
 
 if(COMMAND cmake_policy)
-    cmake_policy(SET CMP0033 OLD)
+    # cmake_policy(SET CMP0033 OLD) # Does not work with cmake-4
     if(WIN32)
         # don't automatically link with qtmain
         cmake_policy(SET CMP0020 OLD)
