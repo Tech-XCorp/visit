@@ -27,12 +27,6 @@
 #   Kathleen Biagas, Fri Mar 10, 2023 
 #   Replaced VTKh logic with VTKm.
 #
-#   Eric Brugger, Mon Jun 16 13:38:54 PDT 2025
-#   Replace vtkm_filter with vtkm::filter.
-#
-#   Kathleen Biagas, Thu July 10, 2025
-#   Support OPENEXR libs in 'lib64'.
-#
 #******************************************************************************
 
 
@@ -73,12 +67,17 @@ foreach(cl ${check_libs})
     string(REPLACE "${VISIT_${cl}_DIR}/lib/" ""
                     ${cl}_LIB
                     "${${cl}_LIB}")
-    string(REPLACE "${VISIT_${cl}_DIR}/lib64/" ""
-                    ${cl}_LIB
-                    "${${cl}_LIB}")
 
 endforeach()
 unset(check_libs)
+
+if(VISIT_OSPRAY)
+    foreach(ol ${OSPRAY_LIBRARIES})
+        get_filename_component(ol_name ${ol} NAME)
+        list(APPEND new_ol_libraries ${ol_name})
+    endforeach()
+    set(OSPRAY_LIBRARIES ${new_ol_libraries})
+endif()
 
 if(VISIT_MESAGL_DIR)
     string(REPLACE "${VISIT_MESAGL_DIR}/include"
@@ -163,8 +162,8 @@ if(VTKM_FOUND)
     endmacro()
 
     # find the link dependencies for vtkm
-    list(APPEND vtkm_deps vtkm::filter)
-    get_lib_dep(vtkm::filter vtkm_deps)
+    list(APPEND vtkm_deps vtkm_filter)
+    get_lib_dep(vtkm_filter vtkm_deps)
 
     # find the interface includes for all vtkm link dependencies
     set(ii_inc_dep "")
@@ -335,7 +334,7 @@ unset(filtered_VISIT_PARALLEL_INCLUDE)
 # Done with Creating CMake/PluginVsInstall.cmake
 #-----------------------------------------------------------------------------
 
-export_library_dependencies(${VISIT_BINARY_DIR}/include/VisItLibraryDependencies.cmake.in)
+# export_library_dependencies(${VISIT_BINARY_DIR}/include/VisItLibraryDependencies.cmake.in)
 
 
 
@@ -344,6 +343,7 @@ configure_file(${VISIT_SOURCE_DIR}/CMake/FilterDependencies.cmake.in
               @ONLY)
 install(SCRIPT "${VISIT_BINARY_DIR}/include/FilterDependencies.cmake")
 
+if (FALSE)
 install(FILES
         ${VISIT_BINARY_DIR}/include/VisItLibraryDependencies.cmake
         DESTINATION ${VISIT_INSTALLED_VERSION_INCLUDE}
@@ -351,4 +351,5 @@ install(FILES
                     GROUP_READ GROUP_WRITE
                     WORLD_READ
         )
+endif ()
 
