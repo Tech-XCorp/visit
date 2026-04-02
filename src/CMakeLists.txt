@@ -572,7 +572,7 @@ if(COMMAND cmake_policy)
     # cmake_policy(SET CMP0033 OLD) # Does not work with cmake-4
     if(WIN32)
         # don't automatically link with qtmain
-        cmake_policy(SET CMP0020 OLD)
+        # cmake_policy(SET CMP0020 OLD) # No longer needed?
         if(POLICY CMP0091) # introduced in cmake 3.15
             # Tell CMake to always use /MD, even for debug builds.
             # Done because prebuilt TP libraries are built with /MD and
