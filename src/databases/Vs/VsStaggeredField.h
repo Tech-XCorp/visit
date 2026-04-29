@@ -1,11 +1,14 @@
 /**
- * @file VsStaggeredField.h
- *      
- *  @class VsStaggeredField
- *  @brief Represents staggered fields in memory
- *  
- *  Created on: Apr 23, 2013
- *      Author: pletzer
+ * vim: set expandtab filetype=cpp :
+ *
+ * @file    VsStaggeredField.h
+ *
+ * @brief   Represents staggered fields in memory
+ *
+ * @version $Id: VsStaggeredField.h 358 2026-04-09 13:10:05Z cary $
+ *
+ * Copyright &copy; 2013-2025, Tech-X Corporation, Boulder, CO.
+ * All rights reserved.
  */
 
 #ifndef VS_STAGGERED_FIELD_H_
@@ -19,135 +22,132 @@
 template <class TYPE>
 class VsStaggeredField {
 
-public:
+  public:
 
-  /**
-   * Constructor
-   * @param subRes sub-grid resolution, number of sub-cells is 2^subRes in each direction
-   */
-  VsStaggeredField(size_t subRes);
+/**
+ * Constructor
+ * @param subRes sub-grid resolution, number of sub-cells is 2^subRes in each direction
+ */
+    VsStaggeredField(size_t subRes);
 
-  /** 
-   * Destructor
-   */
-  virtual ~VsStaggeredField();
+/**
+ * Destructor
+ */
+    virtual ~VsStaggeredField();
 
-  /**
-   * Set the data pointer
-   * @param dataPtr data pointer
-   * @param numDims number of dimensions (incl. components)
-   * @param dims dimensions along each axis (incl. component axis)
-   * @param indexOrder index order (e.g. VsSchema::compMajorFKey)
-   * @param centering (e.g. VsSchema::faceCenteringKey)
-   */
-   void setDataPtr(const TYPE* dataPtr, size_t numDims, const int dims[], 
-                   const std::string& indexOrder, const std::string& centering);
+/**
+ * Set the data pointer
+ * @param dataPtr data pointer
+ * @param numDims number of dimensions (incl. components)
+ * @param dims dimensions along each axis (incl. component axis)
+ * @param indexOrder index order (e.g. VsSchema::compMajorFKey)
+ * @param centering (e.g. VsSchema::faceCenteringKey)
+ */
+    void setDataPtr(const TYPE* dataPtr, size_t numDims, const int dims[],
+        const std::string& indexOrder, const std::string& centering);
 
-   /**
-    * Get the interpolated field dimensions
-    * @return dimensions along each axis (incl. component axis)
-    */
-   std::vector<int> getNewNodalDataDims() const;
+/**
+ * Get the interpolated field dimensions
+ * @return dimensions along each axis (incl. component axis)
+ */
+    std::vector<int> getNewNodalDataDims() const;
 
-   /**
-    * Get the new field data values
-    * @param pointer to the new data, caller is responsible to allocating and freeing
-    */
-   void getNewNodalData(TYPE* dataPtr) const;
+/**
+ * Get the new field data values
+ * @param pointer to the new data, caller is responsible to allocating and freeing
+ */
+    void getNewNodalData(TYPE* dataPtr) const;
 
-  
-private:
+  private:
 
-   std::valarray<int> getOriCellIndexSet(size_t bigIndx) const;
-   std::valarray<int> getOriDisplacements(size_t subBigIndx) const;
-   size_t getOriBigIndex(const std::valarray<int>& indx) const;
-   std::valarray<TYPE> getOriFieldVals(size_t bigInx) const;
-   std::valarray<int> getSubCellIndexSet(size_t subBigIndex) const;
-   size_t getNewBigIndex(const std::valarray<int>& newCellInds) const;
+    std::valarray<int> getOriCellIndexSet(size_t bigIndx) const;
+    std::valarray<int> getOriDisplacements(size_t subBigIndx) const;
+    // size_t getOriBigIndex(const std::valarray<int>& indx) const;
+    // std::valarray<TYPE> getOriFieldVals(size_t bigInx) const;
+    // std::valarray<int> getSubCellIndexSet(size_t subBigIndex) const;
+    size_t getNewBigIndex(const std::valarray<int>& newCellInds) const;
 
-   /**
-    * Fill interpolated values 
-    * @param newBigInd big (flat) index of the new data array
-    * @param sigmaVals displacements (array of 1s and 0s) from the original cells
-    * @param neighVals field values corresponding to the sigmaVals displacements
-    * @param dataPtr pointer to the new data, some values will be filled in
-    */
-   void fillNewVals(size_t newBigIndx, 
-                    const std::valarray<TYPE>& xiVals,
-                    const std::vector< std::valarray<TYPE> >& sigmaVals,
-                    const std::vector< std::valarray<TYPE> >& neighVals, 
-                    TYPE* dataPtr) const; 
+/**
+ * Fill interpolated values
+ * @param newBigInd big (flat) index of the new data array
+ * @param sigmaVals displacements (array of 1s and 0s) from the original cells
+ * @param neighVals field values corresponding to the sigmaVals displacements
+ * @param dataPtr pointer to the new data, some values will be filled in
+ */
+    void fillNewVals(size_t newBigIndx,
+                     const std::valarray<TYPE>& xiVals,
+                     const std::vector< std::valarray<TYPE> >& sigmaVals,
+                     const std::vector< std::valarray<TYPE> >& neighVals,
+                     TYPE* dataPtr) const;
 
-
-   void setNodalInterpFieldVals(size_t newBigIndx, 
-                                const std::valarray<TYPE>& xiVals, 
+    void setNodalInterpFieldVals(size_t newBigIndx,
+                                 const std::valarray<TYPE>& xiVals,
+                                 const std::vector< std::valarray<TYPE> >& sigmaVals,
+                                 const std::vector< std::valarray<TYPE> >& neighVals,
+                                 TYPE* dataPtr) const;
+    void setEdgeInterpFieldVals(size_t newBigIndx,
+                                const std::valarray<TYPE>& xiVals,
                                 const std::vector< std::valarray<TYPE> >& sigmaVals,
-                                const std::vector< std::valarray<TYPE> >& neighVals, 
+                                const std::vector< std::valarray<TYPE> >& neighVals,
                                 TYPE* dataPtr) const;
-   void setEdgeInterpFieldVals(size_t newBigIndx, 
-                               const std::valarray<TYPE>& xiVals, 
-                               const std::vector< std::valarray<TYPE> >& sigmaVals,
-                               const std::vector< std::valarray<TYPE> >& neighVals, 
-                               TYPE* dataPtr) const;
-   void setFaceInterpFieldVals(size_t newBigIndx, 
-                               const std::valarray<TYPE>& xiVals, 
-                               const std::vector< std::valarray<TYPE> >& sigmaVals,
-                               const std::vector< std::valarray<TYPE> >& neighVals, 
-                               TYPE* dataPtr) const;
-   void setZonalInterpFieldVals(size_t newBigIndx, 
-                                const std::valarray<TYPE>& xiVals, 
+    void setFaceInterpFieldVals(size_t newBigIndx,
+                                const std::valarray<TYPE>& xiVals,
                                 const std::vector< std::valarray<TYPE> >& sigmaVals,
-                                const std::vector< std::valarray<TYPE> >& neighVals, 
+                                const std::vector< std::valarray<TYPE> >& neighVals,
                                 TYPE* dataPtr) const;
-   
+    void setZonalInterpFieldVals(size_t newBigIndx,
+                                 const std::valarray<TYPE>& xiVals,
+                                 const std::vector< std::valarray<TYPE> >& sigmaVals,
+                                 const std::vector< std::valarray<TYPE> >& neighVals,
+                                 TYPE* dataPtr) const;
 
-   /** number of sub-cells is 2^subRes in each topological direction */
-  size_t subRes;
+/** number of sub-cells is 2^subRes in each topological direction */
+    size_t subRes;
 
-  /** pointer to the original data, assumed to have dimension nodal data times number of components */
-  TYPE* oriDataPtr;
+/** pointer to the original data, assumed to have dimension nodal data times number of components */
+    TYPE* oriDataPtr;
 
-  /** total number of original grid cells */
-  size_t totNumOriCells;
-  
-  /** total number of new grid cells */
-  size_t totNumNewCells;
+/** total number of original grid cells */
+    size_t totNumOriCells;
 
-  /** total number of data values (number of nodes times number of components) */
-  size_t totNumOriVals;
+/** total number of new grid cells */
+    size_t totNumNewCells;
 
-  /** total number of new data values (number of nodes times number of components) */
-  size_t totNumNewVals;
+/** total number of data values (number of nodes times number of components) */
+    size_t totNumOriVals;
 
-  /** 2^subRes */
-  size_t twoPowSubRes;
+/** total number of new data values (number of nodes times number of components) */
+    size_t totNumNewVals;
 
-  /** number neighbors forming a cell (2^d) */
-  size_t numNeighbors;
+/** 2^subRes */
+    size_t twoPowSubRes;
 
-  /** number of topological dimensions */
-  size_t numTopoDims;
-  
-  /** component index */
-  int indexComp;
+/** number neighbors forming a cell (2^d) */
+    size_t numNeighbors;
 
-  /** index order, see VsSchema */
-  std::string indexOrder;
+/** number of topological dimensions */
+    size_t numTopoDims;
 
-  /** type of field centering (nodal, edge, ...) */
-  std::string centering;
-  
-  /** number of cells along each direction for the original data */
-  std::valarray<int> oriCellDims;
+/** component index */
+    int indexComp;
 
-  /** number of cells along each direction for the new data */
-  std::valarray<int> newCellDims;
+/** index order, see VsSchema */
+    std::string indexOrder;
 
-  /** array to map big index to index set for original data */
-  std::valarray<int> oriCellDimProd;
+/** type of field centering (nodal, edge, ...) */
+    std::string centering;
 
-  /** array to map big index to index set for new data */
-  std::valarray<int> newCellDimProd;
+/** number of cells along each direction for the original data */
+    std::valarray<int> oriCellDims;
+
+/** number of cells along each direction for the new data */
+    std::valarray<int> newCellDims;
+
+/** array to map big index to index set for original data */
+    std::valarray<int> oriCellDimProd;
+
+/** array to map big index to index set for new data */
+    std::valarray<int> newCellDimProd;
 
 };
 

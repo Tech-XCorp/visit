@@ -1,8 +1,14 @@
-/*
- * VsStaggeredField.cpp
+/**
+ * vim: set expandtab filetype=cpp :
  *
- *  Created on: Apr 23, 2013
- *      Author: pletzer
+ * @file    VsStaggeredField.cpp
+ *
+ * @brief   Documentation goes here.
+ *
+ * @version $Id: VsStaggeredField.cpp 358 2026-04-09 13:10:05Z cary $
+ *
+ * Copyright &copy; 2013-2025, Tech-X Corporation, Boulder, CO.
+ * All rights reserved.
  */
 
 #include "VsStaggeredField.h"
@@ -11,9 +17,8 @@
 #include <valarray>
 
 template<class TYPE>
-VsStaggeredField<TYPE>::VsStaggeredField(size_t subRes) :
-  oriCellDims(), oriCellDimProd(), newCellDims(), newCellDimProd()
-{
+VsStaggeredField<TYPE>::VsStaggeredField(size_t subRes) {
+
   this->subRes = subRes;
   this->oriDataPtr = 0;
   this->totNumOriCells = 0;
@@ -26,31 +31,37 @@ VsStaggeredField<TYPE>::VsStaggeredField(size_t subRes) :
   this->indexComp = -1;
   this->indexOrder = VsSchema::compMajorCKey;
   this->centering = VsSchema::nodalCenteringKey;
+
+  this->oriCellDims.resize(0);
+  // this->oriCellDimProd.clear();
+  this->oriCellDimProd = 0;
+  // this->newCellDims.clear();
+  this->newCellDims = 0;
+  // this->newCellDimProd.clear();
+  this->newCellDimProd = 0;
 }
 
 template<class TYPE>
-VsStaggeredField<TYPE>::~VsStaggeredField() {  
+VsStaggeredField<TYPE>::~VsStaggeredField() {
 }
 
 template<class TYPE>
 void
-VsStaggeredField<TYPE>::setDataPtr(const TYPE* dataPtr, 
-                                   size_t numDims, 
-                                   const int dims[], 
-                                   const std::string& indexOrder, 
-                                   const std::string& centering) {
+VsStaggeredField<TYPE>::setDataPtr(const TYPE* dataPtr,
+    size_t numDims, const int dims[], const std::string& indexOrder,
+    const std::string& centering) {
 
   this->oriDataPtr = dataPtr;
   this->numTopoDims = numDims - 1; // assume dims also contains the number of components
   this->indexOrder = indexOrder;
   this->centering = centering;
 
-  this->indexComp = 0; 
-  if (indexOrder == VsSchema::compMinorCKey || 
+  this->indexComp = 0;
+  if (indexOrder == VsSchema::compMinorCKey ||
       indexOrder == VsSchema::compMinorFKey) {
     this->indexComp = numDims - 1;
   }
-  
+
   this->twoPowSubRes = 1;
   for (size_t i = 0; i < this->subRes; ++i) {
     this->twoPowSubRes *= 2;
@@ -76,12 +87,12 @@ VsStaggeredField<TYPE>::setDataPtr(const TYPE* dataPtr,
   for (size_t i = 0; i < this->numTopoDims; ++i) {
     this->newCellDims[i] = this->oriCellDims[i] * this->twoPowSubRes;
   }
-  
+
   this->oriCellDimProd.resize(this->numTopoDims);
   this->oriCellDimProd[this->numTopoDims - 1] = 1;
   this->newCellDimProd.resize(this->numTopoDims);
   this->newCellDimProd[this->numTopoDims - 1] = 1;
-  for (int i = this->numTopoDims - 2; i >= 0; --i) {
+  for (size_t i = this->numTopoDims - 2; i >= 0; --i) {
     this->oriCellDimProd[i] = this->oriCellDimProd[i + 1] * this->oriCellDims[i + 1];
     this->newCellDimProd[i] = this->newCellDimProd[i + 1] * this->newCellDims[i + 1];
   }
@@ -96,7 +107,7 @@ VsStaggeredField<TYPE>::setDataPtr(const TYPE* dataPtr,
     this->totNumOriVals *= (this->oriCellDims[i] + 1);
     this->totNumNewVals *= (this->newCellDims[i] + 1);
   }
-  
+
 }
 
 template <class TYPE>
@@ -115,10 +126,10 @@ VsStaggeredField<TYPE>::getNewNodalDataDims() const {
   return dims;
 }
 
+#if 0
 template <class TYPE>
 void
-VsStaggeredField<TYPE>::getNewNodalData(TYPE* dataPtr) const 
-{
+VsStaggeredField<TYPE>::getNewNodalData(TYPE* dataPtr) const {
   std::vector< std::valarray<TYPE> > neighVals(this->numNeighbors);
   std::vector< std::valarray<int> > sigmaVals(this->numNeighbors);
   for (size_t bigIndx = 0; bigIndx < this->totNumOriCells; ++bigIndx) {
@@ -129,29 +140,34 @@ VsStaggeredField<TYPE>::getNewNodalData(TYPE* dataPtr) const
       neighVals[n] = this->getOriFieldVals(bigIndxNeigh);
     }
 
-    // iterate over subgrid
+// iterate over subgrid
     for (size_t subBigIndx = 0; subBigIndx < this->numNeighbors; ++subBigIndx) {
       std::valarray<int> subCellInds = this->getSubCellIndexSet(subBigIndx);
-      std::valarray<int> newCellInds = oriCellInds*static_cast<TYPE>(this->numNeighbors) + subCellInds;
+      std::valarray<int> newCellInds = oriCellInds *
+          static_cast<int>(this->numNeighbors) + subCellInds;
       size_t newBigIndx = this->getNewBigIndex(newCellInds);
       std::valarray<TYPE> xi = std::valarray<TYPE>(subCellInds) / this->twoPowSubRes;
       this->setNewFieldVals(newBigIndx, xi, sigmaVals, neighVals, dataPtr);
     }
   }
 }
+#endif
 
 template <class TYPE>
 std::valarray<int>
 VsStaggeredField<TYPE>::getOriCellIndexSet(size_t bigIndex) const {
-  return (bigIndex / static_cast<TYPE>(this->oriCellDimProd)) % this->oriCellDims;
+  return (static_cast<int>(bigIndex) / this->oriCellDimProd) %
+      this->oriCellDims;
 }
 
 template <class TYPE>
 std::valarray<int>
 VsStaggeredField<TYPE>::getOriDisplacements(size_t subBigIndex) const {
-  return (subBigIndex / static_cast<TYPE>(this->twoPowSubRes)) % 2;
+  std::valarray<int> va = {((subBigIndex / this->twoPowSubRes) % 2)};
+  return va;
 }
 
+#if 0
 template <class TYPE>
 size_t
 VsStaggeredField<TYPE>::getOriBigIndex(const std::valarray<int>& indx) const {
@@ -182,8 +198,11 @@ VsStaggeredField<TYPE>::getOriFieldVals(size_t bigInx) const {
 template <class TYPE>
 std::valarray<int>
 VsStaggeredField<TYPE>::getSubCellIndexSet(size_t subBigIndex) const {
-  return (subBigIndex / this->subCellDimProd) % this->twoPowSubRes;
+  std::valarray<int> va = {static_cast<int>((subBigIndex / this->subCellDimProd)
+      % this->twoPowSubRes)};
+  return va;
 }
+#endif
 
 template <class TYPE>
 size_t
@@ -197,12 +216,12 @@ VsStaggeredField<TYPE>::getNewBigIndex(const std::valarray<int>& newCellInds) co
 
 template <class TYPE>
 void
-VsStaggeredField<TYPE>::fillNewVals(size_t newBigIndx, 
+VsStaggeredField<TYPE>::fillNewVals(size_t newBigIndx,
                                     const std::valarray<TYPE>& xiVals,
                                     const std::vector< std::valarray<TYPE> >& sigmaVals,
-                                    const std::vector< std::valarray<TYPE> >& neighVals, 
+                                    const std::vector< std::valarray<TYPE> >& neighVals,
                                     TYPE* dataPtr)  const {
-  switch (this->centering) {
+  switch (this->centering[0]) {
   case 'n':
     this->setNodalInterpFieldVals(newBigIndx, xiVals, sigmaVals, neighVals, dataPtr);
     break;
@@ -219,41 +238,41 @@ VsStaggeredField<TYPE>::fillNewVals(size_t newBigIndx,
 
 template <class TYPE>
 void
-VsStaggeredField<TYPE>::setNodalInterpFieldVals(size_t newBigIndx, 
-                                                const std::valarray<TYPE>& xiVals, 
+VsStaggeredField<TYPE>::setNodalInterpFieldVals(size_t newBigIndx,
+                                                const std::valarray<TYPE>& xiVals,
                                                 const std::vector< std::valarray<TYPE> >& sigmaVals,
-                                                const std::vector< std::valarray<TYPE> >& neighVals, 
+                                                const std::vector< std::valarray<TYPE> >& neighVals,
                                                 TYPE* dataPtr) const {
   // TO IMPLEMENT
 }
 
 template <class TYPE>
 void
-VsStaggeredField<TYPE>::setEdgeInterpFieldVals(size_t newBigIndx, 
-                                               const std::valarray<TYPE>& xiVals, 
+VsStaggeredField<TYPE>::setEdgeInterpFieldVals(size_t newBigIndx,
+                                               const std::valarray<TYPE>& xiVals,
                                                const std::vector< std::valarray<TYPE> >& sigmaVals,
-                                               const std::vector< std::valarray<TYPE> >& neighVals, 
+                                               const std::vector< std::valarray<TYPE> >& neighVals,
                                                TYPE* dataPtr) const {
   // TO IMPLEMENT
 }
 
 template <class TYPE>
 void
-VsStaggeredField<TYPE>::setFaceInterpFieldVals(size_t newBigIndx, 
-                                               const std::valarray<TYPE>& xiVals, 
+VsStaggeredField<TYPE>::setFaceInterpFieldVals(size_t newBigIndx,
+                                               const std::valarray<TYPE>& xiVals,
                                                const std::vector< std::valarray<TYPE> >& sigmaVals,
-                                               const std::vector< std::valarray<TYPE> >& neighVals, 
+                                               const std::vector< std::valarray<TYPE> >& neighVals,
                                                TYPE* dataPtr) const {
   // TO IMPLEMENT
 }
 
 template <class TYPE>
 void
-VsStaggeredField<TYPE>::setZonalInterpFieldVals(size_t newBigIndx, 
-                                                const std::valarray<TYPE>& xiVals, 
-                                                const std::vector< std::valarray<TYPE> >& sigmaVals,
-                                                const std::vector< std::valarray<TYPE> >& neighVals, 
-                                                TYPE* dataPtr) const {
+VsStaggeredField<TYPE>::setZonalInterpFieldVals(size_t newBigIndx,
+    const std::valarray<TYPE>& xiVals,
+    const std::vector< std::valarray<TYPE> >& sigmaVals,
+    const std::vector< std::valarray<TYPE> >& neighVals,
+    TYPE* dataPtr) const {
   // TO IMPLEMENT
 }
 
