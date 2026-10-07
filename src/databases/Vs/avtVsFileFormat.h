@@ -87,12 +87,6 @@ class avtVsFileFormat: public avtSTMDFileFormat {
         std::vector<bool> *selectionsApplied);
 
 /**
- * Process the data selections
- *
- */
-    bool ProcessDataSelections(int *mins, int *maxs, int *strides);
-
-/**
  * Get a mesh by name
  *
  * @param domain the number of the domain in this mesh
@@ -208,12 +202,34 @@ class avtVsFileFormat: public avtSTMDFileFormat {
  */
     static int instanceCounter;
 
+/** Process the data selections
+ * @param selList The selections from VisIt (if any)
+ * @param selsApplied Boolean vector indicating whether this reader has used selList[i]
+ * @param mins A 3-vector of the minimum selected index in X, Y, and Z. Default is 0
+ * @param maxs A 3-vector of the maximum selected index in X, Y, and Z. Default is -1, which means "all"
+ * @param strides A 3-vector of the index stride in X, Y, and Z. Default is 1
+ * @return True if any data selection is active
+ */
+    bool ProcessDataSelections(
+        const std::vector<avtDataSelection_p> &selList,
+        std::vector<bool> *selsApplied,
+        int *mins, int *maxs, int *strides);
 
-/** Some stuff to keep track of data selections */
-    std::vector<avtDataSelection_p> selList;
-    std::vector<bool>              *selsApplied;
+/**
+ * Cached data-selection information
+ * Minimum value, maximum value, and strides for each axis.
+ * Also a flag that indicates whether there are any data selections.
+ */
+    int dsMin[3] = {0, 0, 0};
+    int dsMax[3] = {-1, -1, -1};
+    int dsStride[3] = {1, 1, 1};
+    std::vector<std::string> selectionNames;
+    bool haveDataSelections = false;
 
-    bool processDataSelections;
+// Flag to indicate whether this instance of the plugin will perform
+// data selection. False by default, but can be set with plugin option
+// "Process Data Selections in the Reader".
+    bool shouldProcessDataSelections = false;
 
 /**
  * Maintain a list of curve names so we can classify expressions better

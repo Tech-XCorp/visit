@@ -106,7 +106,7 @@ int avtVsFileFormat::instanceCounter = 0;
 avtVsFileFormat::avtVsFileFormat(const char* filename,
                                  const DBOptionsAttributes *readOpts) :
   avtSTMDFileFormat(&filename, 1), dataFileName(filename),
-  processDataSelections(false)
+  shouldProcessDataSelections(false)
 {
     instanceCounter++;
 
@@ -119,14 +119,14 @@ avtVsFileFormat::avtVsFileFormat(const char* filename,
     if (readOpts != NULL) {
         for (int i=0; i<readOpts->GetNumberOfOptions(); ++i) {
             if (readOpts->GetName(i) == "Process Data Selections in the Reader")
-              processDataSelections =
+              shouldProcessDataSelections =
                 readOpts->GetBool("Process Data Selections in the Reader");
         }
     }
 
     VsLog::debugLog() << CLASSFUNCLINE
                       << "VizSchema reader will "
-                      << (processDataSelections? "" : "not ")
+                      << (shouldProcessDataSelections? "" : "not ")
                       << "process data selections" << std::endl;
    curveNames.clear();
 
@@ -211,25 +211,19 @@ avtVsFileFormat::~avtVsFileFormat()
 std::string
 avtVsFileFormat::CreateCacheNameIncludingSelections(std::string s)
 {
-    int mins[3], maxs[3], strides[3];
-    bool haveDataSelections = ProcessDataSelections(mins, maxs, strides);
-
+    VsLog::debugLog() << CLASSFUNCLINE << "Entering.\n";
     if (!haveDataSelections)
       return s;
 
     char str[1024];
     strcpy(str, s.c_str());
     size_t amt = strlen(str);
-    for (size_t i = 0; i < selList.size(); i++)
-    {
-        if ((*selsApplied)[i])
-        {
-            std::string s = selList[i]->DescriptionString();
-            snprintf(str+amt, 1024-amt, "_%s", s.c_str());
-            amt += strlen(str);
-        }
+    for (const std::string& name : selectionNames) {
+        snprintf(str+amt, 1024-amt, "_%s", name.c_str());
+        amt = strlen(str);
     }
 
+    VsLog::debugLog() << CLASSFUNCLINE << "Returning.\n";
     return std::string(str);
 }
 
@@ -248,8 +242,22 @@ void
 avtVsFileFormat::RegisterDataSelections(const std::vector<avtDataSelection_p> &sels,
                                         std::vector<bool> *selectionsApplied)
 {
-    selList = sels;
-    selsApplied = selectionsApplied;
+    VsLog::debugLog() << CLASSFUNCLINE << "Entering.\n";
+    // Begin by clearing all of the currently cached data selections.
+    haveDataSelections = false;
+    selectionNames.clear();
+    for (int i = 0; i < 3; i++)
+    {
+        dsMin[i] = 0;
+        dsMax[i] = -1;
+        dsStride[i] = 1;
+    }
+
+    // Consider processing the incoming data selections, if there are any.
+    if ((sels.size() > 0) && selectionsApplied && shouldProcessDataSelections) {
+      haveDataSelections = ProcessDataSelections(sels, selectionsApplied, this->dsMin, this->dsMax, this->dsStride);
+    }
+    VsLog::debugLog() << CLASSFUNCLINE << "Returning.\n";
 }
 
 // ****************************************************************************
@@ -264,25 +272,43 @@ avtVsFileFormat::RegisterDataSelections(const std::vector<avtDataSelection_p> &s
 // ****************************************************************************
 
 bool
-avtVsFileFormat::ProcessDataSelections(int *mins, int *maxs, int *strides)
+avtVsFileFormat::ProcessDataSelections(const std::vector<avtDataSelection_p> &selList,
+                                        std::vector<bool> *selsApplied,
+                                        int *mins, int *maxs, int *strides)
 {
+    VsLog::debugLog() << CLASSFUNCLINE << "Entering.\n";
     bool retval = false;
 
-    if( !processDataSelections )
+    if( !shouldProcessDataSelections ) {
+      VsLog::debugLog() << CLASSFUNCLINE
+          << "returning early because shouldProcessDataSelections is false.\n";
       return retval;
+    }
 
     avtLogicalSelection composedSel;
 
     for (size_t i = 0; i < selList.size(); i++)
     {
+        // Unless otherwise noted, we will not use this selection
+        (*selsApplied)[i] = false;
+
         if (std::string(selList[i]->GetType()) == "Logical Data Selection")
         {
             avtLogicalSelection *sel = (avtLogicalSelection *) *(selList[i]);
+            if (sel)
+            {
+                // over-write method-scope arrays with the new indexing
+                composedSel.Compose(*sel);
+                (*selsApplied)[i] = true;
 
-            // overrwrite method-scope arrays with the new indexing
-            composedSel.Compose(*sel);
-            (*selsApplied)[i] = true;
-            retval = true;
+                // Cache the selection name for later use.
+                selectionNames.push_back(sel->DescriptionString());
+                for (const std::string& name : selectionNames) {
+                  VsLog::debugLog() <<"  " <<name <<std::endl;
+                }
+                retval = true;
+            }
+            continue;
         }
 
         // Cannot handle avtSpatialBoxSelection without knowing the mesh.
@@ -331,20 +357,14 @@ avtVsFileFormat::ProcessDataSelections(int *mins, int *maxs, int *strides)
 //             (*selsApplied)[i] = true;
 //             retval = true;
 //         }
-        else
-        {
-            // indicate we won't handle this selection
-            (*selsApplied)[i] = false;
-        }
     }
 
     composedSel.GetStarts(mins);
     composedSel.GetStops(maxs);
     composedSel.GetStrides(strides);
 
-    // If the user is a dumb ass and selects a dimension lower than
-    // the actual dimension the min, max, and stride will be zero. So
-    // fix it to be the full bounds and a stride of 1.
+    // Clean up any missing or invalid selections.
+    // Fix it to be the full bounds and a stride of 1.
     for (int i = 0; i < 3; i++)
     {
         if( strides[i] == 0 )
@@ -355,6 +375,7 @@ avtVsFileFormat::ProcessDataSelections(int *mins, int *maxs, int *strides)
         }
     }
 
+    VsLog::debugLog() << CLASSFUNCLINE << "Returning.\n";
     return retval;
 }
 
@@ -403,17 +424,14 @@ vtkDataSet* avtVsFileFormat::GetMesh(VsReader* reader, int domain, const char* n
         meshName = origMeshName;
     }
 
-    bool haveDataSelections;
-    int mins[3], maxs[3], strides[3];
-
     // Adjust for the data selections which are NODAL.
-    if( (haveDataSelections = ProcessDataSelections(mins, maxs, strides)) ) ///TODO: check fix for assignment
+    if (haveDataSelections) ///TODO: check fix for assignment
     {
         VsLog::debugLog()
           << CLASSFUNCLINE << "Have a logical nodal selection for mesh  "
-          << "(" << mins[0] << "," << maxs[0] << " stride " << strides[0] << ") "
-          << "(" << mins[1] << "," << maxs[1] << " stride " << strides[1] << ") "
-          << "(" << mins[2] << "," << maxs[2] << " stride " << strides[2] << ") "
+          << "X = (" << dsMin[0] << "," << dsMax[0] << " stride " << dsStride[0] << ") "
+          << "Y = (" << dsMin[1] << "," << dsMax[1] << " stride " << dsStride[1] << ") "
+          << "Z = (" << dsMin[2] << "," << dsMax[2] << " stride " << dsStride[2] << ") "
           << std::endl;
     }
 
@@ -467,7 +485,7 @@ vtkDataSet* avtVsFileFormat::GetMesh(VsReader* reader, int domain, const char* n
                               << "Trying to load & return uniform mesh" << std::endl;
 
             return getUniformMesh(reader, static_cast<VsUniformMesh*>(meta),
-                                  haveDataSelections, mins, maxs, strides);
+                                  haveDataSelections, dsMin, dsMax, dsStride);
         }
 
         // Rectilinear Mesh
@@ -476,7 +494,7 @@ vtkDataSet* avtVsFileFormat::GetMesh(VsReader* reader, int domain, const char* n
                               << "Trying to load & return rectilinear mesh."
                               << std::endl;
             return getRectilinearMesh(reader, static_cast<VsRectilinearMesh*>(meta),
-                                      haveDataSelections, mins, maxs, strides, transform);
+                                      haveDataSelections, dsMin, dsMax, dsStride, transform);
         }
 
         // Structured Mesh
@@ -484,7 +502,7 @@ vtkDataSet* avtVsFileFormat::GetMesh(VsReader* reader, int domain, const char* n
             VsLog::debugLog() << CLASSFUNCLINE
                               << "Trying to load & return structured mesh" << std::endl;
             return getStructuredMesh(reader, static_cast<VsStructuredMesh*>(meta),
-                                     haveDataSelections, mins, maxs, strides);
+                                     haveDataSelections, dsMin, dsMax, dsStride);
         }
 
 #if (defined PARALLEL && defined VIZSCHEMA_DECOMPOSE_DOMAINS)
@@ -507,14 +525,14 @@ vtkDataSet* avtVsFileFormat::GetMesh(VsReader* reader, int domain, const char* n
                 VsLog::debugLog() << CLASSFUNCLINE
                                   << "Trying to load & return high order unstructured mesh" << std::endl;
                 return getHighOrderUnstructuredMesh(reader, static_cast<VsUnstructuredMesh*>(meta),
-                                                    haveDataSelections, mins, maxs, strides);
+                                                    haveDataSelections, dsMin, dsMax, dsStride);
             }
 
             else {
               VsLog::debugLog() << CLASSFUNCLINE
                                 << "Trying to load & return unstructured mesh" << std::endl;
               return getUnstructuredMesh(reader, static_cast<VsUnstructuredMesh*>(meta),
-                                         haveDataSelections, mins, maxs, strides);
+                                         haveDataSelections, dsMin, dsMax, dsStride);
             }
         }
 
@@ -538,7 +556,7 @@ vtkDataSet* avtVsFileFormat::GetMesh(VsReader* reader, int domain, const char* n
         VsLog::debugLog() << CLASSFUNCLINE
 
                           << "Found Variable With Mesh. Loading data and returning." << std::endl;
-        return getPointMesh(reader, vmMeta, haveDataSelections, mins, maxs, strides, transform);
+        return getPointMesh(reader, vmMeta, haveDataSelections, dsMin, dsMax, dsStride, transform);
     }
 
     // Curve
@@ -660,10 +678,10 @@ vtkDataSet* avtVsFileFormat::getUniformMesh(VsReader* reader,
     // Adjust for the data selections which are NODAL. If no selection
     // the bounds are set to 0 and max with a stride of 1.
     GetSelectionBounds( numSpatialDims, numNodes, gdims,
-                        mins, maxs, strides, haveDataSelections );
+                        dsMin, dsMax, dsStride, haveDataSelections );
 
 #if (defined PARALLEL && defined VIZSCHEMA_DECOMPOSE_DOMAINS)
-    if( !GetParallelDecomp( numSpatialDims, gdims, mins, maxs, strides ) ) {
+    if( !GetParallelDecomp( numSpatialDims, gdims, dsMin, dsMax, dsStride ) ) {
       return NULL; // No work for this processor.
     }
 
@@ -799,13 +817,11 @@ avtVsFileFormat::getRectilinearMesh(VsReader* reader,
     // Adjust for the data selections which are NODAL. If no selection
     // the bounds are set to 0 and max with a stride of 1.
     GetSelectionBounds( numSpatialDims, numNodes, gdims,
-                        mins, maxs, strides, haveDataSelections );
+                        dsMin, dsMax, dsStride, haveDataSelections );
 
 #if (defined PARALLEL && defined VIZSCHEMA_DECOMPOSE_DOMAINS)
-    if( !GetParallelDecomp( numSpatialDims, gdims, mins, maxs, strides ) )
+    if( !GetParallelDecomp( numSpatialDims, gdims, dsMin, dsMax, dsStride ) )
       return NULL; // No work for this processor.
-
-    haveDataSelections = 1;
 #endif
 
     std::vector<vtkDataArray*> coords(vsdim);
@@ -1128,10 +1144,10 @@ vtkDataSet* avtVsFileFormat::getStructuredMesh(VsReader* reader,
     // Adjust for the data selections which are NODAL. If no selection
     // the bounds are set to 0 and max with a stride of 1.
     GetSelectionBounds( numSpatialDims, numNodes, gdims,
-                        mins, maxs, strides, haveDataSelections );
+                        dsMin, dsMax, dsStride, haveDataSelections );
 
 #if (defined PARALLEL && defined VIZSCHEMA_DECOMPOSE_DOMAINS)
-    if( !GetParallelDecomp( numSpatialDims, gdims, mins, maxs, strides ) )
+    if( !GetParallelDecomp( numSpatialDims, gdims, dsMin, dsMax, dsStride ) )
       return NULL; // No work for this processor.
 
     haveDataSelections = 1;
@@ -2201,10 +2217,10 @@ vtkDataSet* avtVsFileFormat::getPointMesh(VsReader* reader,
     // Adjust for the data selections which are NODAL. If no selection
     // the bounds are set to 0 and max with a stride of 1.
     GetSelectionBounds( numLogicalDims, numNodes, gdims,
-                        mins, maxs, strides, haveDataSelections, false );
+                        dsMin, dsMax, dsStride, haveDataSelections, false );
 
 #if (defined PARALLEL && defined VIZSCHEMA_DECOMPOSE_DOMAINS)
-    if( !GetParallelDecomp( numLogicalDims, gdims, mins, maxs, strides, 0 ) )
+    if( !GetParallelDecomp( numLogicalDims, gdims, dsMin, dsMax, dsStride, 0 ) )
       return NULL; // No work for this processor.
 
     haveDataSelections = 1;
@@ -2758,20 +2774,15 @@ vtkDataArray* avtVsFileFormat::StandardVar(VsReader* reader,
     // do some string manipulation on it
     std::string name = requestedName;
 
-    bool haveDataSelections;
-    int mins[3], maxs[3], strides[3];
-
     // Adjust for the data selections which are NODAL (typical) or ZONAL.
-    if( (haveDataSelections = ProcessDataSelections(mins, maxs, strides)) )
+    if (haveDataSelections) ///TODO: check on fix for assignment
     {
-        ///TODO: check on fix for assignment
-
         VsLog::debugLog()
           << CLASSFUNCLINE
           << "Have a data selection for variable " << name << "  "
-          << "(" << mins[0] << "," << maxs[0] << " stride " << strides[0] << ") "
-          << "(" << mins[1] << "," << maxs[1] << " stride " << strides[1] << ") "
-          << "(" << mins[2] << "," << maxs[2] << " stride " << strides[2] << ") "
+          << "X = (" << dsMin[0] << "," << dsMax[0] << " stride " << dsStride[0] << ") "
+          << "Y = (" << dsMin[1] << "," << dsMax[1] << " stride " << dsStride[1] << ") "
+          << "Z = (" << dsMin[2] << "," << dsMax[2] << " stride " << dsStride[2] << ") "
           << std::endl;
     }
 
@@ -3008,12 +3019,12 @@ vtkDataArray* avtVsFileFormat::StandardVar(VsReader* reader,
     // Adjust for the data selections which are NODAL. If no selection
     // the bounds are set to 0 and max with a stride of 1.
     GetSelectionBounds( numLogicalDims, numVars, vdims,
-                        mins, maxs, strides, haveDataSelections, !isZonal );
+                        dsMin, dsMax, dsStride, haveDataSelections, !isZonal );
 
 #if (defined PARALLEL && defined VIZSCHEMA_DECOMPOSE_DOMAINS)
     if (parallelRead)
     {
-        if( !GetParallelDecomp( numLogicalDims, vdims, mins, maxs, strides,
+        if( !GetParallelDecomp( numLogicalDims, vdims, dsMin, dsMax, dsStride,
                                 !isZonal ) )
           return NULL; // No work for this processor.
 
@@ -3067,7 +3078,7 @@ vtkDataArray* avtVsFileFormat::StandardVar(VsReader* reader,
 
         herr_t err = reader->getData(variableDataset, dataPtr,
                                      indexOrder, componentIndex,
-                                     mins, &(vdims[0]), strides);
+                                     dsMin, &(vdims[0]), dsStride);
 
         if (err < 0) {
             VsLog::debugLog() << CLASSFUNCLINE
@@ -3095,7 +3106,7 @@ vtkDataArray* avtVsFileFormat::StandardVar(VsReader* reader,
         if( haveDataSelections )
           err = reader->getData( variableDataset, dataPtr,
                                  meta->getIndexOrder(), -2, // -2 no components
-                                 mins, &(vdims[0]), strides );
+                                 dsMin, &(vdims[0]), dsStride );
         else
           err = reader->getData( variableDataset, dataPtr );
 
@@ -3925,8 +3936,6 @@ void avtVsFileFormat::RegisterMeshes(VsRegistry* registry, avtDatabaseMetaData* 
         std::vector<int> dims;
         int bounds[3] = {1,1,1};
         size_t numCells = 1;
-
-        //std::cout << "isDgMesh is " << meta->isDgMesh() << "\n";
 
         // Uniform Mesh
         if (meta->isUniformMesh()) {
