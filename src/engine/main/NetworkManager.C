@@ -2349,9 +2349,13 @@ NetworkManager::DoneWithNetwork(int id)
     {
         int thisNetworksWinID = networkCache[id]->GetWinID();
 
-        viswinMap[thisNetworksWinID].viswin->ClearPlots();
-        viswinMap[thisNetworksWinID].plotsCurrentlyInWindow.clear();
-        viswinMap[thisNetworksWinID].imageBasedPlots.clear();
+        if (viswinMap.find(thisNetworksWinID) != viswinMap.end()) {
+          viswinMap[thisNetworksWinID].viswin->ClearPlots();
+          viswinMap[thisNetworksWinID].plotsCurrentlyInWindow.clear();
+          viswinMap[thisNetworksWinID].imageBasedPlots.clear();
+        } else {
+          std::cout <<"NetworkManager::DoneWithNetwork() This would have crashed without the code fix.\n";
+        }
 
         // Delete the associated VisWindow if this is the last plot that
         // references it
@@ -2375,7 +2379,8 @@ NetworkManager::DoneWithNetwork(int id)
         globalCellCounts[id] = -1;
 
         // mark this VisWindow for deletion, but never delete window 0
-        if (!otherNetsUseThisWindow && thisNetworksWinID)
+        if (!otherNetsUseThisWindow && thisNetworksWinID &&
+            viswinMap.find(thisNetworksWinID) != viswinMap.end())
         {
             debug2 << "Marking VisWindow for Deletion id=" << thisNetworksWinID << endl;
             // TODO -- why not just delete it here??
