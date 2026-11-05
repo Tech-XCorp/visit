@@ -413,7 +413,7 @@ FUNCTION(PYTHON_ADD_PIP_SETUP)
     # the 'rm -rf' will not error out if the dir doesn't exist
 
     add_custom_command(OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/${args_NAME}_build
-            COMMAND ${PYTHON_EXECUTABLE} -m pip install . -V --upgrade
+            COMMAND ${PYTHON_EXECUTABLE} -m pip install . -v --upgrade
             --disable-pip-version-check --no-warn-script-location
             --target "${abs_dest_path}"
             COMMAND ${CMAKE_COMMAND} -E rm -rf ${CMAKE_CURRENT_SOURCE_DIR}/build
